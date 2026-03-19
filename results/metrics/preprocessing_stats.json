@@ -1,0 +1,20 @@
+{
+  "AD": {
+    "total_nifti": 150,
+    "processed": 150,
+    "failed": 0,
+    "output_slices": 450
+  },
+  "MCI": {
+    "total_nifti": 150,
+    "processed": 150,
+    "failed": 0,
+    "output_slices": 450
+  },
+  "CN": {
+    "total_nifti": 150,
+    "processed": 150,
+    "failed": 0,
+    "output_slices": 450
+  }
+}

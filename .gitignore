@@ -1,0 +1,60 @@
+# ═══════════════════════════════════════════
+#  PPXFL — .gitignore
+# ═══════════════════════════════════════════
+
+# ──── ADNI Dataset (restricted license — DO NOT share) ────
+data/raw/
+data/processed/
+data/clients/
+data/**/*.nii
+data/**/*.nii.gz
+data/**/*.npy
+data/**/*.npz
+
+# ──── Model weights (too large for GitHub) ────
+*.pth
+
+# ──── Large numpy arrays ────
+results/xai/*.npy
+
+# ──── AI agent / planning files ────
+CLAUDE.md
+PPXFL_tables.txt
+PPXFL_plan_text.txt
+PPXFL_Implementation_Plan.docx
+
+# ──── Python ────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# ──── Virtual environment ────
+venv/
+env/
+.venv/
+.env/
+
+# ──── IDE ────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.gemini/
+
+# ──── OS files ────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ──── Jupyter ────
+.ipynb_checkpoints/
+
+# ──── Logs ────
+*.log
