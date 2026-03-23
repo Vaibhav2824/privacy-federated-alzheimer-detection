@@ -26,6 +26,7 @@
 
 <br/>
 
+
 *A regulation-compliant federated AI pipeline that enables collaborative Alzheimer's diagnosis across hospital boundaries — without ever sharing a single patient scan.*
 
 <br/>
