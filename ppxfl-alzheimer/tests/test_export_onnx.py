@@ -15,15 +15,22 @@ import export_onnx
 
 
 class TinyNet(nn.Module):
-    """Same contract as the real classifier: 1x224x224 in, 3 logits out."""
+    """Same contract as the real classifier: 1x224x224 in, 3 logits out.
+
+    Keeps a convolution ahead of the head so the exported graph has the Conv and
+    Gemm nodes that dynamic quantisation actually operates on. A pooling-only
+    stand-in exports fine but is not a realistic quantisation target, and newer
+    onnx releases fail shape inference on it.
+    """
 
     def __init__(self):
         super().__init__()
+        self.conv = nn.Conv2d(1, 4, kernel_size=3, stride=2, padding=1)
         self.pool = nn.AdaptiveAvgPool2d(1)
-        self.fc = nn.Linear(1, 3)
+        self.fc = nn.Linear(4, 3)
 
     def forward(self, x):
-        return self.fc(self.pool(x).flatten(1))
+        return self.fc(self.pool(self.conv(x)).flatten(1))
 
 
 @pytest.fixture
@@ -53,7 +60,7 @@ class TestLoadCheckpointState:
 
     def test_leaves_an_unrecognised_payload_alone(self, tmp_path):
         path = tmp_path / 'plain.pth'
-        torch.save({'fc.weight': torch.zeros(3, 1)}, path)
+        torch.save({'fc.weight': torch.zeros(3, 4)}, path)
         assert 'fc.weight' in export_onnx.load_checkpoint_state(str(path))
 
 
