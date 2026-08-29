@@ -1,0 +1,17 @@
+{
+  "model": "resnet50",
+  "source_checkpoint": "best_resnet50_centralised_f0_s42_v2.pth",
+  "classes": [
+    "CN",
+    "MCI",
+    "AD"
+  ],
+  "input_shape": [
+    1,
+    1,
+    224,
+    224
+  ],
+  "quantisation": "dynamic-int8",
+  "size_bytes": 23672573
+}

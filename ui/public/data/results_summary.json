@@ -1,0 +1,447 @@
+{
+  "cohort": "v2",
+  "chance_accuracy": 0.3333333333333333,
+  "n_conditions": 12,
+  "conditions": [
+    {
+      "condition": "resnet50 | centralised",
+      "model": "resnet50",
+      "method": "centralised",
+      "dp_scope": null,
+      "epsilon": null,
+      "n_runs": 7,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_centralised_f0_s123_v2",
+        "resnet50_centralised_f0_s2024_v2",
+        "resnet50_centralised_f0_s42_v2",
+        "resnet50_centralised_f1_s42_v2",
+        "resnet50_centralised_f2_s42_v2",
+        "resnet50_centralised_f3_s42_v2",
+        "resnet50_centralised_f4_s42_v2"
+      ],
+      "accuracy_mean": 0.3605108354201083,
+      "accuracy_std": 0.0723407392219046,
+      "f1_macro_mean": 0.3539927413881346,
+      "f1_macro_std": 0.07243553486443784,
+      "auroc_macro_mean": 0.5793369909265399,
+      "auroc_macro_std": 0.05410224224362859,
+      "precision_macro_mean": 0.40492369567702574,
+      "precision_macro_std": 0.047253659606614616,
+      "recall_macro_mean": 0.4004695806826014,
+      "recall_macro_std": 0.043770026852473574,
+      "actual_epsilon_mean": null,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | centralised_dp | head-scope | eps10",
+      "model": "resnet50",
+      "method": "centralised_dp",
+      "dp_scope": "head",
+      "epsilon": 10.0,
+      "n_runs": 7,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dphead_eps10.0_f0_s123_v2",
+        "resnet50_dphead_eps10.0_f0_s2024_v2",
+        "resnet50_dphead_eps10.0_f0_s42_v2",
+        "resnet50_dphead_eps10.0_f1_s42_v2",
+        "resnet50_dphead_eps10.0_f2_s42_v2",
+        "resnet50_dphead_eps10.0_f3_s42_v2",
+        "resnet50_dphead_eps10.0_f4_s42_v2"
+      ],
+      "accuracy_mean": 0.29796320252204267,
+      "accuracy_std": 0.0824373874416253,
+      "f1_macro_mean": 0.27149119291453017,
+      "f1_macro_std": 0.06742311077075194,
+      "auroc_macro_mean": 0.5066319294465607,
+      "auroc_macro_std": 0.06046885258982065,
+      "precision_macro_mean": 0.30868121765446455,
+      "precision_macro_std": 0.06619565406245158,
+      "recall_macro_mean": 0.3350291992504845,
+      "recall_macro_std": 0.04723060646035151,
+      "actual_epsilon_mean": 10.008552397980338,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | centralised_dp | head-scope | eps2",
+      "model": "resnet50",
+      "method": "centralised_dp",
+      "dp_scope": "head",
+      "epsilon": 2.0,
+      "n_runs": 7,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dphead_eps2.0_f0_s123_v2",
+        "resnet50_dphead_eps2.0_f0_s2024_v2",
+        "resnet50_dphead_eps2.0_f0_s42_v2",
+        "resnet50_dphead_eps2.0_f1_s42_v2",
+        "resnet50_dphead_eps2.0_f2_s42_v2",
+        "resnet50_dphead_eps2.0_f3_s42_v2",
+        "resnet50_dphead_eps2.0_f4_s42_v2"
+      ],
+      "accuracy_mean": 0.28473506931449266,
+      "accuracy_std": 0.05775987300682935,
+      "f1_macro_mean": 0.258302002776385,
+      "f1_macro_std": 0.050767637088826936,
+      "auroc_macro_mean": 0.5098380741478361,
+      "auroc_macro_std": 0.03549421712228994,
+      "precision_macro_mean": 0.3731937536016005,
+      "precision_macro_std": 0.07018617225254577,
+      "recall_macro_mean": 0.35276206215859746,
+      "recall_macro_std": 0.03179427279586658,
+      "actual_epsilon_mean": 2.0004015154242687,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | centralised_dp | head-scope | eps5",
+      "model": "resnet50",
+      "method": "centralised_dp",
+      "dp_scope": "head",
+      "epsilon": 5.0,
+      "n_runs": 7,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dphead_eps5.0_f0_s123_v2",
+        "resnet50_dphead_eps5.0_f0_s2024_v2",
+        "resnet50_dphead_eps5.0_f0_s42_v2",
+        "resnet50_dphead_eps5.0_f1_s42_v2",
+        "resnet50_dphead_eps5.0_f2_s42_v2",
+        "resnet50_dphead_eps5.0_f3_s42_v2",
+        "resnet50_dphead_eps5.0_f4_s42_v2"
+      ],
+      "accuracy_mean": 0.3094029157978626,
+      "accuracy_std": 0.05626014525177542,
+      "f1_macro_mean": 0.27319204074861164,
+      "f1_macro_std": 0.054398271092903266,
+      "auroc_macro_mean": 0.5255365780311139,
+      "auroc_macro_std": 0.04326815133165641,
+      "precision_macro_mean": 0.3254206140107262,
+      "precision_macro_std": 0.09736034221796541,
+      "recall_macro_mean": 0.35223880435851407,
+      "recall_macro_std": 0.03127242669971544,
+      "actual_epsilon_mean": 5.004713476458229,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | dpfedavg_userlevel | full-scope | eps10",
+      "model": "resnet50",
+      "method": "dpfedavg_userlevel",
+      "dp_scope": "full",
+      "epsilon": 10.0,
+      "n_runs": 3,
+      "folds": [
+        0
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dpfedavg_userlevel_T20_E3_f0_s123_eps10.0_v2",
+        "resnet50_dpfedavg_userlevel_T20_E3_f0_s2024_eps10.0_v2",
+        "resnet50_dpfedavg_userlevel_T20_E3_f0_s42_eps10.0_v2"
+      ],
+      "accuracy_mean": 0.43381642512077295,
+      "accuracy_std": 0.08205168597318706,
+      "f1_macro_mean": 0.2723414896173918,
+      "f1_macro_std": 0.03350698019725524,
+      "auroc_macro_mean": 0.5353055866183513,
+      "auroc_macro_std": 0.04179139953297355,
+      "precision_macro_mean": 0.3047179962766046,
+      "precision_macro_std": 0.0414091702244396,
+      "recall_macro_mean": 0.33589993502274207,
+      "recall_macro_std": 0.012220346339240077,
+      "actual_epsilon_mean": 9.995938774792727,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | dpfedavg_userlevel | full-scope | eps2",
+      "model": "resnet50",
+      "method": "dpfedavg_userlevel",
+      "dp_scope": "full",
+      "epsilon": 2.0,
+      "n_runs": 3,
+      "folds": [
+        0
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dpfedavg_userlevel_T20_E3_f0_s123_eps2.0_v2",
+        "resnet50_dpfedavg_userlevel_T20_E3_f0_s2024_eps2.0_v2",
+        "resnet50_dpfedavg_userlevel_T20_E3_f0_s42_eps2.0_v2"
+      ],
+      "accuracy_mean": 0.4463768115942029,
+      "accuracy_std": 0.06628751667263347,
+      "f1_macro_mean": 0.251047518635843,
+      "f1_macro_std": 0.046088155777664945,
+      "auroc_macro_mean": 0.3312490997608965,
+      "auroc_macro_std": 0.2869697045885956,
+      "precision_macro_mean": 0.2394565530593709,
+      "precision_macro_std": 0.07791868169838173,
+      "recall_macro_mean": 0.3300194931773879,
+      "recall_macro_std": 0.008217247137761407,
+      "actual_epsilon_mean": 1.9973276453233781,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | dpfedavg_userlevel | full-scope | eps5",
+      "model": "resnet50",
+      "method": "dpfedavg_userlevel",
+      "dp_scope": "full",
+      "epsilon": 5.0,
+      "n_runs": 3,
+      "folds": [
+        0
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dpfedavg_userlevel_T20_E3_f0_s123_eps5.0_v2",
+        "resnet50_dpfedavg_userlevel_T20_E3_f0_s2024_eps5.0_v2",
+        "resnet50_dpfedavg_userlevel_T20_E3_f0_s42_eps5.0_v2"
+      ],
+      "accuracy_mean": 0.44830917874396137,
+      "accuracy_std": 0.041230122305993974,
+      "f1_macro_mean": 0.23460530887834052,
+      "f1_macro_std": 0.012418498846342059,
+      "auroc_macro_mean": 0.5302516416238942,
+      "auroc_macro_std": 0.09839804331381498,
+      "precision_macro_mean": 0.20232666459374535,
+      "precision_macro_std": 0.03624548761721042,
+      "recall_macro_mean": 0.3142625081221572,
+      "recall_macro_std": 0.017850986508059188,
+      "actual_epsilon_mean": 4.9933578734192645,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | dpfedavg_userlevel | head-scope | eps10",
+      "model": "resnet50",
+      "method": "dpfedavg_userlevel",
+      "dp_scope": "head",
+      "epsilon": 10.0,
+      "n_runs": 3,
+      "folds": [
+        0
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dpfedavg_userlevel_head_T20_E3_f0_s123_eps10.0_v2",
+        "resnet50_dpfedavg_userlevel_head_T20_E3_f0_s2024_eps10.0_v2",
+        "resnet50_dpfedavg_userlevel_head_T20_E3_f0_s42_eps10.0_v2"
+      ],
+      "accuracy_mean": 0.34396135265700484,
+      "accuracy_std": 0.04853089219275115,
+      "f1_macro_mean": 0.25807948598991814,
+      "f1_macro_std": 0.03448740342390499,
+      "auroc_macro_mean": 0.48481179534617724,
+      "auroc_macro_std": 0.03263346583025201,
+      "precision_macro_mean": 0.2673998529778183,
+      "precision_macro_std": 0.10171988031024513,
+      "recall_macro_mean": 0.32374918778427547,
+      "recall_macro_std": 0.04968507815684328,
+      "actual_epsilon_mean": 9.995938774792727,
+      "perturbed_params": 6147
+    },
+    {
+      "condition": "resnet50 | dpfedavg_userlevel | head-scope | eps2",
+      "model": "resnet50",
+      "method": "dpfedavg_userlevel",
+      "dp_scope": "head",
+      "epsilon": 2.0,
+      "n_runs": 3,
+      "folds": [
+        0
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dpfedavg_userlevel_head_T20_E3_f0_s123_eps2.0_v2",
+        "resnet50_dpfedavg_userlevel_head_T20_E3_f0_s2024_eps2.0_v2",
+        "resnet50_dpfedavg_userlevel_head_T20_E3_f0_s42_eps2.0_v2"
+      ],
+      "accuracy_mean": 0.4048309178743961,
+      "accuracy_std": 0.07294526024416184,
+      "f1_macro_mean": 0.2684763377182448,
+      "f1_macro_std": 0.02436511074409908,
+      "auroc_macro_mean": 0.4981701661173329,
+      "auroc_macro_std": 0.02097940534010247,
+      "precision_macro_mean": 0.25017355481466264,
+      "precision_macro_std": 0.03362029100496852,
+      "recall_macro_mean": 0.3398635477582846,
+      "recall_macro_std": 0.04382465573921809,
+      "actual_epsilon_mean": 1.9973276453233781,
+      "perturbed_params": 6147
+    },
+    {
+      "condition": "resnet50 | dpfedavg_userlevel | head-scope | eps5",
+      "model": "resnet50",
+      "method": "dpfedavg_userlevel",
+      "dp_scope": "head",
+      "epsilon": 5.0,
+      "n_runs": 3,
+      "folds": [
+        0
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dpfedavg_userlevel_head_T20_E3_f0_s123_eps5.0_v2",
+        "resnet50_dpfedavg_userlevel_head_T20_E3_f0_s2024_eps5.0_v2",
+        "resnet50_dpfedavg_userlevel_head_T20_E3_f0_s42_eps5.0_v2"
+      ],
+      "accuracy_mean": 0.37681159420289856,
+      "accuracy_std": 0.05313131240528511,
+      "f1_macro_mean": 0.29010883048683767,
+      "f1_macro_std": 0.04307739148321063,
+      "auroc_macro_mean": 0.4866653843866992,
+      "auroc_macro_std": 0.02217344266828964,
+      "precision_macro_mean": 0.2761347896817845,
+      "precision_macro_std": 0.082308209912888,
+      "recall_macro_mean": 0.34083820662768033,
+      "recall_macro_std": 0.02066621582916146,
+      "actual_epsilon_mean": 4.9933578734192645,
+      "perturbed_params": 6147
+    },
+    {
+      "condition": "resnet50 | fedavg | K4",
+      "model": "resnet50",
+      "method": "fedavg",
+      "dp_scope": null,
+      "epsilon": null,
+      "n_runs": 7,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_fedavg_K4_T20_E3_f0_s123_v2",
+        "resnet50_fedavg_K4_T20_E3_f0_s2024_v2",
+        "resnet50_fedavg_K4_T20_E3_f0_s42_v2",
+        "resnet50_fedavg_K4_T20_E3_f1_s42_v2",
+        "resnet50_fedavg_K4_T20_E3_f2_s42_v2",
+        "resnet50_fedavg_K4_T20_E3_f3_s42_v2",
+        "resnet50_fedavg_K4_T20_E3_f4_s42_v2"
+      ],
+      "accuracy_mean": 0.3332597753712088,
+      "accuracy_std": 0.0775908106823043,
+      "f1_macro_mean": 0.30367621498462655,
+      "f1_macro_std": 0.07006632972163081,
+      "auroc_macro_mean": 0.5301898281076586,
+      "auroc_macro_std": 0.049370819482368024,
+      "precision_macro_mean": 0.3835035307065873,
+      "precision_macro_std": 0.05142459627191314,
+      "recall_macro_mean": 0.35220415007883554,
+      "recall_macro_std": 0.03337244023454751,
+      "actual_epsilon_mean": null,
+      "perturbed_params": null
+    },
+    {
+      "condition": "vgg19 | centralised",
+      "model": "vgg19",
+      "method": "centralised",
+      "dp_scope": null,
+      "epsilon": null,
+      "n_runs": 5,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42
+      ],
+      "tags": [
+        "vgg19_centralised_f0_s42_v2",
+        "vgg19_centralised_f1_s42_v2",
+        "vgg19_centralised_f2_s42_v2",
+        "vgg19_centralised_f3_s42_v2",
+        "vgg19_centralised_f4_s42_v2"
+      ],
+      "accuracy_mean": 0.27989243096446825,
+      "accuracy_std": 0.06513381541027775,
+      "f1_macro_mean": 0.2524715643964176,
+      "f1_macro_std": 0.05466963713389982,
+      "auroc_macro_mean": 0.5113318297468562,
+      "auroc_macro_std": 0.05577683209588711,
+      "precision_macro_mean": 0.2984138635888578,
+      "precision_macro_std": 0.03710127665463263,
+      "recall_macro_mean": 0.31925142577592913,
+      "recall_macro_std": 0.04509863329320781,
+      "actual_epsilon_mean": null,
+      "perturbed_params": null
+    }
+  ]
+}
