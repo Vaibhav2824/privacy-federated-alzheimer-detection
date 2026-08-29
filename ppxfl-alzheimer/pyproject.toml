@@ -28,7 +28,17 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.6", "build>=1.2"]
+# onnx, onnxruntime and onnxscript back src/export_onnx.py and its tests. torch
+# 2.6 and later route torch.onnx.export through the dynamo exporter, which
+# imports onnxscript, so it is required rather than optional on newer torch.
+export = ["onnx>=1.16", "onnxruntime>=1.18", "onnxscript>=0.1"]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "ruff>=0.6",
+    "build>=1.2",
+    "ppxfl[export]",
+]
 
 [project.urls]
 Repository = "https://github.com/Vaibhav2824/privacy-federated-alzheimer-detection"
