@@ -29,10 +29,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Scans the checked-out tree rather than a commit range. The action's
+      # default range is firstCommit^..HEAD, which has no parent to resolve on a
+      # repository whose history starts at a root commit.
       - name: Scan for committed secrets
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version=8.24.3
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${version}/gitleaks_${version}_linux_x64.tar.gz"             | tar -xz -C /tmp gitleaks
+          /tmp/gitleaks dir . --redact --no-banner --exit-code 1
 
       - uses: actions/setup-python@v5
         with:
