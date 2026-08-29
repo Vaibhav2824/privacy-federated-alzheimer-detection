@@ -1,0 +1,207 @@
+name: CI
+
+# Five sequential stages: build, test, lint, package, deploy. Each waits on the
+# one before it, so a failure stops the pipeline at the stage that broke rather
+# than reporting five separate red checks for one root cause.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '20'
+
+jobs:
+  build:
+    name: 1 · Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan for committed secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      # CPU-only torch: the CUDA wheels are several gigabytes and nothing in CI
+      # trains a model. The test suite runs entirely on synthetic CPU fixtures.
+      - name: Install the Python package
+        working-directory: ppxfl-alzheimer
+        run: |
+          python -m pip install --upgrade pip build
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install -e ".[dev]"
+
+      - name: Install web dependencies
+        working-directory: ui
+        run: npm ci
+
+      # GITHUB_PAGES=true switches vite's base to the repository sub-path, which
+      # is what a project page is served from.
+      - name: Build the web app
+        working-directory: ui
+        env:
+          GITHUB_PAGES: 'true'
+        run: npm run build
+
+      - name: Confirm the demo model shipped
+        run: |
+          test -f ui/dist/model/ppxfl_resnet50.onnx
+          size=$(stat -c%s ui/dist/model/ppxfl_resnet50.onnx)
+          echo "ONNX model: $((size / 1000000)) MB"
+          test "$size" -gt 1000000
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: ui/dist
+          retention-days: 7
+
+  test:
+    name: 2 · Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      - name: Install the Python package
+        working-directory: ppxfl-alzheimer
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install -e ".[dev]"
+
+      # fail_under=100 lives in .coveragerc: the measured scope is the project's
+      # pure-logic modules, with the CUDA training loops excluded rather than
+      # mocked. tests/README.md documents exactly what is in scope and why.
+      - name: Python tests with coverage gate
+        working-directory: ppxfl-alzheimer
+        env:
+          MPLBACKEND: Agg
+        run: pytest --cov --cov-config=.coveragerc
+
+      - name: Install web dependencies
+        working-directory: ui
+        run: npm ci
+
+      - name: Web tests with coverage gate
+        working-directory: ui
+        run: npm run test:coverage
+
+  lint:
+    name: 3 · Lint
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      - name: Install linters
+        run: python -m pip install --upgrade pip ruff
+
+      - name: Ruff
+        working-directory: ppxfl-alzheimer
+        run: ruff check .
+
+      - name: Install web dependencies
+        working-directory: ui
+        run: npm ci
+
+      - name: ESLint
+        working-directory: ui
+        run: npm run lint
+
+  package:
+    name: 4 · Package
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Build the wheel and sdist
+        working-directory: ppxfl-alzheimer
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python-distributions
+          path: ppxfl-alzheimer/dist/*
+          retention-days: 30
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: web-dist
+
+      - name: Upload the site for Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web-dist
+
+  deploy:
+    name: 5 · Deploy
+    needs: package
+    # Only a push to main publishes. Pull requests run the first four stages so
+    # a contributor sees the same gates without touching the live site.
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
