@@ -4,6 +4,7 @@ A ResNet50 export takes tens of seconds, so the heavier cases use a small stand-
 network with the same interface. The one full-model test covers the real path.
 """
 
+import inspect
 import json
 import os
 
@@ -85,6 +86,43 @@ class TestExport:
         session = ort.InferenceSession(out)
         logits = session.run(None, {'slice': torch.zeros(4, 1, 224, 224).numpy()})[0]
         assert logits.shape == (4, 3)
+
+    def test_pins_the_torchscript_exporter_when_torch_offers_a_choice(self, tmp_path,
+                                                                      monkeypatch):
+        """torch 2.6+ defaults to the dynamo exporter, whose graph cannot then
+        be quantised, so the export has to opt out explicitly."""
+        seen = {}
+
+        def fake_export(model, example, path, **kwargs):
+            seen.update(kwargs)
+            open(path, 'wb').close()
+
+        fake_export.__signature__ = inspect.Signature([
+            inspect.Parameter('model', inspect.Parameter.POSITIONAL_OR_KEYWORD),
+            inspect.Parameter('example', inspect.Parameter.POSITIONAL_OR_KEYWORD),
+            inspect.Parameter('path', inspect.Parameter.POSITIONAL_OR_KEYWORD),
+            inspect.Parameter('dynamo', inspect.Parameter.KEYWORD_ONLY, default=True),
+        ])
+        monkeypatch.setattr(export_onnx.torch.onnx, 'export', fake_export)
+        export_onnx.export(TinyNet().eval(), str(tmp_path / 'tiny.onnx'))
+        assert seen['dynamo'] is False
+
+    def test_omits_the_flag_on_torch_versions_that_lack_it(self, tmp_path, monkeypatch):
+        """Older torch has only the TorchScript exporter and rejects the keyword."""
+        seen = {}
+
+        def fake_export(model, example, path, **kwargs):
+            seen.update(kwargs)
+            open(path, 'wb').close()
+
+        fake_export.__signature__ = inspect.Signature([
+            inspect.Parameter('model', inspect.Parameter.POSITIONAL_OR_KEYWORD),
+            inspect.Parameter('example', inspect.Parameter.POSITIONAL_OR_KEYWORD),
+            inspect.Parameter('path', inspect.Parameter.POSITIONAL_OR_KEYWORD),
+        ])
+        monkeypatch.setattr(export_onnx.torch.onnx, 'export', fake_export)
+        export_onnx.export(TinyNet().eval(), str(tmp_path / 'tiny.onnx'))
+        assert 'dynamo' not in seen
 
     def test_creates_the_output_directory(self, tmp_path):
         out = str(tmp_path / 'nested' / 'deeper' / 'tiny.onnx')

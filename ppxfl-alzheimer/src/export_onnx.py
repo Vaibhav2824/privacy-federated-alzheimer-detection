@@ -13,6 +13,7 @@ Usage:
 """
 
 import argparse
+import inspect
 import json
 import os
 
@@ -50,17 +51,29 @@ def build_model(checkpoint_path, model_name='resnet50'):
 
 
 def export(model, out_path, opset=17):
-    """Trace the model to ONNX with a dynamic batch axis."""
+    """Trace the model to ONNX with a dynamic batch axis.
+
+    Pinned to the TorchScript exporter. torch 2.6 and later default to
+    ``dynamo=True``, which warns that ``dynamic_axes`` is not recommended on that
+    path and emits a graph that onnx's version converter cannot then quantise
+    (``No initializer or constant input to node found``). Pinning also keeps the
+    exported graph identical across torch versions, so the shipped model matches
+    the one whose numerics were checked against the float network.
+
+    The keyword did not exist before torch 2.5, so its absence is tolerated:
+    those versions only have the TorchScript exporter anyway.
+    """
     os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
-    torch.onnx.export(
-        model,
-        torch.zeros(*EXAMPLE_SHAPE),
-        out_path,
-        input_names=['slice'],
-        output_names=['logits'],
-        dynamic_axes={'slice': {0: 'batch'}, 'logits': {0: 'batch'}},
-        opset_version=opset,
-    )
+    kwargs = {
+        'input_names': ['slice'],
+        'output_names': ['logits'],
+        'dynamic_axes': {'slice': {0: 'batch'}, 'logits': {0: 'batch'}},
+        'opset_version': opset,
+    }
+    example = torch.zeros(*EXAMPLE_SHAPE)
+    if 'dynamo' in inspect.signature(torch.onnx.export).parameters:
+        kwargs['dynamo'] = False
+    torch.onnx.export(model, example, out_path, **kwargs)
     return out_path
 
 
