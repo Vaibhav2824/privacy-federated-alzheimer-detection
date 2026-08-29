@@ -1,0 +1,53 @@
+# ADNI data. Access requires a data use agreement, so no scan, derived array or
+# trained weight file is ever committed.
+AD-150/
+CN-150/
+MCI-150/
+dicom_staging/
+*.zip
+*.npy
+*.nii
+*.nii.gz
+*.dcm
+*.pth
+*.onnx.fp32
+ppxfl-alzheimer/data/processed/
+ppxfl-alzheimer/data/processed_v2/
+ppxfl-alzheimer/data/clients/
+ppxfl-alzheimer/data/clients_v2/
+ppxfl-alzheimer/results/checkpoints/
+ppxfl-alzheimer/results_v2/checkpoints/
+
+# The demo model is an exception to *.pth / weights: it is a quantised ONNX
+# export with no recoverable training data, and the page needs it at runtime.
+!ui/public/model/*.onnx
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.coverage
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+ui/dist/
+ui/coverage/
+
+# Python build outputs
+ppxfl-alzheimer/dist/
+ppxfl-alzheimer/build/
+*.egg-info/
+
+# Local agent tooling, never published
+.tooling/
+.agents/
+skills-lock.json
+.toolingignore
+graphify-out/
+
+# Build and run logs
+*.log
+!paper.log
