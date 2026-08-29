@@ -1,0 +1,25 @@
+{
+  "dp_checkpoint": "results/checkpoints/best_resnet50_centralised_f0_s123.pth",
+  "reference_checkpoint": "results/checkpoints/best_resnet50_centralised_f0_s42.pth",
+  "model": "resnet50",
+  "fold": 0,
+  "n_slices": 333,
+  "gradcam_similarity": {
+    "ssim_mean": 0.4508671299809957,
+    "ssim_std": 0.16877599469728038,
+    "spearman_mean": 0.34955517717584333,
+    "spearman_std": 0.34607558013180045,
+    "dice_top20_mean": 0.3736364493775102,
+    "dice_top20_std": 0.2337931865968781
+  },
+  "faithfulness": {
+    "dp_deletion_auc_mean": 0.22439071671808605,
+    "dp_deletion_auc_std": 0.18623516595384537,
+    "dp_insertion_auc_mean": 0.4404260334272467,
+    "dp_insertion_auc_std": 0.25096013860430694,
+    "ref_deletion_auc_mean": 0.29380821247274674,
+    "ref_deletion_auc_std": 0.0794465475878776,
+    "ref_insertion_auc_mean": 0.3721294014546853,
+    "ref_insertion_auc_std": 0.12409959313977909
+  }
+}

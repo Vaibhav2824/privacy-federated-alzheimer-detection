@@ -1,0 +1,21 @@
+{
+  "run_tag": "resnet50_fedavg_K4_T20_E3_f2_s42",
+  "model": "resnet50",
+  "fold": 2,
+  "seed": 42,
+  "test_subjects": [
+    "002_S_0729",
+    "021_S_0337",
+    "021_S_0626",
+    "029_S_0999",
+    "033_S_0733",
+    "128_S_0230",
+    "133_S_1170"
+  ],
+  "val_subjects": [
+    "062_S_0793",
+    "128_S_0229",
+    "941_S_1311"
+  ],
+  "client_data_dir": "C:\\Users\\Vaibhav\\Desktop\\PPxFL_Alzheimer_Detection\\ppxfl-alzheimer\\data\\clients\\f2_a0.5_s42"
+}

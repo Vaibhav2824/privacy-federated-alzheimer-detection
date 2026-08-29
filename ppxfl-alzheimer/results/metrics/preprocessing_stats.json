@@ -1,0 +1,23 @@
+{
+  "AD": {
+    "total_nifti": 242,
+    "unique_subjects": 99,
+    "processed": 242,
+    "failed": 0,
+    "output_slices": 726
+  },
+  "MCI": {
+    "total_nifti": 240,
+    "unique_subjects": 99,
+    "processed": 240,
+    "failed": 0,
+    "output_slices": 720
+  },
+  "CN": {
+    "total_nifti": 240,
+    "unique_subjects": 101,
+    "processed": 240,
+    "failed": 0,
+    "output_slices": 720
+  }
+}

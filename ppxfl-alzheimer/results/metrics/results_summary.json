@@ -1,0 +1,536 @@
+{
+  "cohort": "v1",
+  "chance_accuracy": 0.3333333333333333,
+  "n_conditions": 14,
+  "conditions": [
+    {
+      "condition": "resnet50 | centralised",
+      "model": "resnet50",
+      "method": "centralised",
+      "dp_scope": null,
+      "epsilon": null,
+      "n_runs": 8,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_centralised",
+        "resnet50_centralised_f0_s123",
+        "resnet50_centralised_f0_s2024",
+        "resnet50_centralised_f0_s42",
+        "resnet50_centralised_f1_s42",
+        "resnet50_centralised_f2_s42",
+        "resnet50_centralised_f3_s42",
+        "resnet50_centralised_f4_s42"
+      ],
+      "accuracy_mean": 0.36445207580780026,
+      "accuracy_std": 0.22433805122733974,
+      "f1_macro_mean": 0.35232537222526455,
+      "f1_macro_std": 0.2285655216061822,
+      "auroc_macro_mean": 0.5157621405267969,
+      "auroc_macro_std": 0.194917661697678,
+      "precision_macro_mean": 0.37514145730395304,
+      "precision_macro_std": 0.22568352212451354,
+      "recall_macro_mean": 0.34891959529781436,
+      "recall_macro_std": 0.22716075959489895,
+      "actual_epsilon_mean": null,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | centralised_dp | full-scope | eps10",
+      "model": "resnet50",
+      "method": "centralised_dp",
+      "dp_scope": "full",
+      "epsilon": 10.0,
+      "n_runs": 3,
+      "folds": [
+        0
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dpfull_eps10.0_f0_s123",
+        "resnet50_dpfull_eps10.0_f0_s2024",
+        "resnet50_dpfull_eps10.0_f0_s42"
+      ],
+      "accuracy_mean": 0.23923923923923926,
+      "accuracy_std": 0.07716802351234449,
+      "f1_macro_mean": 0.1921365246427945,
+      "f1_macro_std": 0.08400429439792989,
+      "auroc_macro_mean": 0.48735663933000967,
+      "auroc_macro_std": 0.05228281053978163,
+      "precision_macro_mean": 0.18125932377233003,
+      "precision_macro_std": 0.07429353707826489,
+      "recall_macro_mean": 0.3087654320987654,
+      "recall_macro_std": 0.053150257221982376,
+      "actual_epsilon_mean": 10.001603631571063,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | centralised_dp | full-scope | eps2",
+      "model": "resnet50",
+      "method": "centralised_dp",
+      "dp_scope": "full",
+      "epsilon": 2.0,
+      "n_runs": 3,
+      "folds": [
+        0
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dpfull_eps2.0_f0_s123",
+        "resnet50_dpfull_eps2.0_f0_s2024",
+        "resnet50_dpfull_eps2.0_f0_s42"
+      ],
+      "accuracy_mean": 0.1921921921921922,
+      "accuracy_std": 0.00520135377648311,
+      "f1_macro_mean": 0.12841489960134028,
+      "f1_macro_std": 0.03871877217986044,
+      "auroc_macro_mean": 0.4867746928473929,
+      "auroc_macro_std": 0.06677105901717886,
+      "precision_macro_mean": 0.09188578376565029,
+      "precision_macro_std": 0.0499224166692484,
+      "recall_macro_mean": 0.30846560846560844,
+      "recall_macro_std": 0.04307216293954352,
+      "actual_epsilon_mean": 1.997719215442485,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | centralised_dp | full-scope | eps5",
+      "model": "resnet50",
+      "method": "centralised_dp",
+      "dp_scope": "full",
+      "epsilon": 5.0,
+      "n_runs": 3,
+      "folds": [
+        0
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dpfull_eps5.0_f0_s123",
+        "resnet50_dpfull_eps5.0_f0_s2024",
+        "resnet50_dpfull_eps5.0_f0_s42"
+      ],
+      "accuracy_mean": 0.23323323323323325,
+      "accuracy_std": 0.06863247133702483,
+      "f1_macro_mean": 0.16314642963220993,
+      "f1_macro_std": 0.06004088399742804,
+      "auroc_macro_mean": 0.4964781608312313,
+      "auroc_macro_std": 0.04991559415713688,
+      "precision_macro_mean": 0.14447801947528915,
+      "precision_macro_std": 0.03313879675427469,
+      "recall_macro_mean": 0.3263227513227513,
+      "recall_macro_std": 0.004635295097337356,
+      "actual_epsilon_mean": 5.000390848489751,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | centralised_dp | head-scope | eps10",
+      "model": "resnet50",
+      "method": "centralised_dp",
+      "dp_scope": "head",
+      "epsilon": 10.0,
+      "n_runs": 7,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dphead_eps10.0_f0_s123",
+        "resnet50_dphead_eps10.0_f0_s2024",
+        "resnet50_dphead_eps10.0_f0_s42",
+        "resnet50_dphead_eps10.0_f1_s42",
+        "resnet50_dphead_eps10.0_f2_s42",
+        "resnet50_dphead_eps10.0_f3_s42",
+        "resnet50_dphead_eps10.0_f4_s42"
+      ],
+      "accuracy_mean": 0.30564904520720443,
+      "accuracy_std": 0.05376173139768548,
+      "f1_macro_mean": 0.2706051843976028,
+      "f1_macro_std": 0.04823735166259515,
+      "auroc_macro_mean": 0.4988228738693288,
+      "auroc_macro_std": 0.050773702893789636,
+      "precision_macro_mean": 0.3523237656279104,
+      "precision_macro_std": 0.10027756876176747,
+      "recall_macro_mean": 0.32788167900834275,
+      "recall_macro_std": 0.036593654805159616,
+      "actual_epsilon_mean": 10.03613791144964,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | centralised_dp | head-scope | eps2",
+      "model": "resnet50",
+      "method": "centralised_dp",
+      "dp_scope": "head",
+      "epsilon": 2.0,
+      "n_runs": 7,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dphead_eps2.0_f0_s123",
+        "resnet50_dphead_eps2.0_f0_s2024",
+        "resnet50_dphead_eps2.0_f0_s42",
+        "resnet50_dphead_eps2.0_f1_s42",
+        "resnet50_dphead_eps2.0_f2_s42",
+        "resnet50_dphead_eps2.0_f3_s42",
+        "resnet50_dphead_eps2.0_f4_s42"
+      ],
+      "accuracy_mean": 0.3123650503194093,
+      "accuracy_std": 0.06194428357554226,
+      "f1_macro_mean": 0.27418915896726953,
+      "f1_macro_std": 0.06990641288030029,
+      "auroc_macro_mean": 0.4968344456626745,
+      "auroc_macro_std": 0.07161813569791581,
+      "precision_macro_mean": 0.29309545391334435,
+      "precision_macro_std": 0.06423321446128527,
+      "recall_macro_mean": 0.31926502995014616,
+      "recall_macro_std": 0.057982449329160766,
+      "actual_epsilon_mean": 2.005624905228406,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | centralised_dp | head-scope | eps5",
+      "model": "resnet50",
+      "method": "centralised_dp",
+      "dp_scope": "head",
+      "epsilon": 5.0,
+      "n_runs": 7,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_dphead_eps5.0_f0_s123",
+        "resnet50_dphead_eps5.0_f0_s2024",
+        "resnet50_dphead_eps5.0_f0_s42",
+        "resnet50_dphead_eps5.0_f1_s42",
+        "resnet50_dphead_eps5.0_f2_s42",
+        "resnet50_dphead_eps5.0_f3_s42",
+        "resnet50_dphead_eps5.0_f4_s42"
+      ],
+      "accuracy_mean": 0.3098474521567177,
+      "accuracy_std": 0.08260644545028767,
+      "f1_macro_mean": 0.27539372267267775,
+      "f1_macro_std": 0.08763656387249964,
+      "auroc_macro_mean": 0.5314226077766495,
+      "auroc_macro_std": 0.04000747997527794,
+      "precision_macro_mean": 0.3613239703164106,
+      "precision_macro_std": 0.12484113231101446,
+      "recall_macro_mean": 0.3341713292519626,
+      "recall_macro_std": 0.04698790793457214,
+      "actual_epsilon_mean": 5.206783928398623,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | fedavg | K4",
+      "model": "resnet50",
+      "method": "fedavg",
+      "dp_scope": null,
+      "epsilon": null,
+      "n_runs": 9,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_fedavg_K4_T20_E3",
+        "resnet50_fedavg_K4_T20_E3_f0_s123",
+        "resnet50_fedavg_K4_T20_E3_f0_s2024",
+        "resnet50_fedavg_K4_T20_E3_f0_s42",
+        "resnet50_fedavg_K4_T20_E3_f1_s42",
+        "resnet50_fedavg_K4_T20_E3_f2_s42",
+        "resnet50_fedavg_K4_T20_E3_f3_s42",
+        "resnet50_fedavg_K4_T20_E3_f4_s42",
+        "resnet50_fedavg_K4_T2_E1_f0_s42"
+      ],
+      "accuracy_mean": 0.406045995164644,
+      "accuracy_std": 0.22014600017308905,
+      "f1_macro_mean": 0.3923749616698467,
+      "f1_macro_std": 0.2257855811933705,
+      "auroc_macro_mean": 0.5421996847198536,
+      "auroc_macro_std": 0.18744049692385323,
+      "precision_macro_mean": 0.4177711047486007,
+      "precision_macro_std": 0.22199716943701517,
+      "recall_macro_mean": 0.41816899698046395,
+      "recall_macro_std": 0.21731532761123298,
+      "actual_epsilon_mean": null,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | fedavg_dp | full-scope | eps5 | K4",
+      "model": "resnet50",
+      "method": "fedavg_dp",
+      "dp_scope": "full",
+      "epsilon": 5.0,
+      "n_runs": 1,
+      "folds": [
+        0
+      ],
+      "seeds": [
+        42
+      ],
+      "tags": [
+        "resnet50_fedavg_K4_T20_E3_f0_s42_dpfull_eps5.0"
+      ],
+      "accuracy_mean": 0.36036036036036034,
+      "accuracy_std": 0.0,
+      "f1_macro_mean": 0.17660044150110377,
+      "f1_macro_std": 0.0,
+      "auroc_macro_mean": 0.3865369905008771,
+      "auroc_macro_std": 0.0,
+      "precision_macro_mean": 0.12012012012012012,
+      "precision_macro_std": 0.0,
+      "recall_macro_mean": 0.3333333333333333,
+      "recall_macro_std": 0.0,
+      "actual_epsilon_mean": null,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | fedavg_dp | head-scope | eps10 | K4",
+      "model": "resnet50",
+      "method": "fedavg_dp",
+      "dp_scope": "head",
+      "epsilon": 10.0,
+      "n_runs": 7,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_fedavg_K4_T20_E3_f0_s123_dphead_eps10.0",
+        "resnet50_fedavg_K4_T20_E3_f0_s2024_dphead_eps10.0",
+        "resnet50_fedavg_K4_T20_E3_f0_s42_dphead_eps10.0",
+        "resnet50_fedavg_K4_T20_E3_f1_s42_dphead_eps10.0",
+        "resnet50_fedavg_K4_T20_E3_f2_s42_dphead_eps10.0",
+        "resnet50_fedavg_K4_T20_E3_f3_s42_dphead_eps10.0",
+        "resnet50_fedavg_K4_T20_E3_f4_s42_dphead_eps10.0"
+      ],
+      "accuracy_mean": 0.31938051749245683,
+      "accuracy_std": 0.03698872643428006,
+      "f1_macro_mean": 0.2656216589264779,
+      "f1_macro_std": 0.036419185217932644,
+      "auroc_macro_mean": 0.5181057888478899,
+      "auroc_macro_std": 0.052662099795830995,
+      "precision_macro_mean": 0.3366531383282714,
+      "precision_macro_std": 0.11216949081215656,
+      "recall_macro_mean": 0.3572549085296892,
+      "recall_macro_std": 0.025780317030752453,
+      "actual_epsilon_mean": null,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | fedavg_dp | head-scope | eps2 | K4",
+      "model": "resnet50",
+      "method": "fedavg_dp",
+      "dp_scope": "head",
+      "epsilon": 2.0,
+      "n_runs": 8,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_fedavg_K4_T20_E3_f0_s123_dphead_eps2.0",
+        "resnet50_fedavg_K4_T20_E3_f0_s2024_dphead_eps2.0",
+        "resnet50_fedavg_K4_T20_E3_f0_s42_dphead_eps2.0",
+        "resnet50_fedavg_K4_T20_E3_f1_s42_dphead_eps2.0",
+        "resnet50_fedavg_K4_T20_E3_f2_s42_dphead_eps2.0",
+        "resnet50_fedavg_K4_T20_E3_f3_s42_dphead_eps2.0",
+        "resnet50_fedavg_K4_T20_E3_f4_s42_dphead_eps2.0",
+        "resnet50_fedavg_K4_T2_E1_f0_s42_dphead_eps2.0"
+      ],
+      "accuracy_mean": 0.32161843166141446,
+      "accuracy_std": 0.04822510189411882,
+      "f1_macro_mean": 0.276097564559857,
+      "f1_macro_std": 0.039394683156713496,
+      "auroc_macro_mean": 0.5457451410436319,
+      "auroc_macro_std": 0.06458594460988888,
+      "precision_macro_mean": 0.31099377367913333,
+      "precision_macro_std": 0.05250271186745738,
+      "recall_macro_mean": 0.35027288579485805,
+      "recall_macro_std": 0.05942925261555806,
+      "actual_epsilon_mean": null,
+      "perturbed_params": null
+    },
+    {
+      "condition": "resnet50 | fedavg_dp | head-scope | eps5 | K4",
+      "model": "resnet50",
+      "method": "fedavg_dp",
+      "dp_scope": "head",
+      "epsilon": 5.0,
+      "n_runs": 8,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42,
+        123,
+        2024
+      ],
+      "tags": [
+        "resnet50_fedavg_K4_T20_E3_f0_s123_dphead_eps5.0",
+        "resnet50_fedavg_K4_T20_E3_f0_s2024_dphead_eps5.0",
+        "resnet50_fedavg_K4_T20_E3_f0_s42_dphead_eps5.0",
+        "resnet50_fedavg_K4_T20_E3_f1_s42_dphead_eps5.0",
+        "resnet50_fedavg_K4_T20_E3_f2_s42_dphead_eps5.0",
+        "resnet50_fedavg_K4_T20_E3_f3_s42_dphead_eps5.0",
+        "resnet50_fedavg_K4_T20_E3_f4_s42_dphead_eps5.0",
+        "resnet50_fedavg_K4_T3_E1_f0_s42_dphead_eps5.0"
+      ],
+      "accuracy_mean": 0.2923517928670436,
+      "accuracy_std": 0.05199240140506143,
+      "f1_macro_mean": 0.24155119673594957,
+      "f1_macro_std": 0.04315269868502363,
+      "auroc_macro_mean": 0.49289215157894145,
+      "auroc_macro_std": 0.08121731152704835,
+      "precision_macro_mean": 0.2666620782490272,
+      "precision_macro_std": 0.06933692458818128,
+      "recall_macro_mean": 0.32737230411501506,
+      "recall_macro_std": 0.06979836348622867,
+      "actual_epsilon_mean": null,
+      "perturbed_params": null
+    },
+    {
+      "condition": "vgg19 | centralised",
+      "model": "vgg19",
+      "method": "centralised",
+      "dp_scope": null,
+      "epsilon": null,
+      "n_runs": 6,
+      "folds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        42
+      ],
+      "tags": [
+        "vgg19_centralised",
+        "vgg19_centralised_f0_s42",
+        "vgg19_centralised_f1_s42",
+        "vgg19_centralised_f2_s42",
+        "vgg19_centralised_f3_s42",
+        "vgg19_centralised_f4_s42"
+      ],
+      "accuracy_mean": 0.4389812318733296,
+      "accuracy_std": 0.2529766795984803,
+      "f1_macro_mean": 0.41415291936140824,
+      "f1_macro_std": 0.2684181498881293,
+      "auroc_macro_mean": 0.5501289908355835,
+      "auroc_macro_std": 0.22802970786955604,
+      "precision_macro_mean": 0.45639310194507643,
+      "precision_macro_std": 0.24164921408419415,
+      "recall_macro_mean": 0.4380202543802847,
+      "recall_macro_std": 0.2528154136708653,
+      "actual_epsilon_mean": null,
+      "perturbed_params": null
+    },
+    {
+      "condition": "vgg19 | fedavg | K4",
+      "model": "vgg19",
+      "method": "fedavg",
+      "dp_scope": null,
+      "epsilon": null,
+      "n_runs": 2,
+      "folds": [
+        0
+      ],
+      "seeds": [
+        42
+      ],
+      "tags": [
+        "vgg19_fedavg_K4_T20_E3_f0_s42",
+        "vgg19_fedavg_K4_T2_E1"
+      ],
+      "accuracy_mean": 0.3146146146146146,
+      "accuracy_std": 0.01599660986468068,
+      "f1_macro_mean": 0.2059112094048564,
+      "f1_macro_std": 0.05945048180281119,
+      "auroc_macro_mean": 0.4877028277316159,
+      "auroc_macro_std": 0.08263541427727843,
+      "precision_macro_mean": 0.2247685709429556,
+      "precision_macro_std": 0.16422780649826255,
+      "recall_macro_mean": 0.30412698412698413,
+      "recall_macro_std": 0.041304015155023695,
+      "actual_epsilon_mean": null,
+      "perturbed_params": null
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "n_experiments": 79,
+  "paired_wilcoxon_dp_vs_nondp": [
+    {
+      "comparison": "non-DP_accuracy vs dp_head_eps10.0_accuracy",
+      "statistic": 10.0,
+      "p_value": 0.578125,
+      "n_pairs": 7,
+      "mean_a": 0.33881875339987333,
+      "mean_b": 0.31938051749245683,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP_f1 vs dp_head_eps10.0_f1",
+      "statistic": 0.0,
+      "p_value": 0.015625,
+      "n_pairs": 7,
+      "mean_a": 0.32467428828187905,
+      "mean_b": 0.2656216589264778,
+      "significant_at_0.05": true
+    },
+    {
+      "comparison": "non-DP_accuracy vs dp_head_eps2.0_accuracy",
+      "statistic": 12.0,
+      "p_value": 0.8125,
+      "n_pairs": 7,
+      "mean_a": 0.33881875339987333,
+      "mean_b": 0.3246638789987165,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP_f1 vs dp_head_eps2.0_f1",
+      "statistic": 9.0,
+      "p_value": 0.46875,
+      "n_pairs": 7,
+      "mean_a": 0.32467428828187905,
+      "mean_b": 0.27813164887426883,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP_accuracy vs dp_head_eps5.0_accuracy",
+      "statistic": 7.0,
+      "p_value": 0.296875,
+      "n_pairs": 7,
+      "mean_a": 0.33881875339987333,
+      "mean_b": 0.3027993033881614,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP_f1 vs dp_head_eps5.0_f1",
+      "statistic": 3.0,
+      "p_value": 0.078125,
+      "n_pairs": 7,
+      "mean_a": 0.32467428828187905,
+      "mean_b": 0.2479404554964188,
+      "significant_at_0.05": false
+    }
+  ],
+  "chance_band": {
+    "three_class_chance": 0.3333333333333333
+  }
+}

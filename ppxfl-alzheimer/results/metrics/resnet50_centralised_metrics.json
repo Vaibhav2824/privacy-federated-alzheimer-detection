@@ -1,0 +1,23 @@
+{
+  "accuracy": 0.9111111111111111,
+  "precision_CN": 0.9,
+  "recall_CN": 0.9473684210526315,
+  "f1_CN": 0.9230769230769231,
+  "precision_MCI": 1.0,
+  "recall_MCI": 0.8108108108108109,
+  "f1_MCI": 0.8955223880597015,
+  "precision_AD": 0.8666666666666667,
+  "recall_AD": 0.9512195121951219,
+  "f1_AD": 0.9069767441860465,
+  "precision_macro": 0.9222222222222222,
+  "recall_macro": 0.9031329146861881,
+  "f1_macro": 0.9085253517742237,
+  "auroc_macro": 0.9874405302980632,
+  "auroc_CN": 0.9880791722896987,
+  "auroc_MCI": 0.9856591285162714,
+  "auroc_AD": 0.9885832900882201,
+  "model": "resnet50",
+  "setting": "centralised",
+  "best_epoch": 22,
+  "total_epochs": 30
+}

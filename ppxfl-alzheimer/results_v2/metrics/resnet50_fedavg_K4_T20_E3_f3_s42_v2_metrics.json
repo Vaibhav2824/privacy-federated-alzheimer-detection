@@ -1,0 +1,19 @@
+{
+  "experiment": "resnet50_fedavg_K4_T20_E3_f3_s42_v2",
+  "model": "resnet50",
+  "fold": 3,
+  "seed": 42,
+  "accuracy": 0.3568075117370892,
+  "f1_macro": 0.2601782592762207,
+  "auroc_macro": 0.5003429151585337,
+  "precision_macro": 0.4444977727586423,
+  "recall_macro": 0.3096960291783933,
+  "num_rounds": 20,
+  "num_clients": 4,
+  "local_epochs": 3,
+  "alpha": 0.5,
+  "dp_mode": "none",
+  "target_epsilon": null,
+  "actual_epsilon_worst_client": null,
+  "target_delta": null
+}

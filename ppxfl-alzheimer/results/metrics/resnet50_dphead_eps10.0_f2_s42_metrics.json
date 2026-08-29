@@ -1,0 +1,16 @@
+{
+  "run_tag": "resnet50_dphead_eps10.0_f2_s42",
+  "model": "resnet50",
+  "fold": 2,
+  "seed": 42,
+  "dp_scope": "head",
+  "target_epsilon": 10.0,
+  "actual_epsilon": 10.05809662952812,
+  "noise_multiplier": 0.546875,
+  "best_epoch": 1,
+  "accuracy": 0.3547400611620795,
+  "f1_macro": 0.24130356883945403,
+  "auroc_macro": 0.49088336798250304,
+  "precision_macro": 0.3370334620334621,
+  "recall_macro": 0.3326655052264808
+}

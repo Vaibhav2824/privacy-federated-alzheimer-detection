@@ -1,0 +1,7 @@
+{
+  "model": "vgg19",
+  "model_path": "results/best_vgg19_centralised.pth",
+  "mia_accuracy": 88.88888888888889,
+  "mia_advantage": 38.888888888888886,
+  "threshold": 0.1
+}

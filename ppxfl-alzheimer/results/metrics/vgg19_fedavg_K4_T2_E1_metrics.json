@@ -1,0 +1,12 @@
+{
+  "experiment": "vgg19_fedavg_K4_T2_E1",
+  "accuracy": 0.32592592592592595,
+  "f1_macro": 0.16387337057728119,
+  "auroc_macro": 0.5461348895332391,
+  "precision_macro": 0.10864197530864199,
+  "recall_macro": 0.3333333333333333,
+  "num_rounds": 2,
+  "num_clients": 4,
+  "local_epochs": 1,
+  "dp_enabled": false
+}

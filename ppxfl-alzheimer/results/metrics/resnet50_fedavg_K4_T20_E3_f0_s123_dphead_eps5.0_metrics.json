@@ -1,0 +1,19 @@
+{
+  "experiment": "resnet50_fedavg_K4_T20_E3_f0_s123_dphead_eps5.0",
+  "model": "resnet50",
+  "fold": 0,
+  "seed": 123,
+  "accuracy": 0.37237237237237236,
+  "f1_macro": 0.3283650229055142,
+  "auroc_macro": 0.6596797988678659,
+  "precision_macro": 0.32117128642501774,
+  "recall_macro": 0.4796031746031746,
+  "num_rounds": 20,
+  "num_clients": 4,
+  "local_epochs": 3,
+  "alpha": 0.5,
+  "dp_mode": "head",
+  "target_epsilon": 5.0,
+  "actual_epsilon_worst_client": 4.651245566423289,
+  "target_delta": 0.001
+}

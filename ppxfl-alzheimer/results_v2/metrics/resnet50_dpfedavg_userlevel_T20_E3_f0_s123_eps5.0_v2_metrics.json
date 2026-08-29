@@ -1,0 +1,22 @@
+{
+  "experiment": "resnet50_dpfedavg_userlevel_T20_E3_f0_s123_eps5.0_v2",
+  "model": "resnet50",
+  "fold": 0,
+  "seed": 123,
+  "accuracy": 0.42028985507246375,
+  "f1_macro": 0.24517960088691795,
+  "auroc_macro": 0.4871412247092828,
+  "precision_macro": 0.20412087912087915,
+  "recall_macro": 0.3115009746588694,
+  "num_rounds": 20,
+  "local_epochs": 3,
+  "dp_mode": "fedavg_userlevel",
+  "dp_unit": "subject",
+  "subjects_per_round": 116,
+  "total_train_subjects": 233,
+  "target_epsilon": 5.0,
+  "actual_epsilon": 4.9933578734192645,
+  "target_delta": 0.001,
+  "noise_multiplier": 1.87255859375,
+  "max_grad_norm": 1.0
+}

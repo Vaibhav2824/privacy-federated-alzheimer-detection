@@ -1,0 +1,170 @@
+{
+  "n_experiments": 58,
+  "paired_wilcoxon_dp_vs_nondp": [
+    {
+      "comparison": "non-DP accuracy vs resnet50 | centralised_dp | head-scope | eps10 accuracy",
+      "statistic": 6.0,
+      "p_value": 0.21875,
+      "n_pairs": 7,
+      "mean_a": 0.36051083542010826,
+      "mean_b": 0.2979632025220426,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP F1 vs resnet50 | centralised_dp | head-scope | eps10 F1",
+      "statistic": 3.0,
+      "p_value": 0.078125,
+      "n_pairs": 7,
+      "mean_a": 0.3539927413881346,
+      "mean_b": 0.27149119291453017,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP accuracy vs resnet50 | centralised_dp | head-scope | eps2 accuracy",
+      "statistic": 4.0,
+      "p_value": 0.109375,
+      "n_pairs": 7,
+      "mean_a": 0.36051083542010826,
+      "mean_b": 0.28473506931449266,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP F1 vs resnet50 | centralised_dp | head-scope | eps2 F1",
+      "statistic": 3.0,
+      "p_value": 0.078125,
+      "n_pairs": 7,
+      "mean_a": 0.3539927413881346,
+      "mean_b": 0.258302002776385,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP accuracy vs resnet50 | centralised_dp | head-scope | eps5 accuracy",
+      "statistic": 8.0,
+      "p_value": 0.375,
+      "n_pairs": 7,
+      "mean_a": 0.36051083542010826,
+      "mean_b": 0.30940291579786255,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP F1 vs resnet50 | centralised_dp | head-scope | eps5 F1",
+      "statistic": 4.0,
+      "p_value": 0.109375,
+      "n_pairs": 7,
+      "mean_a": 0.3539927413881346,
+      "mean_b": 0.27319204074861164,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP accuracy vs resnet50 | dpfedavg_userlevel | full-scope | eps10 accuracy",
+      "statistic": 2.0,
+      "p_value": 0.75,
+      "n_pairs": 3,
+      "mean_a": 0.3951690821256038,
+      "mean_b": 0.43381642512077295,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP F1 vs resnet50 | dpfedavg_userlevel | full-scope | eps10 F1",
+      "statistic": 0.0,
+      "p_value": 0.25,
+      "n_pairs": 3,
+      "mean_a": 0.3701761312150811,
+      "mean_b": 0.27234148961739174,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP accuracy vs resnet50 | dpfedavg_userlevel | full-scope | eps2 accuracy",
+      "statistic": 1.0,
+      "p_value": 0.5,
+      "n_pairs": 3,
+      "mean_a": 0.3951690821256038,
+      "mean_b": 0.4463768115942029,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP F1 vs resnet50 | dpfedavg_userlevel | full-scope | eps2 F1",
+      "statistic": 0.0,
+      "p_value": 0.25,
+      "n_pairs": 3,
+      "mean_a": 0.3701761312150811,
+      "mean_b": 0.251047518635843,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP accuracy vs resnet50 | dpfedavg_userlevel | full-scope | eps5 accuracy",
+      "statistic": 0.0,
+      "p_value": 0.25,
+      "n_pairs": 3,
+      "mean_a": 0.3951690821256038,
+      "mean_b": 0.4483091787439613,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP F1 vs resnet50 | dpfedavg_userlevel | full-scope | eps5 F1",
+      "statistic": 0.0,
+      "p_value": 0.25,
+      "n_pairs": 3,
+      "mean_a": 0.3701761312150811,
+      "mean_b": 0.23460530887834052,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP accuracy vs resnet50 | dpfedavg_userlevel | head-scope | eps10 accuracy",
+      "statistic": 0.0,
+      "p_value": 0.25,
+      "n_pairs": 3,
+      "mean_a": 0.3951690821256038,
+      "mean_b": 0.34396135265700484,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP F1 vs resnet50 | dpfedavg_userlevel | head-scope | eps10 F1",
+      "statistic": 0.0,
+      "p_value": 0.25,
+      "n_pairs": 3,
+      "mean_a": 0.3701761312150811,
+      "mean_b": 0.2580794859899181,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP accuracy vs resnet50 | dpfedavg_userlevel | head-scope | eps2 accuracy",
+      "statistic": 2.0,
+      "p_value": 0.75,
+      "n_pairs": 3,
+      "mean_a": 0.3951690821256038,
+      "mean_b": 0.4048309178743961,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP F1 vs resnet50 | dpfedavg_userlevel | head-scope | eps2 F1",
+      "statistic": 0.0,
+      "p_value": 0.25,
+      "n_pairs": 3,
+      "mean_a": 0.3701761312150811,
+      "mean_b": 0.26847633771824486,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP accuracy vs resnet50 | dpfedavg_userlevel | head-scope | eps5 accuracy",
+      "statistic": 0.0,
+      "p_value": 0.25,
+      "n_pairs": 3,
+      "mean_a": 0.3951690821256038,
+      "mean_b": 0.3768115942028985,
+      "significant_at_0.05": false
+    },
+    {
+      "comparison": "non-DP F1 vs resnet50 | dpfedavg_userlevel | head-scope | eps5 F1",
+      "statistic": 0.0,
+      "p_value": 0.25,
+      "n_pairs": 3,
+      "mean_a": 0.3701761312150811,
+      "mean_b": 0.2901088304868376,
+      "significant_at_0.05": false
+    }
+  ],
+  "chance_band": {
+    "three_class_chance": 0.3333333333333333
+  }
+}

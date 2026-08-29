@@ -1,0 +1,35 @@
+{
+  "2.0": {
+    "actual_epsilon": 2.3833116755226893,
+    "noise_multiplier": 1.1,
+    "accuracy": 0.4222222222222222,
+    "f1_macro": 0.42154716292647326,
+    "auroc_macro": 0.6040355548982707,
+    "precision_macro": 0.4244778613199666,
+    "recall_macro": 0.4263038548752835
+  },
+  "5.0": {
+    "actual_epsilon": 3.745204061535655,
+    "noise_multiplier": 0.7,
+    "accuracy": 0.6370370370370371,
+    "f1_macro": 0.6317362315163305,
+    "auroc_macro": 0.775832049087863,
+    "precision_macro": 0.6494708994708995,
+    "recall_macro": 0.6408472479901052
+  },
+  "10.0": {
+    "actual_epsilon": 5.243285686149917,
+    "noise_multiplier": 0.5,
+    "accuracy": 0.6592592592592592,
+    "f1_macro": 0.6597510183406657,
+    "auroc_macro": 0.834762929152598,
+    "precision_macro": 0.661531279178338,
+    "recall_macro": 0.6649144506287362
+  },
+  "inf": {
+    "actual_epsilon": Infinity,
+    "accuracy": 0.8592592592592593,
+    "f1_macro": 0.8619185158016993,
+    "auroc_macro": 0.9834171393489793
+  }
+}

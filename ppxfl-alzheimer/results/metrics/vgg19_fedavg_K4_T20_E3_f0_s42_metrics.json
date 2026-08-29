@@ -1,0 +1,19 @@
+{
+  "experiment": "vgg19_fedavg_K4_T20_E3_f0_s42",
+  "model": "vgg19",
+  "fold": 0,
+  "seed": 42,
+  "accuracy": 0.3033033033033033,
+  "f1_macro": 0.24794904823243166,
+  "auroc_macro": 0.42927076592999264,
+  "precision_macro": 0.3408951665772692,
+  "recall_macro": 0.27492063492063495,
+  "num_rounds": 20,
+  "num_clients": 4,
+  "local_epochs": 3,
+  "alpha": 0.5,
+  "dp_mode": "none",
+  "target_epsilon": null,
+  "actual_epsilon_worst_client": null,
+  "target_delta": null
+}

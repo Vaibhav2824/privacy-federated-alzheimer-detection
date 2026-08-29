@@ -1,0 +1,31 @@
+{
+  "dp_checkpoint": "C:\\Users\\Vaibhav\\Desktop\\PPxFL_Alzheimer_Detection\\ppxfl-alzheimer\\results\\checkpoints\\resnet50_dphead_eps2.0_f0_s42.pth",
+  "reference_checkpoint": "C:\\Users\\Vaibhav\\Desktop\\PPxFL_Alzheimer_Detection\\ppxfl-alzheimer\\results\\checkpoints\\best_resnet50_centralised_f0_s42.pth",
+  "model": "resnet50",
+  "fold": 0,
+  "n_slices": 150,
+  "gradcam_similarity": {
+    "ssim_mean": 0.25045244371515435,
+    "ssim_std": 0.11642702504911336,
+    "spearman_mean": 0.03830923556819518,
+    "spearman_std": 0.33892450139868135,
+    "dice_top20_mean": 0.24610151691354928,
+    "dice_top20_std": 0.17278514849039134
+  },
+  "faithfulness": {
+    "dp_deletion_auc_mean": 0.3266397032017509,
+    "dp_deletion_auc_std": 0.08565481193260553,
+    "dp_insertion_auc_mean": 0.34422625247885785,
+    "dp_insertion_auc_std": 0.07956290922635112,
+    "ref_deletion_auc_mean": 0.2933471225531151,
+    "ref_deletion_auc_std": 0.08059761198129614,
+    "ref_insertion_auc_mean": 0.3689163503826906,
+    "ref_insertion_auc_std": 0.12134329654364731
+  },
+  "shap_similarity": {
+    "ssim_mean": 0.5618837267519532,
+    "spearman_mean": 0.05676030109794218,
+    "dice_top20_mean": 0.36774289985034,
+    "n_slices": 50
+  }
+}

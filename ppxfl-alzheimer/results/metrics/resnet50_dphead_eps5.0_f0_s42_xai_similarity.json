@@ -1,0 +1,25 @@
+{
+  "dp_checkpoint": "results/checkpoints/resnet50_dphead_eps5.0_f0_s42.pth",
+  "reference_checkpoint": "results/checkpoints/best_resnet50_centralised_f0_s42.pth",
+  "model": "resnet50",
+  "fold": 0,
+  "n_slices": 10,
+  "gradcam_similarity": {
+    "ssim_mean": 0.20816903264701306,
+    "ssim_std": 0.07482252862163066,
+    "spearman_mean": -0.013751559420412729,
+    "spearman_std": 0.2450380835526737,
+    "dice_top20_mean": 0.19952080831470145,
+    "dice_top20_std": 0.14251701212536333
+  },
+  "faithfulness": {
+    "dp_deletion_auc_mean": 0.3389016794413328,
+    "dp_deletion_auc_std": 0.04102107380922564,
+    "dp_insertion_auc_mean": 0.36788197349756957,
+    "dp_insertion_auc_std": 0.06835444348716518,
+    "ref_deletion_auc_mean": 0.3155437923502177,
+    "ref_deletion_auc_std": 0.09726682524942677,
+    "ref_insertion_auc_mean": 0.41144660037010905,
+    "ref_insertion_auc_std": 0.15581776259337413
+  }
+}
