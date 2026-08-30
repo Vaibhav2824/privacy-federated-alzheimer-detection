@@ -1,0 +1,210 @@
+{
+  "MPRAGE|256x240x160": {
+    "permutation": [
+      2,
+      1,
+      0
+    ],
+    "flips": [
+      true,
+      true,
+      true
+    ],
+    "determinant": 1,
+    "votes": 2,
+    "sampled": 5,
+    "scans_in_group": 107,
+    "mean_score": 0.7139,
+    "total_score": 3.5557,
+    "mean_margin": 0.015,
+    "alternatives": [
+      {
+        "permutation": [
+          1,
+          2,
+          0
+        ],
+        "flips": [
+          false,
+          false,
+          true
+        ],
+        "votes": 1
+      },
+      {
+        "permutation": [
+          2,
+          1,
+          0
+        ],
+        "flips": [
+          true,
+          false,
+          true
+        ],
+        "votes": 1
+      },
+      {
+        "permutation": [
+          2,
+          1,
+          0
+        ],
+        "flips": [
+          false,
+          true,
+          true
+        ],
+        "votes": 1
+      }
+    ],
+    "handedness": "confirmed against anchor subjects"
+  },
+  "MPRAGE|256x256x160": {
+    "permutation": [
+      1,
+      0,
+      2
+    ],
+    "flips": [
+      true,
+      true,
+      true
+    ],
+    "determinant": 1,
+    "votes": 1,
+    "sampled": 1,
+    "scans_in_group": 1,
+    "mean_score": 0.7033,
+    "total_score": 0.7033,
+    "mean_margin": 0.0071,
+    "alternatives": [],
+    "handedness": "consistent with MPRAGE|256x240x160 (determinant +1)"
+  },
+  "MPRAGE|256x256x170": {
+    "permutation": [
+      2,
+      1,
+      0
+    ],
+    "flips": [
+      true,
+      true,
+      true
+    ],
+    "determinant": 1,
+    "votes": 5,
+    "sampled": 5,
+    "scans_in_group": 69,
+    "mean_score": 0.7555,
+    "total_score": 3.7773,
+    "mean_margin": 0.0098,
+    "alternatives": [],
+    "handedness": "mirrored for consistency with MPRAGE|256x240x160 (determinant +1)"
+  },
+  "MPRAGE|170x256x256": {
+    "permutation": [
+      0,
+      2,
+      1
+    ],
+    "flips": [
+      true,
+      true,
+      true
+    ],
+    "determinant": 1,
+    "votes": 4,
+    "sampled": 5,
+    "scans_in_group": 6,
+    "mean_score": 0.8328,
+    "total_score": 4.1411,
+    "mean_margin": 0.0094,
+    "alternatives": [
+      {
+        "permutation": [
+          0,
+          2,
+          1
+        ],
+        "flips": [
+          false,
+          true,
+          true
+        ],
+        "votes": 1
+      }
+    ],
+    "handedness": "consistent with MPRAGE|256x240x160 (determinant +1)"
+  },
+  "IR-SPGR|256x256x196": {
+    "permutation": [
+      2,
+      1,
+      0
+    ],
+    "flips": [
+      true,
+      true,
+      true
+    ],
+    "determinant": 1,
+    "votes": 3,
+    "sampled": 5,
+    "scans_in_group": 51,
+    "mean_score": 0.6757,
+    "total_score": 3.3999,
+    "mean_margin": 0.0094,
+    "alternatives": [
+      {
+        "permutation": [
+          2,
+          1,
+          0
+        ],
+        "flips": [
+          true,
+          true,
+          true
+        ],
+        "votes": 2
+      }
+    ],
+    "handedness": "mirrored for consistency with MPRAGE|256x240x160 (determinant +1)"
+  },
+  "MPRAGE|256x240x176": {
+    "permutation": [
+      2,
+      1,
+      0
+    ],
+    "flips": [
+      true,
+      true,
+      true
+    ],
+    "determinant": 1,
+    "votes": 3,
+    "sampled": 5,
+    "scans_in_group": 38,
+    "mean_score": 0.7828,
+    "total_score": 3.8368,
+    "mean_margin": 0.0017,
+    "alternatives": [
+      {
+        "permutation": [
+          2,
+          1,
+          0
+        ],
+        "flips": [
+          true,
+          true,
+          true
+        ],
+        "votes": 2
+      }
+    ],
+    "handedness": "mirrored for consistency with MPRAGE|256x240x160 (determinant +1)"
+  }
+}
