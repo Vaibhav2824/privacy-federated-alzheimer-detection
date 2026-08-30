@@ -1,0 +1,84 @@
+{
+  "model": "rf",
+  "label_set": "cn-mci",
+  "class_names": [
+    "CN",
+    "MCI"
+  ],
+  "split_scheme": "site",
+  "n_splits": 5,
+  "seed": 2024,
+  "n_subjects": 199,
+  "class_counts": {
+    "CN": 101,
+    "MCI": 98
+  },
+  "chance_accuracy": 0.507537688442211,
+  "uniform_chance": 0.5,
+  "overall": {
+    "accuracy": 0.6432160804020101,
+    "macro_f1": 0.6414414414414414,
+    "balanced_accuracy": 0.6423014750454636,
+    "macro_auroc": 0.6868054152354012,
+    "accuracy_ci95": [
+      0.5778894472361809,
+      0.7085427135678392
+    ],
+    "macro_f1_ci95": [
+      0.5747863247863247,
+      0.7081860584759126
+    ],
+    "balanced_accuracy_ci95": [
+      0.5774329446521596,
+      0.709996678890642
+    ],
+    "macro_auroc_ci95": [
+      0.6109464578214578,
+      0.7618013919847154
+    ]
+  },
+  "per_fold": [
+    {
+      "accuracy": 0.5833333333333334,
+      "macro_f1": 0.5804195804195804,
+      "balanced_accuracy": 0.5804953560371517,
+      "macro_auroc": 0.6284829721362228
+    },
+    {
+      "accuracy": 0.7380952380952381,
+      "macro_f1": 0.7379466817923993,
+      "balanced_accuracy": 0.740909090909091,
+      "macro_auroc": 0.7909090909090909
+    },
+    {
+      "accuracy": 0.6341463414634146,
+      "macro_f1": 0.6261398176291793,
+      "balanced_accuracy": 0.6309523809523809,
+      "macro_auroc": 0.6619047619047619
+    },
+    {
+      "accuracy": 0.55,
+      "macro_f1": 0.55,
+      "balanced_accuracy": 0.55,
+      "macro_auroc": 0.665
+    },
+    {
+      "accuracy": 0.7,
+      "macro_f1": 0.696969696969697,
+      "balanced_accuracy": 0.6967418546365914,
+      "macro_auroc": 0.6691729323308271
+    }
+  ],
+  "fold_mean": {
+    "accuracy": 0.6411149825783973,
+    "macro_f1": 0.6382951553621712,
+    "balanced_accuracy": 0.639819736507043,
+    "macro_auroc": 0.6830939514561806
+  },
+  "fold_std": {
+    "accuracy": 0.07008828181027817,
+    "macro_f1": 0.07023745072750892,
+    "balanced_accuracy": 0.07088692726397577,
+    "macro_auroc": 0.055815107209730194
+  }
+}

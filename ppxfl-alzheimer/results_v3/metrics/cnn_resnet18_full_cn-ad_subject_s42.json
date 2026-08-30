@@ -1,0 +1,38 @@
+{
+  "model": "resnet18_full",
+  "label_set": "cn-ad",
+  "class_names": [
+    "CN",
+    "AD"
+  ],
+  "split_scheme": "subject",
+  "seed": 42,
+  "epochs": 10,
+  "n_subjects": 199,
+  "chance_accuracy": 0.507537688442211,
+  "uniform_chance": 0.5,
+  "total_parameters": 11177538,
+  "trainable_parameters": 11177538,
+  "overall": {
+    "accuracy": 0.7688442211055276,
+    "macro_f1": 0.7688383838383839,
+    "balanced_accuracy": 0.7689432208526975,
+    "macro_auroc": 0.8615881996362901,
+    "accuracy_ci95": [
+      0.7085427135678392,
+      0.8242462311557782
+    ],
+    "macro_f1_ci95": [
+      0.7068772856562373,
+      0.8241981293084417
+    ],
+    "balanced_accuracy_ci95": [
+      0.7078232142242356,
+      0.8283145668492595
+    ],
+    "macro_auroc_ci95": [
+      0.8078755240397326,
+      0.9080525276875239
+    ]
+  }
+}

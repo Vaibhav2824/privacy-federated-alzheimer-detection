@@ -1,0 +1,84 @@
+{
+  "model": "lda",
+  "label_set": "cn-ad",
+  "class_names": [
+    "CN",
+    "AD"
+  ],
+  "split_scheme": "subject",
+  "n_splits": 5,
+  "seed": 2024,
+  "n_subjects": 199,
+  "class_counts": {
+    "CN": 101,
+    "AD": 98
+  },
+  "chance_accuracy": 0.507537688442211,
+  "uniform_chance": 0.5,
+  "overall": {
+    "accuracy": 0.7989949748743719,
+    "macro_f1": 0.7983789260385006,
+    "balanced_accuracy": 0.7983430996160841,
+    "macro_auroc": 0.8461305314204891,
+    "accuracy_ci95": [
+      0.7437185929648241,
+      0.8542713567839196
+    ],
+    "macro_f1_ci95": [
+      0.7410743531575573,
+      0.854035460454764
+    ],
+    "balanced_accuracy_ci95": [
+      0.7425023202480727,
+      0.8543957296239828
+    ],
+    "macro_auroc_ci95": [
+      0.7876061490924242,
+      0.9002831930648214
+    ]
+  },
+  "per_fold": [
+    {
+      "accuracy": 0.825,
+      "macro_f1": 0.8240100565681961,
+      "balanced_accuracy": 0.8233082706766917,
+      "macro_auroc": 0.8696741854636592
+    },
+    {
+      "accuracy": 0.775,
+      "macro_f1": 0.7737272155876807,
+      "balanced_accuracy": 0.7749999999999999,
+      "macro_auroc": 0.875
+    },
+    {
+      "accuracy": 0.775,
+      "macro_f1": 0.7678916827852997,
+      "balanced_accuracy": 0.7749999999999999,
+      "macro_auroc": 0.8524999999999999
+    },
+    {
+      "accuracy": 0.8,
+      "macro_f1": 0.7994987468671679,
+      "balanced_accuracy": 0.8,
+      "macro_auroc": 0.885
+    },
+    {
+      "accuracy": 0.8205128205128205,
+      "macro_f1": 0.8200395517468688,
+      "balanced_accuracy": 0.8197368421052631,
+      "macro_auroc": 0.7894736842105263
+    }
+  ],
+  "fold_mean": {
+    "accuracy": 0.799102564102564,
+    "macro_f1": 0.7970334507110428,
+    "balanced_accuracy": 0.7986090225563909,
+    "macro_auroc": 0.8543295739348371
+  },
+  "fold_std": {
+    "accuracy": 0.021409104836219342,
+    "macro_f1": 0.023045688824782598,
+    "balanced_accuracy": 0.020847754444941417,
+    "macro_auroc": 0.03409701577680793
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "model": "ensemble",
+  "label_set": "mci-ad",
+  "class_names": [
+    "MCI",
+    "AD"
+  ],
+  "split_scheme": "site",
+  "n_splits": 5,
+  "seed": 2024,
+  "n_subjects": 196,
+  "class_counts": {
+    "MCI": 98,
+    "AD": 98
+  },
+  "chance_accuracy": 0.5,
+  "uniform_chance": 0.5,
+  "overall": {
+    "accuracy": 0.6326530612244898,
+    "macro_f1": 0.6326148078725398,
+    "balanced_accuracy": 0.6326530612244898,
+    "macro_auroc": 0.7316743023740109,
+    "accuracy_ci95": [
+      0.5612244897959183,
+      0.6938775510204082
+    ],
+    "macro_f1_ci95": [
+      0.5612233475083254,
+      0.6938456732271165
+    ],
+    "balanced_accuracy_ci95": [
+      0.5629942499838789,
+      0.696831991429429
+    ],
+    "macro_auroc_ci95": [
+      0.6634280669126835,
+      0.7963260167097297
+    ]
+  },
+  "per_fold": [
+    {
+      "accuracy": 0.6153846153846154,
+      "macro_f1": 0.6143704680290046,
+      "balanced_accuracy": 0.6144736842105263,
+      "macro_auroc": 0.7526315789473684
+    },
+    {
+      "accuracy": 0.7297297297297297,
+      "macro_f1": 0.7279411764705883,
+      "balanced_accuracy": 0.7279411764705883,
+      "macro_auroc": 0.8029411764705883
+    },
+    {
+      "accuracy": 0.55,
+      "macro_f1": 0.5488721804511278,
+      "balanced_accuracy": 0.55,
+      "macro_auroc": 0.63
+    },
+    {
+      "accuracy": 0.6486486486486487,
+      "macro_f1": 0.6486486486486487,
+      "balanced_accuracy": 0.6491228070175439,
+      "macro_auroc": 0.7163742690058479
+    },
+    {
+      "accuracy": 0.627906976744186,
+      "macro_f1": 0.6277056277056277,
+      "balanced_accuracy": 0.6293478260869565,
+      "macro_auroc": 0.7543478260869566
+    }
+  ],
+  "fold_mean": {
+    "accuracy": 0.634333994101436,
+    "macro_f1": 0.6335076202609994,
+    "balanced_accuracy": 0.634177098757123,
+    "macro_auroc": 0.7312589701021522
+  },
+  "fold_std": {
+    "accuracy": 0.057996316741383266,
+    "macro_f1": 0.05781003142015876,
+    "balanced_accuracy": 0.05746721994206204,
+    "macro_auroc": 0.0576249177739276
+  }
+}

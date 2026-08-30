@@ -1,0 +1,84 @@
+{
+  "model": "rf",
+  "label_set": "cn-mci",
+  "class_names": [
+    "CN",
+    "MCI"
+  ],
+  "split_scheme": "subject",
+  "n_splits": 5,
+  "seed": 123,
+  "n_subjects": 199,
+  "class_counts": {
+    "CN": 101,
+    "MCI": 98
+  },
+  "chance_accuracy": 0.507537688442211,
+  "uniform_chance": 0.5,
+  "overall": {
+    "accuracy": 0.6231155778894473,
+    "macro_f1": 0.620006619650177,
+    "balanced_accuracy": 0.6218933117801576,
+    "macro_auroc": 0.6871085067690442,
+    "accuracy_ci95": [
+      0.5577889447236181,
+      0.6934673366834171
+    ],
+    "macro_f1_ci95": [
+      0.554517620503859,
+      0.6880562297734628
+    ],
+    "balanced_accuracy_ci95": [
+      0.557149141833956,
+      0.6900648616953203
+    ],
+    "macro_auroc_ci95": [
+      0.6135261565901735,
+      0.7621243559072506
+    ]
+  },
+  "per_fold": [
+    {
+      "accuracy": 0.6,
+      "macro_f1": 0.595959595959596,
+      "balanced_accuracy": 0.5964912280701754,
+      "macro_auroc": 0.6616541353383458
+    },
+    {
+      "accuracy": 0.725,
+      "macro_f1": 0.7234443746071653,
+      "balanced_accuracy": 0.7250000000000001,
+      "macro_auroc": 0.7249999999999999
+    },
+    {
+      "accuracy": 0.55,
+      "macro_f1": 0.5396419437340154,
+      "balanced_accuracy": 0.55,
+      "macro_auroc": 0.6725
+    },
+    {
+      "accuracy": 0.625,
+      "macro_f1": 0.6247654784240151,
+      "balanced_accuracy": 0.625,
+      "macro_auroc": 0.6799999999999999
+    },
+    {
+      "accuracy": 0.6153846153846154,
+      "macro_f1": 0.6112956810631229,
+      "balanced_accuracy": 0.6131578947368421,
+      "macro_auroc": 0.6868421052631578
+    }
+  ],
+  "fold_mean": {
+    "accuracy": 0.6230769230769231,
+    "macro_f1": 0.6190214147575829,
+    "balanced_accuracy": 0.6219298245614036,
+    "macro_auroc": 0.6851992481203008
+  },
+  "fold_std": {
+    "accuracy": 0.05713836626478116,
+    "macro_f1": 0.05971563225575327,
+    "balanced_accuracy": 0.05749931416615623,
+    "macro_auroc": 0.021584597515513698
+  }
+}

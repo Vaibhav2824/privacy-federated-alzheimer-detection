@@ -1,0 +1,84 @@
+{
+  "model": "ensemble",
+  "label_set": "cn-ad",
+  "class_names": [
+    "CN",
+    "AD"
+  ],
+  "split_scheme": "subject",
+  "n_splits": 5,
+  "seed": 2024,
+  "n_subjects": 199,
+  "class_counts": {
+    "CN": 101,
+    "AD": 98
+  },
+  "chance_accuracy": 0.507537688442211,
+  "uniform_chance": 0.5,
+  "overall": {
+    "accuracy": 0.8040201005025126,
+    "macro_f1": 0.8030452988199468,
+    "balanced_accuracy": 0.8031420488987675,
+    "macro_auroc": 0.8662356031521519,
+    "accuracy_ci95": [
+      0.7487437185929648,
+      0.8592964824120602
+    ],
+    "macro_f1_ci95": [
+      0.7446976211618377,
+      0.8586110955484194
+    ],
+    "balanced_accuracy_ci95": [
+      0.7474616140433252,
+      0.857715159789644
+    ],
+    "macro_auroc_ci95": [
+      0.8107804720405416,
+      0.914949442353872
+    ]
+  },
+  "per_fold": [
+    {
+      "accuracy": 0.775,
+      "macro_f1": 0.7678916827852997,
+      "balanced_accuracy": 0.768170426065163,
+      "macro_auroc": 0.8446115288220551
+    },
+    {
+      "accuracy": 0.775,
+      "macro_f1": 0.7737272155876807,
+      "balanced_accuracy": 0.7749999999999999,
+      "macro_auroc": 0.8725
+    },
+    {
+      "accuracy": 0.85,
+      "macro_f1": 0.8465473145780051,
+      "balanced_accuracy": 0.85,
+      "macro_auroc": 0.9199999999999999
+    },
+    {
+      "accuracy": 0.825,
+      "macro_f1": 0.8240100565681961,
+      "balanced_accuracy": 0.825,
+      "macro_auroc": 0.9075
+    },
+    {
+      "accuracy": 0.7948717948717948,
+      "macro_f1": 0.7947368421052632,
+      "balanced_accuracy": 0.7947368421052632,
+      "macro_auroc": 0.8105263157894738
+    }
+  ],
+  "fold_mean": {
+    "accuracy": 0.8039743589743589,
+    "macro_f1": 0.8013826223248891,
+    "balanced_accuracy": 0.8025814536340852,
+    "macro_auroc": 0.8710275689223058
+  },
+  "fold_std": {
+    "accuracy": 0.029401771516531464,
+    "macro_f1": 0.029941546902343907,
+    "balanced_accuracy": 0.03084640365933614,
+    "macro_auroc": 0.04022167100675029
+  }
+}
