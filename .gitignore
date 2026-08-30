@@ -1,11 +1,12 @@
-# ADNI data. Access requires a data use agreement, so no scan, derived array or
-# trained weight file is ever committed.
+# ADNI data. Access requires a data use agreement, so no scan, derived array,
+# subject-level table or trained weight file is ever committed.
 AD-150/
 CN-150/
 MCI-150/
 dicom_staging/
 *.zip
 *.npy
+*.npz
 *.nii
 *.nii.gz
 *.dcm
@@ -15,8 +16,17 @@ ppxfl-alzheimer/data/processed/
 ppxfl-alzheimer/data/processed_v2/
 ppxfl-alzheimer/data/clients/
 ppxfl-alzheimer/data/clients_v2/
+ppxfl-alzheimer/data/mni2mm/
 ppxfl-alzheimer/results/checkpoints/
 ppxfl-alzheimer/results_v2/checkpoints/
+
+# Subject-level tables. These map ADNI subject identifiers to diagnosis, age or
+# sex, which the data use agreement does not permit redistributing.
+ppxfl-alzheimer/data/picks_adni*.csv
+ppxfl-alzheimer/data/subject_class_map.json
+ppxfl-alzheimer/data/demographics.csv
+ppxfl-alzheimer/data/**/manifest.csv
+ppxfl-alzheimer/data/**/orientation_sources.json
 
 # The demo model is an exception to *.pth / weights: it is a quantised ONNX
 # export with no recoverable training data, and the page needs it at runtime.
@@ -41,12 +51,10 @@ ppxfl-alzheimer/dist/
 ppxfl-alzheimer/build/
 *.egg-info/
 
-# Local agent tooling, never published
-.tooling/
-.agents/
-skills-lock.json
-.toolingignore
-graphify-out/
+# Scratch space and local editor state
+scratch/
+.vscode/
+.idea/
 
 # Build and run logs
 *.log

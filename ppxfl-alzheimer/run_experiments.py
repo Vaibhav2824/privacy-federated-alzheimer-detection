@@ -1,11 +1,9 @@
 """
 run_experiments.py — PPXFL experiment driver.
 
-Generates the full experiment matrix from the execution plan (see
-the execution plan,
-Phase B) and runs whichever cells aren't done yet. Safe to kill and re-run at
-any point — same design as the individual training scripts' own
-epoch/round-level checkpointing:
+Generates the full experiment matrix and runs whichever cells aren't done yet.
+Safe to kill and re-run at any point — same design as the individual training
+scripts' own epoch/round-level checkpointing:
 
   - A cell is "done" if its expected output metrics JSON already exists.
   - Each underlying script (centralised_train.py, fl_server.py, dp_train.py)

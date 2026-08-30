@@ -1,15 +1,19 @@
-# ═══════════════════════════════════════════
-#  PPXFL — .gitignore
-# ═══════════════════════════════════════════
-
-# ──── ADNI Dataset (restricted license — DO NOT share) ────
+# ──── ADNI data (restricted licence — never committed) ────
 data/raw/
 data/processed/
 data/clients/
+data/mni2mm/
 data/**/*.nii
 data/**/*.nii.gz
 data/**/*.npy
 data/**/*.npz
+
+# Subject-level tables: identifier to diagnosis, age or sex.
+data/picks_adni*.csv
+data/subject_class_map.json
+data/demographics.csv
+data/**/manifest.csv
+data/**/orientation_sources.json
 
 # ──── Model weights (too large for GitHub) ────
 *.pth
@@ -17,11 +21,11 @@ data/**/*.npz
 # ──── Large numpy arrays ────
 results/xai/*.npy
 
-# ──── AI agent / planning files ────
-CLAUDE.md
+# ──── Working notes, not part of the record ────
 PPXFL_tables.txt
 PPXFL_plan_text.txt
 PPXFL_Implementation_Plan.docx
+scratch/
 
 # ──── Python ────
 __pycache__/
@@ -46,7 +50,6 @@ env/
 *.swp
 *.swo
 *~
-.gemini/
 
 # ──── OS files ────
 .DS_Store
