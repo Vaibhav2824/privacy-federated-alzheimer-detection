@@ -43,6 +43,22 @@
 % Values below are written by src/paper_tables.py from results_summary.json.
 % Do not edit by hand: run `python -m src.paper_tables` instead.
 % BEGIN AUTO:facts
+% --- Rebuilt (v3) cohort. Filled from results_v3/results_summary_v3.json. ---
+\newcommand{\VThreeSubjects}{297}
+\newcommand{\VThreeSites}{42}
+\newcommand{\VThreeFeatures}{140}
+\newcommand{\VThreeChance}{34.0\%}
+\newcommand{\VThreeTriAcc}{51.1\%}
+\newcommand{\VThreeTriF}{0.508}
+\newcommand{\VThreeTriAUROC}{0.702}
+\newcommand{\VThreeTriSite}{48.7\%}
+\newcommand{\VThreeBinAcc}{79.7\%}
+\newcommand{\VThreeBinAUROC}{0.876}
+\newcommand{\VThreeFedNatural}{46.9\%}
+\newcommand{\VThreeDpBinOne}{67.4\%}
+\newcommand{\VThreeDpBinTen}{76.0\%}
+\newcommand{\VThreeXaiNonPrivate}{0.976}
+\newcommand{\VThreeXaiTen}{0.062}
 \newcommand{\ChanceAccuracy}{33.3\%}
 \newcommand{\TotalRuns}{58}
 \newcommand{\NumConditions}{12}
@@ -81,36 +97,65 @@
 
 % ============================================================
 \begin{abstract}
-Deep learning on MRI is a promising route to earlier Alzheimer's
-disease detection, but privacy regulation blocks the
-cross-institutional data pooling such models are usually trained on.
-This paper reports a privacy-preserving and explainable federated
-learning study on \textbf{299~ADNI subjects} (99~AD, 99~MCI, 101~CN),
-and is as much about how such systems are evaluated as about the
-systems themselves.  An earlier version of this pipeline reported
-federated accuracy of 97.0\%; that figure was an artefact of splitting
-individual MRI slices rather than \emph{subjects}, which let scans from
-the same patient appear in both training and test data.  Rebuilt around
-subject-disjoint stratified group folds, held-out accuracy is
-\BestNonPrivateAcc{} (macro F1 \BestNonPrivateF{}) against a
-\ChanceAccuracy{} three-class chance rate, a quantified demonstration
-of how severe slice-level leakage inflation can be.  With the protocol
-corrected we characterise privacy against utility across
-$\varepsilon \in \{2,5,10\}$ at two granularities.  Sample-level DP-SGD
-bounds the influence of one slice; subject-level DP-FedAvg bounds the
-influence of an entire patient, which is the guarantee a hospital
-needs.  We show analytically and empirically that the standard
-subject-level mechanism fails at this scale because its Gaussian noise
-norm grows as $\sqrt{d}$ in the perturbed dimension: applied to all
-$2.35\times10^{7}$ ResNet50 parameters it buries the update under noise
-roughly 160~times its size, producing a classifier that collapses to
-the majority class yet posts the highest accuracy in our matrix.
-Restricting the mechanism to the 6{,}147-parameter classifier head cuts
-the noise norm by roughly $62\times$ and recovers macro F1, though not
-to a usable classifier at $\varepsilon = 2$.  We report this negative
-result with its quantitative cause, and release the leakage-free
-pipeline, the subject-level splits, all \TotalRuns{} training runs
-across \NumConditions{} conditions, and an in-browser demonstration.
+Deep learning on MRI is a promising route to earlier Alzheimer's disease
+detection, but privacy regulation blocks the cross-institutional pooling such
+models are usually trained on.  This paper reports a privacy-preserving and
+explainable federated learning study on \VThreeSubjects{}~ADNI subjects across
+\VThreeSites{}~sites, and is as much about how such systems are measured as
+about the systems themselves.  Two measurement defects are documented and
+corrected.  The first, reported previously, was slice-level splitting, which
+let scans of the same patient appear in both training and test data and
+inflated federated accuracy to 97.0\%; correcting it dropped held-out accuracy
+to \BestNonPrivateAcc{} against a \ChanceAccuracy{} chance rate.  The second is
+reported here and explains that residual: the pipeline selected its slice axis
+as the longest array axis, which on this cohort extracts a sagittal plane for
+some subjects, an axial plane for others and a coronal plane for the rest,
+decided by how the scanner wrote the file.  It raises no error --- it produces
+chance-level accuracy, which the previous version attributed to cohort size.
+Compounding it, 272 of the 620 usable scans carry a degenerate identity affine
+from which orientation cannot be read at all.  We recover orientation by
+registration search over all 48 axis permutations and reflections against a
+whole-head template, anchored on four subjects holding both a degenerate scan
+and one with a usable header, for which the fitted orientation beats its mirror
+at correlation 0.87--0.93 against 0.61--0.70.
+
+With every subject registered to MNI152 and represented by
+\VThreeFeatures{}~grey-matter and CSF fractions over Harvard-Oxford regions,
+three-class accuracy rises from chance to \VThreeTriAcc{} (macro
+F1~\VThreeTriF{}, macro AUROC~\VThreeTriAUROC{}) and CN versus AD reaches
+\VThreeBinAcc{} (AUROC~\VThreeBinAUROC{}), on the same subjects under the same
+subject-disjoint protocol and with a model four orders of magnitude smaller
+than the network it replaces.  We report a site-disjoint evaluation alongside
+the subject-disjoint one (\VThreeTriSite{} three-class), since a federated
+model is deployed at hospitals that did not contribute to it, and we federate
+over the \VThreeSites{}~real ADNI sites rather than a simulated partition.  The
+real partition proves at least as hard as a Dirichlet draw despite carrying
+higher label entropy, which indicates that simulated label skew does not
+capture what makes multi-site federation difficult.
+
+The privacy analysis is the study's main contribution.  Subject-level
+differential privacy bounds the influence of an entire patient, and the
+previous version showed the standard mechanism failing at this scale.  We show
+the cause is dimensional rather than statistical: the Gaussian noise added to a
+summed update has expected norm $\sigma C\sqrt{d}$ while the update itself does
+not grow with $d$, so the usable regime is fixed by the perturbed dimension.
+Measured over one mechanism and one cohort at $d = 423$, $d = 6{,}147$ and
+$d = 2.35\times10^{7}$, the worst-case noise-to-signal ratio spans more than
+two orders of magnitude, and the region model stays usable down to
+$\varepsilon = 1$ (\VThreeDpBinOne{} on CN versus AD) where the full network
+collapses onto the majority class.
+
+Finally, because every feature is a named anatomical region, explanations are
+comparable across models rather than merely displayable, and we find that
+explanation fidelity degrades far faster than accuracy.  At
+$\varepsilon = 10$ the private model matches the non-private model's accuracy
+exactly (\VThreeDpBinTen{}) while the Spearman agreement of its region
+attribution falls from \VThreeXaiNonPrivate{} to \VThreeXaiTen{}, and its share
+of attribution in hippocampus and amygdala halves.  Accuracy-only
+privacy--utility curves therefore understate the cost of differential privacy
+wherever the explanation is part of the deliverable.  We release the corrected
+pipeline, the measured orientation table, the subject-level and site-level
+splits, all runs, and an in-browser demonstration.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -741,6 +786,147 @@ across clients for one representative fold.
   \label{fig:partition}
 \end{figure}
 
+% ============================================================
+% Rebuilt pipeline (v3 cohort). Tables are generated by
+% ppxfl-alzheimer/src/paper_tables_v3.py into the AUTO markers.
+% ============================================================
+\subsection{Anatomical Standardisation}
+\label{sec:standardisation}
+
+The pipeline used in the previous version of this study selected its slice
+axis as the longest array axis,
+\texttt{axial\_axis = np.argmax(data.shape)}, and took three slices around the
+midpoint of that axis. Over the cohort actually downloaded, that rule does not
+select a consistent anatomical plane. Table~\ref{tab:orientation-defect} lists
+what it extracts for the three stored layouts present in the data: a sagittal
+plane for volumes written as $(256, 240, 160)$ in RAS order, an axial plane for
+volumes written as $(256, 256, 166)$ in IPL order, and a coronal plane for
+volumes written as $(166, 256, 256)$. The plane a subject contributes is
+therefore decided by how its scanner wrote the file rather than by anatomy, and
+no downstream stage can recover from it. Three further properties of the raw
+download compound the problem: the volumes are in native scanner space with
+voxel sizes from $0.94$ to $1.25$~mm and are never registered, so no voxel
+index corresponds between subjects; they are not skull-stripped, so skull, face
+and neck remain in frame; and the download contains up to five ADNI
+preprocessing levels of the same acquisition, which the file glob treated as
+independent samples.
+
+\begin{table}[t]
+\centering
+\caption{What the previous slice rule extracts, by stored layout.}
+\label{tab:orientation-defect}
+\begin{tabular}{lllc}
+\toprule
+Stored shape & Orientation & Axis chosen & Plane extracted \\
+\midrule
+$(256, 240, 160)$ & RAS & 0 & sagittal \\
+$(256, 256, 166)$ & IPL & 0 & axial \\
+$(166, 256, 256)$ & RAS & 1 & coronal \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The rebuilt pipeline places every subject in a common anatomical space. One
+scan is retained per subject, chosen by preprocessing level and then by
+earliest visit, with the derived \texttt{Mask} and \texttt{HarP} products
+excluded because they are binary label volumes rather than intensity images.
+Each scan is then oriented, skull-stripped with deepbet, and registered to the
+MNI152 2~mm template by mutual information over a translation, rigid and
+affine sequence. A per-subject quality score, the Pearson correlation with the
+template inside the brain mask, is recorded so that failures are excluded by a
+stated rule rather than by inspection.
+
+\subsubsection{Recovering orientation from scans without a usable affine}
+
+Orientation cannot simply be read from the header. Of the 620 usable scans in
+this download, 272 --- the raw \texttt{MPRAGE} and
+\texttt{Accelerated\_SAG\_IR-SPGR} series --- carry an identity affine with
+\texttt{sform\_code}~$=2$ and \texttt{qform\_code}~$=0$. For those files
+\texttt{nibabel.as\_closest\_canonical} reports RAS and leaves the array order
+untouched, even though the acquisition is sagittal and the stored order is not
+RAS at all. This is the reason the slice defect above was not visible as an
+error.
+
+The orientation is therefore measured rather than assumed. For each of the 48
+axis permutations and reflections, the candidate volume is registered to a
+4~mm whole-head ICBM152 target and scored by correlation. Two design points
+matter. First, the target must retain the skull: the scan being oriented has
+not been stripped yet, and matching an unstripped head against a
+skull-stripped brain scored $0.09$--$0.48$ and selected a different, incorrect
+orientation on the same subjects, where head-to-head matching scores
+$0.68$--$0.79$ for the correct candidate with a clear margin to the third. This
+also forces the ordering of the pipeline: deepbet is trained on anatomically
+oriented volumes and leaves face and neck behind when handed a scan lying on
+its side, so orientation must precede stripping. Second, the fit is per
+(series family, array shape) group rather than per subject, because the
+convention belongs to the DICOM-to-NIfTI conversion; a group fit aggregates
+evidence over subjects and cannot leave two subjects of the same group in
+different orientations.
+
+The one distinction registration score cannot draw is a left--right mirror,
+which stays within about $0.01$ because the brain is close to symmetric. Four
+subjects in this download hold both a scan with a usable header, whose
+handedness is known, and a scan from a degenerate-affine group. Registering
+those two scans of the same subject and comparing the mirror candidates uses
+that subject's own asymmetry rather than a population average: the fitted
+orientation scores $0.87$--$0.93$ against $0.61$--$0.70$ for its mirror on all
+four anchors. The map from stored array order to RAS is a property of the
+conversion, so its determinant is expected to be constant across groups; the
+three groups whose fitted determinant disagreed with the anchored group were
+mirrored to match, and Table~\ref{tab:orientation-table} records for each group
+whether its handedness rests on the anchors or on that consistency rule.
+
+% ---------------------------------------------------------------------
+% Methodology: representations
+% ---------------------------------------------------------------------
+\begin{table}[t]
+\centering
+\caption{Measured array orientation of each degenerate-affine series group, and
+the evidence its left--right handedness rests on.}
+\label{tab:orientation-table}
+\begin{tabular}{lrccl}
+\toprule
+Series group & Scans & Permutation & Flips & Handedness \
+\midrule
+% BEGIN AUTO:v3-orientation
+MPRAGE $256 \times 240 \times 160$ & 107 & (2, 1, 0) & (T, T, T) & confirmed against anchor subjects \\
+MPRAGE $256 \times 256 \times 170$ & 69 & (2, 1, 0) & (T, T, T) & mirrored for consistency with 256x240x160 (determinant +1) \\
+IR-SPGR $256 \times 256 \times 196$ & 51 & (2, 1, 0) & (T, T, T) & mirrored for consistency with 256x240x160 (determinant +1) \\
+MPRAGE $256 \times 240 \times 176$ & 38 & (2, 1, 0) & (T, T, T) & mirrored for consistency with 256x240x160 (determinant +1) \\
+MPRAGE $170 \times 256 \times 256$ & 6 & (0, 2, 1) & (T, T, T) & consistent with 256x240x160 (determinant +1) \\
+MPRAGE $256 \times 256 \times 160$ & 1 & (1, 0, 2) & (T, T, T) & consistent with 256x240x160 (determinant +1) \\
+% END AUTO:v3-orientation
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Two Representations at Opposite Dimensions}
+\label{sec:representations}
+
+Once every subject is on the MNI grid, anatomy can be summarised directly
+rather than learned from scratch. Each registered volume is segmented into
+CSF, grey matter and white matter by a three-component Gaussian mixture over
+brain-mask intensities, and the grey-matter and CSF maps are integrated over
+Harvard-Oxford cortical and subcortical regions. Region values are expressed
+as fractions of total brain volume, which removes head size --- the largest
+nuisance in raw region volumes. This yields 140 features, so a multinomial
+logistic model over them has 423 parameters.
+
+The convolutional arm keeps the architecture family of the previous study so
+that the change in input can be isolated from a change in model. Slices are
+taken at named MNI millimetre coordinates --- ten axial levels from the medial
+temporal lobe up through the lateral ventricles and five coronal levels
+through the hippocampal head and body --- with three adjacent parallel planes
+stacked as three channels, so an ImageNet stem is used as trained instead of
+being averaged down to a single channel as it was previously. In both arms a
+subject's prediction is the mean of its slice or region probabilities, so the
+unit of evaluation is the subject.
+
+The dimensional gap between the two is the point. It spans 423 parameters to
+$23{,}508{,}035$, and Section~\ref{sec:dimension-law} shows that this, rather
+than the privacy budget alone, is what decides whether a subject-level private
+federated model is usable.
+
 \subsection{Federated Learning Component}
 
 \subsubsection{Model Architectures}
@@ -972,6 +1158,31 @@ sampling rate and step count, which vary across folds, clients, and
 DP scope; observed $\sigma$ ranged from~0.3 (large-client,
 loose-budget runs) to~8.4 (tiny-client, tight-budget runs)---itself a
 symptom of how few samples some FL clients hold at this cohort size.
+
+\subsection{Evaluation Splits and Federated Partitions}
+\label{sec:splits-v3}
+
+Two split schemes are reported because they answer different questions. The
+\emph{subject-disjoint} scheme is stratified $K$-fold over subjects; with one
+scan per subject, disjointness is structural rather than something checked
+afterwards. The \emph{site-disjoint} scheme is stratified group $K$-fold with
+the ADNI site as the group, so every test site is unseen during training. A
+federated model is deployed at hospitals that did not contribute to it, and
+scanner and protocol vary by site, so the site-disjoint number is the one that
+reflects deployment. It is expected to be the lower of the two; reporting both
+is the point.
+
+The federated partitions are paired the same way. The cohort spans 42 real
+ADNI sites, recoverable from the subject identifier prefix, and the
+\emph{natural} partition places one client per site, pooling sites below a
+minimum size into a single client so that no subject is discarded. The
+resulting heterogeneity is the cohort's own in both directions that matter:
+scanner and protocol vary by site, and the label mix is genuinely skewed ---
+site 003 contributes 13 CN and 7 AD subjects but no MCI, while site 016
+contributes 10 AD and 6 MCI subjects but no CN. Most federated work on ADNI
+simulates heterogeneity with a Dirichlet draw instead. Here the natural
+partition is compared against IID and Dirichlet partitions of the same
+subjects, so the effect of using the real one is measured rather than asserted.
 
 \subsection{Implementation Environment}
 
@@ -1535,6 +1746,202 @@ initialisation produces a distinguishable effect at this cohort size;
 differences are within the noise band established by
 Table~\ref{tab:fedavg}'s fold-to-fold variance.  We report these as
 honest null results rather than searching for a favourable framing.
+
+\subsection{Centralised Performance on the Standardised Cohort}
+\label{sec:results-centralised}
+
+\begin{table*}[t]
+\centering
+\caption{Centralised baselines on the MNI-registered cohort, out-of-fold over
+five folds and three seeds. The majority-class rate is given for each label set
+so that results near chance are visible as such.}
+\label{tab:v3-centralised}
+\begin{tabular}{lllcccccc}
+\toprule
+Task & Split & Model & Accuracy (\%) & Balanced acc.\ (\%) & Macro F1 &
+Macro AUROC & Chance (\%) & Runs \\
+\midrule
+% BEGIN AUTO:v3-centralised
+CN vs AD & site-disjoint & ensemble & 78.2 $\pm$ 3.1 & 78.2 $\pm$ 3.1 & 0.782 $\pm$ 0.031 & 0.856 $\pm$ 0.014 & 50.8 & 3 \\
+CN vs AD & site-disjoint & Shrinkage LDA & 77.1 $\pm$ 3.8 & 77.0 $\pm$ 3.8 & 0.770 $\pm$ 0.038 & 0.844 $\pm$ 0.017 & 50.8 & 3 \\
+CN vs AD & site-disjoint & Logistic regression & 78.6 $\pm$ 0.6 & 78.6 $\pm$ 0.6 & 0.786 $\pm$ 0.006 & 0.867 $\pm$ 0.004 & 50.8 & 3 \\
+CN vs AD & site-disjoint & Random forest & 75.2 $\pm$ 0.8 & 75.2 $\pm$ 0.8 & 0.752 $\pm$ 0.008 & 0.826 $\pm$ 0.005 & 50.8 & 3 \\
+CN vs AD & site-disjoint & RBF SVM & 75.4 $\pm$ 0.0 & 75.3 $\pm$ 0.0 & 0.753 $\pm$ 0.000 & 0.825 $\pm$ 0.014 & 50.8 & 3 \\
+CN vs AD & subject-disjoint & ensemble & 79.7 $\pm$ 2.1 & 79.7 $\pm$ 2.1 & 0.797 $\pm$ 0.021 & 0.865 $\pm$ 0.001 & 50.8 & 3 \\
+CN vs AD & subject-disjoint & Shrinkage LDA & 77.2 $\pm$ 2.3 & 77.2 $\pm$ 2.3 & 0.771 $\pm$ 0.023 & 0.849 $\pm$ 0.003 & 50.8 & 3 \\
+CN vs AD & subject-disjoint & Logistic regression & 78.7 $\pm$ 0.6 & 78.7 $\pm$ 0.6 & 0.787 $\pm$ 0.006 & 0.876 $\pm$ 0.006 & 50.8 & 3 \\
+CN vs AD & subject-disjoint & ResNet18, 2.5D & 76.9 & 76.9 & 0.769 & 0.862 & 50.8 & 1 \\
+CN vs AD & subject-disjoint & Random forest & 75.7 $\pm$ 2.0 & 75.7 $\pm$ 2.0 & 0.756 $\pm$ 0.020 & 0.832 $\pm$ 0.001 & 50.8 & 3 \\
+CN vs AD & subject-disjoint & RBF SVM & 76.7 $\pm$ 1.3 & 76.6 $\pm$ 1.3 & 0.766 $\pm$ 0.012 & 0.837 $\pm$ 0.007 & 50.8 & 3 \\
+CN vs MCI & site-disjoint & ensemble & 59.5 $\pm$ 0.8 & 59.5 $\pm$ 0.7 & 0.595 $\pm$ 0.007 & 0.632 $\pm$ 0.019 & 50.8 & 3 \\
+CN vs MCI & site-disjoint & Shrinkage LDA & 57.1 $\pm$ 1.9 & 57.1 $\pm$ 1.9 & 0.571 $\pm$ 0.019 & 0.602 $\pm$ 0.027 & 50.8 & 3 \\
+CN vs MCI & site-disjoint & Logistic regression & 58.1 $\pm$ 2.5 & 58.1 $\pm$ 2.5 & 0.581 $\pm$ 0.025 & 0.624 $\pm$ 0.025 & 50.8 & 3 \\
+CN vs MCI & site-disjoint & Random forest & 62.0 $\pm$ 2.5 & 61.9 $\pm$ 2.5 & 0.617 $\pm$ 0.025 & 0.664 $\pm$ 0.020 & 50.8 & 3 \\
+CN vs MCI & site-disjoint & RBF SVM & 61.0 $\pm$ 3.7 & 60.8 $\pm$ 3.6 & 0.600 $\pm$ 0.033 & 0.633 $\pm$ 0.032 & 50.8 & 3 \\
+CN vs MCI & subject-disjoint & ensemble & 62.3 $\pm$ 0.9 & 62.2 $\pm$ 0.9 & 0.622 $\pm$ 0.010 & 0.647 $\pm$ 0.009 & 50.8 & 3 \\
+CN vs MCI & subject-disjoint & Shrinkage LDA & 60.1 $\pm$ 1.8 & 60.1 $\pm$ 1.8 & 0.600 $\pm$ 0.018 & 0.614 $\pm$ 0.000 & 50.8 & 3 \\
+CN vs MCI & subject-disjoint & Logistic regression & 60.8 $\pm$ 1.5 & 60.8 $\pm$ 1.5 & 0.607 $\pm$ 0.015 & 0.638 $\pm$ 0.008 & 50.8 & 3 \\
+CN vs MCI & subject-disjoint & Random forest & 62.5 $\pm$ 2.8 & 62.4 $\pm$ 2.8 & 0.622 $\pm$ 0.027 & 0.673 $\pm$ 0.017 & 50.8 & 3 \\
+CN vs MCI & subject-disjoint & RBF SVM & 62.3 $\pm$ 2.2 & 62.0 $\pm$ 2.2 & 0.603 $\pm$ 0.027 & 0.669 $\pm$ 0.025 & 50.8 & 3 \\
+CN / MCI / AD & site-disjoint & ensemble & 48.7 $\pm$ 1.2 & 48.7 $\pm$ 1.2 & 0.482 $\pm$ 0.011 & 0.687 $\pm$ 0.004 & 34.0 & 3 \\
+CN / MCI / AD & site-disjoint & Shrinkage LDA & 48.5 $\pm$ 0.6 & 48.4 $\pm$ 0.6 & 0.482 $\pm$ 0.007 & 0.665 $\pm$ 0.002 & 34.0 & 3 \\
+CN / MCI / AD & site-disjoint & Logistic regression & 48.3 $\pm$ 0.7 & 48.3 $\pm$ 0.7 & 0.478 $\pm$ 0.008 & 0.679 $\pm$ 0.005 & 34.0 & 3 \\
+CN / MCI / AD & site-disjoint & Random forest & 48.6 $\pm$ 1.9 & 48.5 $\pm$ 1.9 & 0.473 $\pm$ 0.018 & 0.690 $\pm$ 0.009 & 34.0 & 3 \\
+CN / MCI / AD & site-disjoint & RBF SVM & 50.6 $\pm$ 1.4 & 50.4 $\pm$ 1.4 & 0.471 $\pm$ 0.027 & 0.674 $\pm$ 0.010 & 34.0 & 3 \\
+CN / MCI / AD & subject-disjoint & ensemble & 51.1 $\pm$ 0.7 & 51.0 $\pm$ 0.7 & 0.508 $\pm$ 0.008 & 0.702 $\pm$ 0.009 & 34.0 & 3 \\
+CN / MCI / AD & subject-disjoint & Shrinkage LDA & 49.6 $\pm$ 0.5 & 49.6 $\pm$ 0.5 & 0.495 $\pm$ 0.008 & 0.684 $\pm$ 0.012 & 34.0 & 3 \\
+CN / MCI / AD & subject-disjoint & Logistic regression & 49.8 $\pm$ 2.1 & 49.8 $\pm$ 2.1 & 0.498 $\pm$ 0.021 & 0.691 $\pm$ 0.012 & 34.0 & 3 \\
+CN / MCI / AD & subject-disjoint & ResNet18, 2.5D & 51.2 & 51.2 & 0.512 & 0.729 & 34.0 & 1 \\
+CN / MCI / AD & subject-disjoint & Random forest & 49.9 $\pm$ 0.5 & 49.8 $\pm$ 0.5 & 0.489 $\pm$ 0.006 & 0.703 $\pm$ 0.003 & 34.0 & 3 \\
+CN / MCI / AD & subject-disjoint & RBF SVM & 49.3 $\pm$ 1.0 & 49.1 $\pm$ 1.0 & 0.468 $\pm$ 0.013 & 0.673 $\pm$ 0.002 & 34.0 & 3 \\
+MCI vs AD & site-disjoint & ensemble & 63.4 $\pm$ 0.8 & 63.4 $\pm$ 0.8 & 0.634 $\pm$ 0.008 & 0.715 $\pm$ 0.015 & 50.0 & 3 \\
+MCI vs AD & site-disjoint & Shrinkage LDA & 63.8 $\pm$ 1.8 & 63.8 $\pm$ 1.8 & 0.638 $\pm$ 0.018 & 0.692 $\pm$ 0.020 & 50.0 & 3 \\
+MCI vs AD & site-disjoint & Logistic regression & 63.8 $\pm$ 1.3 & 63.8 $\pm$ 1.3 & 0.638 $\pm$ 0.013 & 0.710 $\pm$ 0.015 & 50.0 & 3 \\
+MCI vs AD & site-disjoint & Random forest & 65.8 $\pm$ 0.9 & 65.8 $\pm$ 0.9 & 0.658 $\pm$ 0.009 & 0.701 $\pm$ 0.014 & 50.0 & 3 \\
+MCI vs AD & site-disjoint & RBF SVM & 63.9 $\pm$ 1.3 & 63.9 $\pm$ 1.3 & 0.639 $\pm$ 0.013 & 0.698 $\pm$ 0.018 & 50.0 & 3 \\
+MCI vs AD & subject-disjoint & ensemble & 65.0 $\pm$ 0.6 & 65.0 $\pm$ 0.6 & 0.650 $\pm$ 0.006 & 0.732 $\pm$ 0.007 & 50.0 & 3 \\
+MCI vs AD & subject-disjoint & Shrinkage LDA & 63.9 $\pm$ 0.3 & 63.9 $\pm$ 0.3 & 0.639 $\pm$ 0.003 & 0.710 $\pm$ 0.011 & 50.0 & 3 \\
+MCI vs AD & subject-disjoint & Logistic regression & 65.5 $\pm$ 1.3 & 65.5 $\pm$ 1.3 & 0.655 $\pm$ 0.013 & 0.729 $\pm$ 0.008 & 50.0 & 3 \\
+MCI vs AD & subject-disjoint & Random forest & 63.6 $\pm$ 1.9 & 63.6 $\pm$ 1.9 & 0.636 $\pm$ 0.019 & 0.723 $\pm$ 0.006 & 50.0 & 3 \\
+MCI vs AD & subject-disjoint & RBF SVM & 63.1 $\pm$ 0.3 & 63.1 $\pm$ 0.3 & 0.631 $\pm$ 0.003 & 0.715 $\pm$ 0.006 & 50.0 & 3 \\
+% END AUTO:v3-centralised
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Federated Performance and the Effect of the Partition}
+\label{sec:results-federated}
+
+\begin{table*}[t]
+\centering
+\caption{Federated averaging over the region representation, by client
+partition and split scheme.}
+\label{tab:v3-federated}
+\begin{tabular}{llccccc}
+\toprule
+Task & Split & Partition & Accuracy (\%) & Balanced acc.\ (\%) & Macro F1 &
+Macro AUROC \\
+\midrule
+% BEGIN AUTO:v3-federated
+CN vs AD & site-disjoint & Dirichlet ($\alpha$ = 0.5) & 75.7 $\pm$ 1.3 & 75.8 $\pm$ 1.3 & 0.757 $\pm$ 0.013 & 0.852 $\pm$ 0.008 & 3 \\
+CN vs AD & site-disjoint & IID & 77.7 $\pm$ 1.6 & 77.8 $\pm$ 1.6 & 0.777 $\pm$ 0.016 & 0.856 $\pm$ 0.007 & 3 \\
+CN vs AD & site-disjoint & real ADNI sites & 77.4 $\pm$ 1.7 & 77.4 $\pm$ 1.8 & 0.774 $\pm$ 0.017 & 0.854 $\pm$ 0.008 & 3 \\
+CN vs AD & subject-disjoint & Dirichlet ($\alpha$ = 0.5) & 74.9 $\pm$ 1.0 & 74.9 $\pm$ 1.0 & 0.749 $\pm$ 0.010 & 0.854 $\pm$ 0.003 & 3 \\
+CN vs AD & subject-disjoint & IID & 76.2 $\pm$ 1.2 & 76.2 $\pm$ 1.1 & 0.762 $\pm$ 0.011 & 0.859 $\pm$ 0.012 & 3 \\
+CN vs AD & subject-disjoint & real ADNI sites & 74.7 $\pm$ 1.6 & 74.7 $\pm$ 1.6 & 0.747 $\pm$ 0.016 & 0.848 $\pm$ 0.009 & 3 \\
+CN / MCI / AD & site-disjoint & Dirichlet ($\alpha$ = 0.5) & 47.4 $\pm$ 1.7 & 47.4 $\pm$ 1.7 & 0.474 $\pm$ 0.015 & 0.659 $\pm$ 0.010 & 3 \\
+CN / MCI / AD & site-disjoint & IID & 46.0 $\pm$ 0.8 & 46.0 $\pm$ 0.8 & 0.458 $\pm$ 0.009 & 0.650 $\pm$ 0.004 & 3 \\
+CN / MCI / AD & site-disjoint & real ADNI sites & 45.2 $\pm$ 2.0 & 45.3 $\pm$ 2.0 & 0.451 $\pm$ 0.019 & 0.653 $\pm$ 0.008 & 3 \\
+CN / MCI / AD & subject-disjoint & Dirichlet ($\alpha$ = 0.5) & 48.0 $\pm$ 5.7 & 48.1 $\pm$ 5.7 & 0.482 $\pm$ 0.058 & 0.669 $\pm$ 0.025 & 3 \\
+CN / MCI / AD & subject-disjoint & IID & 48.1 $\pm$ 3.2 & 48.1 $\pm$ 3.2 & 0.481 $\pm$ 0.032 & 0.662 $\pm$ 0.020 & 3 \\
+CN / MCI / AD & subject-disjoint & real ADNI sites & 46.9 $\pm$ 1.4 & 46.9 $\pm$ 1.4 & 0.469 $\pm$ 0.014 & 0.656 $\pm$ 0.015 & 3 \\
+% END AUTO:v3-federated
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Subject-Level Differential Privacy}
+\label{sec:results-privacy}
+
+\begin{table*}[t]
+\centering
+\caption{Subject-level DP-FedAvg over the region representation. Explanation
+agreement is the Spearman correlation between the private model's region
+importance and the non-private reference; the medial temporal share is the
+fraction of attribution mass in hippocampus and amygdala.}
+\label{tab:v3-privacy}
+\begin{tabular}{llcccccc}
+\toprule
+Task & $\varepsilon$ & $\sigma$ & Accuracy (\%) & Balanced acc.\ (\%) &
+Macro F1 & Expl.\ agreement & MTL share (\%) \\
+\midrule
+% BEGIN AUTO:v3-privacy
+CN vs AD & non-private & --- & 76.0 $\pm$ 3.3 & 76.0 $\pm$ 3.3 & 0.760 $\pm$ 0.033 & 0.976 $\pm$ 0.022 & 10.4 $\pm$ 0.4 & 3 \\
+CN vs AD & 1 & 11.34 & 67.5 $\pm$ 0.3 & 67.4 $\pm$ 0.3 & 0.673 $\pm$ 0.003 & -0.123 $\pm$ 0.119 & 5.0 $\pm$ 0.7 & 3 \\
+CN vs AD & 2 & 6.34 & 69.5 $\pm$ 2.3 & 69.4 $\pm$ 2.4 & 0.692 $\pm$ 0.025 & -0.101 $\pm$ 0.126 & 5.1 $\pm$ 0.6 & 3 \\
+CN vs AD & 5 & 3.04 & 74.7 $\pm$ 1.8 & 74.6 $\pm$ 1.7 & 0.745 $\pm$ 0.017 & -0.034 $\pm$ 0.117 & 5.3 $\pm$ 0.5 & 3 \\
+CN vs AD & 10 & 1.83 & 76.0 $\pm$ 2.1 & 76.0 $\pm$ 2.1 & 0.759 $\pm$ 0.021 & 0.062 $\pm$ 0.124 & 5.8 $\pm$ 0.4 & 3 \\
+CN / MCI / AD & non-private & --- & 45.9 $\pm$ 0.5 & 45.9 $\pm$ 0.5 & 0.459 $\pm$ 0.004 & 0.941 $\pm$ 0.052 & 8.1 $\pm$ 0.2 & 3 \\
+CN / MCI / AD & 1 & 11.34 & 39.8 $\pm$ 2.2 & 39.9 $\pm$ 2.2 & 0.396 $\pm$ 0.022 & -0.118 $\pm$ 0.133 & 6.3 $\pm$ 1.4 & 3 \\
+CN / MCI / AD & 2 & 6.34 & 42.5 $\pm$ 0.8 & 42.5 $\pm$ 0.8 & 0.424 $\pm$ 0.008 & -0.103 $\pm$ 0.132 & 6.4 $\pm$ 1.3 & 3 \\
+CN / MCI / AD & 5 & 3.04 & 46.4 $\pm$ 2.5 & 46.3 $\pm$ 2.5 & 0.460 $\pm$ 0.026 & -0.061 $\pm$ 0.135 & 6.8 $\pm$ 0.9 & 3 \\
+CN / MCI / AD & 10 & 1.83 & 49.0 $\pm$ 1.9 & 49.0 $\pm$ 2.0 & 0.484 $\pm$ 0.021 & 0.024 $\pm$ 0.122 & 7.1 $\pm$ 0.9 & 3 \\
+% END AUTO:v3-privacy
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{The Cost of Privacy Is Set by Dimension}
+\label{sec:dimension-law}
+
+The Gaussian mechanism perturbs a summed update of dimension $d$ with
+isotropic noise, so the expected norm of that noise is
+\begin{equation}
+\mathbb{E}\!\left[\|\boldsymbol{\xi}\|_2\right] \approx \sigma C \sqrt{d},
+\label{eq:noise-norm}
+\end{equation}
+while the summed update it is added to is bounded by $NC$ for $N$
+participating subjects and does not grow with $d$ at all. The worst-case
+noise-to-signal ratio is therefore
+\begin{equation}
+\frac{\mathbb{E}\!\left[\|\boldsymbol{\xi}\|_2\right]}{NC}
+\approx \frac{\sigma\sqrt{d}}{N},
+\label{eq:noise-signal}
+\end{equation}
+which depends on the model only through $\sqrt{d}$. Halving the budget raises
+$\sigma$; moving from a $23.5$M-parameter network to a $423$-parameter model
+over standardised regions divides the numerator by more than $200$.
+Table~\ref{tab:v3-dimension-law} evaluates
+Equation~\ref{eq:noise-signal} at each budget for the three configurations,
+and Table~\ref{tab:v3-privacy} reports the utility that follows.
+
+\begin{table}[t]
+\centering
+\caption{Worst-case noise-to-signal ratio by perturbed dimension, from
+Equation~\ref{eq:noise-signal}.}
+\label{tab:v3-dimension-law}
+\begin{tabular}{llccccc}
+\toprule
+$\varepsilon$ & Model & $d$ & $\sigma$ & $\mathbb{E}\|\boldsymbol{\xi}\|$ &
+$NC$ & Ratio \\
+\midrule
+% BEGIN AUTO:v3-dimension-law
+1 & MNI region model & 423 & 11.34 & 233.2 & 237.0 & 0.98 \\
+1 & ResNet50 head & 6\,147 & 11.34 & 889.1 & 237.0 & 3.75 \\
+1 & ResNet50, full network & 23\,508\,035 & 11.34 & 54985.5 & 237.0 & 232.01 \\
+2 & MNI region model & 423 & 6.34 & 130.4 & 237.0 & 0.55 \\
+2 & ResNet50 head & 6\,147 & 6.34 & 497.1 & 237.0 & 2.10 \\
+2 & ResNet50, full network & 23\,508\,035 & 6.34 & 30740.9 & 237.0 & 129.71 \\
+5 & MNI region model & 423 & 3.04 & 62.6 & 237.0 & 0.26 \\
+5 & ResNet50 head & 6\,147 & 3.04 & 238.7 & 237.0 & 1.01 \\
+5 & ResNet50, full network & 23\,508\,035 & 3.04 & 14762.5 & 237.0 & 62.29 \\
+10 & MNI region model & 423 & 1.83 & 37.6 & 237.0 & 0.16 \\
+10 & ResNet50 head & 6\,147 & 1.83 & 143.2 & 237.0 & 0.60 \\
+10 & ResNet50, full network & 23\,508\,035 & 1.83 & 8856.5 & 237.0 & 37.37 \\
+% END AUTO:v3-dimension-law
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Explanation Fidelity Under Privacy}
+\label{sec:results-xai}
+
+Because every model here is defined over named MNI regions, an attribution is
+a value per region and two models' attributions are directly comparable. This
+is what the previous slice-space pipeline could not support: without
+registration, a heat map at pixel $(i, j)$ refers to different anatomy in
+different subjects, so it can be displayed but neither averaged nor compared.
+
+Three quantities are reported against the non-private centralised reference:
+the Spearman correlation of region importance, the Jaccard overlap of the
+top-$k$ regions, and the share of attribution mass falling in hippocampus and
+amygdala. The last is a directional check against established anatomy rather
+than a self-consistency check, since medial temporal atrophy is the
+best-supported structural correlate of Alzheimer's disease.
+
+Nothing in this section validates a model clinically. Agreement with a
+reference model, or with expected anatomy, is evidence about a model and not
+about a patient.
 
 % ============================================================
 \section{Privacy and Security Analysis}
