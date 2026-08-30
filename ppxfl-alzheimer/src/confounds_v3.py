@@ -61,8 +61,7 @@ def load_demographics(path: str) -> dict:
 
 
 def _metrics(y_true, y_pred, y_score, n_classes):
-    from sklearn.metrics import (accuracy_score, balanced_accuracy_score, f1_score,
-                                 roc_auc_score)
+    from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score, roc_auc_score
 
     out = {
         "accuracy": float(accuracy_score(y_true, y_pred)),

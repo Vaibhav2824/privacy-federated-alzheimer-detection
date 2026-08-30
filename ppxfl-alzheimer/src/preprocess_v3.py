@@ -320,12 +320,19 @@ def write_manifest(path: str, rows: list[dict]) -> None:
         writer.writerows(rows)
 
 
-def _orient_and_strip(records, out_dir: str, orientation_table: dict, target) -> None:
-    """Write every scan in its measured orientation, then skull-strip in batch.
+def _orient_and_strip(records, out_dir: str, orientation_table: dict, target,
+                      batch_size: int = 24) -> None:
+    """Write each scan in its measured orientation and skull-strip it.
 
     Orientation has to come first: deepbet is trained on anatomically oriented
     volumes and leaves face and neck behind when given a scan lying on its side,
     which then defeats registration too.
+
+    Work proceeds in batches, and each batch's oriented volumes are deleted as
+    soon as it has been stripped.  Orienting the whole cohort up front means
+    holding an uncompressed copy of every scan at once -- for this cohort about
+    25 GB -- which exhausts both the disk and the memory the reader maps, and
+    deepbet then fails the entire run rather than one batch of it.
     """
     import nibabel as nib
     from deepbet import run_bet
@@ -335,36 +342,57 @@ def _orient_and_strip(records, out_dir: str, orientation_table: dict, target) ->
     os.makedirs(oriented_dir, exist_ok=True)
     os.makedirs(bet_dir, exist_ok=True)
 
-    pending, brains, sources = [], [], {}
-    for record in records:
-        brain_path = os.path.join(bet_dir, f"{record.subject_id}.nii.gz")
-        if os.path.exists(brain_path):
-            continue
-        data, affine, source = orient_raw_scan(
-            record.source_path, orientation_table, target
-        )
-        sources[record.subject_id] = source
-        oriented_path = os.path.join(oriented_dir, f"{record.subject_id}.nii.gz")
-        nib.save(nib.Nifti1Image(data.astype(np.float32), affine), oriented_path)
-        pending.append(oriented_path)
-        brains.append(brain_path)
+    sources_path = os.path.join(out_dir, "orientation_sources.json")
+    sources: dict[str, str] = {}
+    if os.path.exists(sources_path):
+        with open(sources_path, encoding="utf-8") as handle:
+            sources = json.load(handle)
 
-    if pending:
-        print(f"skull stripping {len(pending)} oriented volumes", flush=True)
-        run_bet(pending, brain_paths=brains, n_dilate=0)
-        for path in pending:
-            os.remove(path)
+    todo = [r for r in records
+            if not os.path.exists(os.path.join(bet_dir, f"{r.subject_id}.nii.gz"))]
+    if not todo:
+        return
+    print(f"skull stripping {len(todo)} volumes in batches of {batch_size}",
+          flush=True)
 
-    if sources:
-        counts = collections.Counter(sources.values())
-        print(f"orientation sources: {dict(counts)}", flush=True)
-    with open(os.path.join(out_dir, "orientation_sources.json"), "w",
-              encoding="utf-8") as handle:
-        json.dump(sources, handle, indent=2)
+    for start in range(0, len(todo), batch_size):
+        batch = todo[start:start + batch_size]
+        pending, brains = [], []
+        for record in batch:
+            try:
+                data, affine, source = orient_raw_scan(
+                    record.source_path, orientation_table, target
+                )
+            except Exception as error:  # a single unreadable scan must not stop the run
+                print(f"  [skip] {record.subject_id}: {error}", flush=True)
+                continue
+            sources[record.subject_id] = source
+            oriented_path = os.path.join(oriented_dir, f"{record.subject_id}.nii.gz")
+            nib.save(nib.Nifti1Image(data.astype(np.float32), affine), oriented_path)
+            pending.append(oriented_path)
+            brains.append(os.path.join(bet_dir, f"{record.subject_id}.nii.gz"))
+            del data
+
+        if pending:
+            try:
+                run_bet(pending, brain_paths=brains, n_dilate=0)
+            except Exception as error:
+                print(f"  [batch failed] {error}", flush=True)
+            for path in pending:
+                if os.path.exists(path):
+                    os.remove(path)
+
+        done = min(start + batch_size, len(todo))
+        print(f"  stripped {done}/{len(todo)}", flush=True)
+        with open(sources_path, "w", encoding="utf-8") as handle:
+            json.dump(sources, handle, indent=2)
+
+    counts = collections.Counter(sources.values())
+    print(f"orientation sources: {dict(counts)}", flush=True)
 
 
 def run(data_root: str, out_dir: str, limit: int | None, shard: int, num_shards: int,
-        orientation_path: str) -> None:
+        orientation_path: str, stage: str = "all") -> None:
     import nibabel as nib
 
     from .orientation import load_table
@@ -388,8 +416,15 @@ def run(data_root: str, out_dir: str, limit: int | None, shard: int, num_shards:
     vol_dir = os.path.join(out_dir, "vol")
     os.makedirs(vol_dir, exist_ok=True)
 
-    if shard == 0:
+    # Skull stripping must finish for every subject before any shard starts
+    # registering, otherwise a shard reaches a subject whose stripped brain does
+    # not exist yet and skips it.  It runs on the GPU and is cheap, so it is a
+    # separate stage rather than something shard 0 races the others to finish.
+    if stage in ("bet", "all"):
         _orient_and_strip(records, out_dir, orientation_table, target)
+    if stage == "bet":
+        print("skull stripping complete; run --stage register next")
+        return
 
     rows = []
     started = time.time()
@@ -454,11 +489,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--shard", type=int, default=0,
                         help="index of this shard when registering in parallel")
     parser.add_argument("--num-shards", type=int, default=1)
+    parser.add_argument("--stage", choices=["all", "bet", "register"],
+                        default="all",
+                        help="bet strips every subject; register is shardable")
     parser.add_argument("--orientation-table",
                         default=os.path.join("data", "orientation_table.json"))
     args = parser.parse_args(argv)
     run(args.data_root, args.out, args.limit, args.shard, args.num_shards,
-        args.orientation_table)
+        args.orientation_table, args.stage)
     return 0
 
 

@@ -87,11 +87,26 @@ def convert_series(series_dir: str, out_path: str) -> bool:
     return True
 
 
-def run(staging: str, data_root: str, export: str, skip_non_structural: bool) -> dict:
+def run(staging: str, data_root: str, export: str, skip_non_structural: bool,
+        prune: bool = False, min_free_gb: float = 3.0) -> dict:
+    """Convert every series under ``staging``.
+
+    With ``prune``, a series' DICOM files are deleted as soon as it has been
+    converted.  The archives and their converted output do not fit on disk at
+    the same time -- roughly 10 GB of DICOM expands to roughly 21 GB of NIfTI --
+    so holding the whole staging tree until the end runs the disk to zero and
+    SimpleITK begins failing writes.  Freeing each series as it is consumed
+    keeps peak usage near the larger of the two rather than their sum.
+    """
+    import shutil
+
     labels = labels_from_export(export)
     stats = {"converted": 0, "skipped": 0, "unlabelled": 0, "failed": 0,
-             "non_structural": 0}
+             "non_structural": 0, "pruned": 0}
     subjects: set[str] = set()
+
+    def free_gb() -> float:
+        return shutil.disk_usage(data_root).free / (1024 ** 3)
 
     for subject, series, date, image_id, path in find_series(staging):
         group = labels.get(subject)
@@ -108,15 +123,28 @@ def run(staging: str, data_root: str, export: str, skip_non_structural: bool) ->
         if os.path.exists(out_path):
             stats["skipped"] += 1
             subjects.add(subject)
+            if prune:
+                shutil.rmtree(path, ignore_errors=True)
+                stats["pruned"] += 1
             continue
+
+        if free_gb() < min_free_gb:
+            print(f"  [stop] only {free_gb():.1f} GB free, below the "
+                  f"{min_free_gb} GB floor; re-run after making room", flush=True)
+            break
+
         if convert_series(path, out_path):
             stats["converted"] += 1
             subjects.add(subject)
+            if prune:
+                shutil.rmtree(path, ignore_errors=True)
+                stats["pruned"] += 1
         else:
             stats["failed"] += 1
         total = stats["converted"] + stats["skipped"]
         if total and total % 25 == 0:
-            print(f"  {total} series done ({len(subjects)} subjects)", flush=True)
+            print(f"  {total} series done ({len(subjects)} subjects), "
+                  f"{free_gb():.1f} GB free", flush=True)
 
     stats["subjects"] = len(subjects)
     return stats
@@ -129,10 +157,15 @@ def main(argv=None) -> int:
     parser.add_argument("--data-root", default="..")
     parser.add_argument("--export", default=os.path.join("data", "ida_search_v4.csv"))
     parser.add_argument("--keep-non-structural", action="store_true")
+    parser.add_argument("--prune-staging", action="store_true",
+                        help="delete each series' DICOM once it is converted")
+    parser.add_argument("--min-free-gb", type=float, default=3.0,
+                        help="stop rather than fill the disk below this")
     args = parser.parse_args(argv)
 
     stats = run(args.staging, args.data_root, args.export,
-                not args.keep_non_structural)
+                not args.keep_non_structural, args.prune_staging,
+                args.min_free_gb)
     print(json.dumps(stats, indent=2))
     return 0
 

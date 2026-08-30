@@ -70,3 +70,10 @@ htmlcov/
 # IDA search exports and working subject lists carry subject-level attributes.
 data/ida_search*.csv
 data/batches/
+
+# Subject-identifier lists
+data/cohort_v4_request.json
+data/missing_*.txt
+
+# Run logs
+logs/

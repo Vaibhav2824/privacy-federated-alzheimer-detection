@@ -62,3 +62,16 @@ scratch/
 
 ppxfl-alzheimer/data/ida_search*.csv
 ppxfl-alzheimer/data/batches/
+
+# Machine-specific operational scripts (local paths, signed URLs)
+local/
+
+# Subject-identifier lists and extracted DICOM staging
+ppxfl-alzheimer/data/cohort_v4_request.json
+ppxfl-alzheimer/data/missing_*.txt
+dicom_staging/
+
+# Run logs
+logs/
+dicom_staging/
+commitmsg.txt
