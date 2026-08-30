@@ -44,6 +44,21 @@
 % Do not edit by hand: run `python -m src.paper_tables` instead.
 % BEGIN AUTO:facts
 % --- Rebuilt (v3) cohort. Filled from results_v3/results_summary_v3.json. ---
+\newcommand{\CohortAvailable}{2\,645}
+\newcommand{\CohortADAvailable}{490}
+\newcommand{\CohortTotal}{1\,002}
+\newcommand{\CohortPerGroup}{334}
+\newcommand{\CohortPerCell}{167}
+\newcommand{\CohortAgeSpread}{0.7}
+\newcommand{\ConfSexTri}{41.4\%}
+\newcommand{\ConfAgeTri}{36.5\%}
+\newcommand{\ConfImgTri}{51.6\%}
+\newcommand{\ConfImgFemaleTri}{50.5\%}
+\newcommand{\ConfImgMaleTri}{49.6\%}
+\newcommand{\ConfNFemaleTri}{146}
+\newcommand{\ConfNMaleTri}{150}
+\newcommand{\ConfSexBin}{58.5\%}
+\newcommand{\ConfImgBin}{80.6\%}
 \newcommand{\VThreeSubjects}{297}
 \newcommand{\VThreeSites}{42}
 \newcommand{\VThreeFeatures}{140}
@@ -1922,6 +1937,106 @@ $NC$ & Ratio \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+
+\subsection{What the Cohort Alone Could Explain}
+\label{sec:results-confounds}
+
+An imaging accuracy is evidence about imaging only if the cohort's
+demographics could not have produced it unaided.  On this cohort they partly
+could.  The CN group is 66\% female while the MCI group is 62\% male, and that
+asymmetry is enough for a rule that reads sex and nothing else to score
+\ConfSexTri{} against a \VThreeChance{} chance rate.  Cross-validation does not
+remove it, because it is a property of the sample rather than of the protocol.
+
+Table~\ref{tab:v3-confounds} measures the size of the problem under exactly the
+protocol used for the imaging models --- same folds, same seeds, same metrics
+--- and then answers it.
+
+
+\begin{table}[t]
+\centering
+\caption{Demographics-only baselines, the imaging model, and the imaging model
+within a single sex stratum.  Balanced accuracy, mean over three seeds, under
+the subject-disjoint protocol.  Chance is \VThreeChance{} for CN/MCI/AD and
+50.8\% for CN versus AD.}
+\label{tab:v3-confounds}
+\begin{tabular}{lcc}
+\toprule
+Predictor & CN / MCI / AD & CN vs AD \\
+\midrule
+% BEGIN AUTO:v3-confounds-rows
+Sex only & 41.4 & 58.5 \\
+Age only & 36.5 & 54.2 \\
+Sex + age & 41.1 & 58.0 \\
+Imaging (MNI regions) & 51.6 & 80.6 \\
+Imaging + demographics & 53.7 & 81.1 \\
+\midrule
+Imaging, female only & 50.5 ($n$ = 146) & 74.0 ($n$ = 108) \\
+Imaging, male only & 49.6 ($n$ = 150) & 77.6 ($n$ = 90) \\
+% END AUTO:v3-confounds-rows
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+Three readings matter.  First, the imaging representation clearly exceeds what
+demographics buy: \ConfImgTri{} against \ConfSexTri{} for sex and
+\ConfAgeTri{} for age on the three-class task, and \ConfImgBin{} against
+\ConfSexBin{} on CN versus AD.  Second, adding demographics to the imaging
+features is worth only about two points, so the anatomy is carrying the
+decision rather than standing in for a demographic variable.
+
+Third, and decisively, the result survives stratification.  Within a single sex
+stratum sex is constant and can contribute nothing at all, yet three-class
+balanced accuracy is \ConfImgFemaleTri{} among the \ConfNFemaleTri{} female
+subjects and \ConfImgMaleTri{} among the \ConfNMaleTri{} male subjects, against
+\ConfImgTri{} pooled.  The same holds for CN versus AD.  Whatever the cohort's
+sex imbalance contributes to the headline figure, it is not what the model is
+reading.
+
+We report this rather than adjust for it, because an adjustment invites the
+question of whether the adjustment was correct.  The expansion described in
+Section~\ref{sec:cohort-design} removes the confound at its source instead: it
+selects subjects so that every diagnosis-by-sex cell holds the same number of
+subjects, which makes a sex-only rule exactly chance by construction and leaves
+nothing to adjust.
+
+
+\subsection{Removing the Confound by Design}
+\label{sec:cohort-design}
+
+Section~\ref{sec:results-confounds} shows that the imaging result is not an
+artefact of the cohort's sex imbalance.  It does not make the imbalance
+harmless: it leaves a reader having to take a stratified analysis on trust, and
+it caps what any single number from this cohort can claim.  The cleaner remedy
+is to remove the imbalance from the sample rather than from the analysis.
+
+We therefore specify the cohort as a design rather than as whatever a download
+happened to contain.  From an ADNI advanced-search export of every CN, MCI and
+AD subject holding a baseline or screening structural T1 --- \CohortAvailable{}
+subjects --- subjects are selected so that each diagnosis contributes equally
+and, within each diagnosis, each sex contributes equally, drawing evenly across
+age bands so that fixing sex does not silently shift one group older than
+another.  AD is the binding class at \CohortADAvailable{} available subjects,
+which sets the ceiling.
+
+The resulting specification is \CohortTotal{} subjects: \CohortPerGroup{} per
+diagnosis, \CohortPerCell{} of each sex within every diagnosis, with group mean
+ages within \CohortAgeSpread{} years of one another.  Three properties follow
+by construction rather than by argument.  The majority-class rate is exactly
+one third, so chance is unambiguous.  A sex-only rule scores exactly chance,
+so the baseline that reaches \ConfSexTri{} on the present cohort has nothing to
+exploit.  And an age-only rule is left with the small residual differences
+between matched groups.
+
+Selection is deterministic given the export and the seed, and the chosen
+identifiers are released, so the cohort is reproducible by anyone holding their
+own approved ADNI download.  We report the present cohort's results in full
+alongside, rather than in place of, this design: the point of
+Section~\ref{sec:results-confounds} is that the two should agree, and a claim
+that only appears after the cohort is rebuilt would be a weaker claim than one
+that survives both.
 
 \subsection{Explanation Fidelity Under Privacy}
 \label{sec:results-xai}

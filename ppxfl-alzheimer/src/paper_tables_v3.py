@@ -157,6 +157,45 @@ def table_orientation(table: dict) -> str:
     return "\n".join(lines)
 
 
+PREDICTOR_NAMES = {
+    "sex": "Sex only",
+    "age": "Age only",
+    "sex+age": "Sex + age",
+    "imaging": "Imaging (MNI regions)",
+    "imaging+demographics": "Imaging + demographics",
+}
+
+
+def table_confounds(report: dict) -> str:
+    """Demographics-only baselines beside the imaging model and its strata."""
+    label_sets = ["cn-mci-ad", "cn-ad"]
+    end = r" \\"
+
+    def cell(label_set, predictor):
+        entry = report["results"].get(label_set, {}).get(predictor)
+        if not entry:
+            return "---"
+        return f"{entry['balanced_accuracy']['mean'] * 100:.1f}"
+
+    lines = []
+    for predictor, name in PREDICTOR_NAMES.items():
+        lines.append(" & ".join([name] + [cell(s, predictor) for s in label_sets]) + end)
+
+    lines.append(r"\midrule")
+    for stratum, label in (("F", "Imaging, female only"),
+                           ("M", "Imaging, male only")):
+        values = []
+        for label_set in label_sets:
+            entry = report["stratified"].get(label_set, {}).get(stratum)
+            if not entry:
+                values.append("---")
+            else:
+                mean = entry["balanced_accuracy"]["mean"] * 100
+                values.append(f"{mean:.1f} ($n$ = {entry['n']})")
+        lines.append(" & ".join([label] + values) + end)
+    return "\n".join(lines)
+
+
 def replace_block(text: str, name: str, body: str) -> tuple[str, bool]:
     pattern = re.compile(
         rf"(% BEGIN AUTO:{re.escape(name)}\n).*?(% END AUTO:{re.escape(name)})",
@@ -173,6 +212,9 @@ def main(argv=None) -> int:
                         default=os.path.join("results_v3", "results_summary_v3.json"))
     parser.add_argument("--law",
                         default=os.path.join("results_v3", "metrics", "dimension_law.json"))
+    parser.add_argument("--confounds",
+                        default=os.path.join("results_v3", "metrics",
+                                             "confounds.json"))
     parser.add_argument("--orientation",
                         default=os.path.join("data", "orientation_table.json"))
     parser.add_argument("--paper", default=os.path.join("..", "paper.tex"))
@@ -189,6 +231,9 @@ def main(argv=None) -> int:
     if os.path.exists(args.law):
         with open(args.law, encoding="utf-8") as handle:
             blocks["v3-dimension-law"] = table_dimension_law(json.load(handle))
+    if os.path.exists(args.confounds):
+        with open(args.confounds, encoding="utf-8") as handle:
+            blocks["v3-confounds-rows"] = table_confounds(json.load(handle))
     if os.path.exists(args.orientation):
         with open(args.orientation, encoding="utf-8") as handle:
             blocks["v3-orientation"] = table_orientation(json.load(handle))
