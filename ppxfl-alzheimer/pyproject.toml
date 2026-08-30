@@ -25,6 +25,14 @@ dependencies = [
     "torch>=2.0",
     "torchvision>=0.15",
     "opacus>=1.4",
+    # Neuroimaging preprocessing (src/preprocess_v3.py and src/orientation*.py):
+    # nibabel reads the scans, nilearn supplies the MNI152 and ICBM152
+    # templates and the Harvard-Oxford atlas, dipy performs the affine
+    # registration, and deepbet performs skull stripping.
+    "nibabel>=5.0",
+    "nilearn>=0.10",
+    "dipy>=1.8",
+    "deepbet>=1.0",
 ]
 
 [project.optional-dependencies]

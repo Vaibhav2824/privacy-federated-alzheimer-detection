@@ -22,6 +22,23 @@ omit =
     src/preprocess.py
     src/shap_analysis.py
     src/xai_similarity.py
+    # v3 pipeline: registration, skull stripping, atlas fetches, CUDA training
+    # and matplotlib rendering, none of which can be exercised honestly on a CPU
+    # runner without the ADNI scans. Their pure logic lives in src/orientation.py,
+    # src/splits_v3.py, src/federated_v3.py, src/xai_v3.py and src/evaluate_v3.py,
+    # which are covered.
+    src/preprocess_v3.py
+    src/orientation_search.py
+    src/fit_orientation.py
+    src/handedness.py
+    src/features.py
+    src/slices_v3.py
+    src/cnn_v3.py
+    src/deep_features.py
+    src/mia_v3.py
+    src/cnn_experiments_v3.py
+    src/experiments_v3.py
+    src/figures_v3.py
 
 [report]
 fail_under = 100
