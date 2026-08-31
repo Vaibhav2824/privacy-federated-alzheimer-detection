@@ -50,6 +50,23 @@
 \newcommand{\CohortPerGroup}{334}
 \newcommand{\CohortPerCell}{167}
 \newcommand{\CohortAgeSpread}{0.7}
+% --- Expanded (v4) cohort. Filled from results_v4/results_summary_v4.json. ---
+\newcommand{\VFourSubjects}{760}
+\newcommand{\VFourSites}{65}
+\newcommand{\VFourTriAcc}{53.9\%}
+\newcommand{\VFourTriSite}{54.8\%}
+\newcommand{\VFourTriAUROC}{0.705}
+\newcommand{\VFourBinAcc}{80.5\%}
+\newcommand{\VFourBinAUROC}{0.869}
+\newcommand{\VFourBalN}{576}
+\newcommand{\VFourBalTri}{50.8\%}
+\newcommand{\VFourBalBin}{77.6\%}
+\newcommand{\VFourSexOnly}{35.7\%}
+\newcommand{\VFourDpBinOne}{71.5\%}
+\newcommand{\VFourDpBinNone}{75.0\%}
+\newcommand{\VFourXaiNonPrivate}{0.926}
+\newcommand{\VFourXaiTen}{0.437}
+\newcommand{\VThreeXaiTenOld}{0.062}
 \newcommand{\ConfSexTri}{41.4\%}
 \newcommand{\ConfAgeTri}{36.5\%}
 \newcommand{\ConfImgTri}{51.6\%}
@@ -2002,6 +2019,57 @@ selects subjects so that every diagnosis-by-sex cell holds the same number of
 subjects, which makes a sex-only rule exactly chance by construction and leaves
 nothing to adjust.
 
+
+
+\subsection{Replication on an Expanded Cohort}
+\label{sec:results-v4}
+
+Every number above was measured on \VThreeSubjects{}~subjects.  To test whether
+those numbers were properties of the method or of that particular sample, the
+cohort was expanded to \VFourSubjects{}~subjects across \VFourSites{}~ADNI
+sites --- 2.6 times the subjects and 1.5 times the sites --- and the entire
+matrix was rerun unchanged.
+
+Centralised accuracy rose rather than regressed: \VFourTriAcc{} on three-class
+against \VThreeTriAcc{} before, and \VFourBinAcc{} on CN versus AD against
+\VThreeBinAcc{}.  The site-disjoint three-class figure rose further, to
+\VFourTriSite{}, and now sits \emph{above} the subject-disjoint one.  With
+\VFourSites{}~sites rather than 42, holding out whole sites costs nothing
+measurable: the model generalises to an unseen scanner about as well as to an
+unseen patient, which is the property a federated deployment actually needs.
+
+The demographic confound weakened on its own.  A sex-only rule scores
+\VFourSexOnly{} on the expanded cohort against \ConfSexTri{} on the smaller
+one, simply because the larger sample is better balanced.  On the balanced
+cohort of \VFourBalN{}~subjects, where diagnosis and sex are orthogonal by
+construction and a sex-only rule scores exactly one third, the imaging model
+still reaches \VFourBalTri{} on three-class and \VFourBalBin{} on CN versus AD.
+That is the result the confound analysis was built to test, and it survives.
+
+Subject-level differential privacy became substantially cheaper.  At
+$\varepsilon = 1$ the cost on CN versus AD fell from 8.6 points to 3.5
+(\VFourDpBinOne{} against \VFourDpBinNone{} non-private), and on the
+three-class task every private configuration at $\varepsilon \geq 2$ matched or
+exceeded the non-private federated baseline, the added noise acting as
+regularisation at this sample size.  This is the direction the $\sqrt{d}$
+analysis predicts: the noise scale is fixed by the model dimension and the
+budget, while the summed update grows with the number of participating
+subjects, so the ratio improves with cohort size at constant $\varepsilon$.
+
+\paragraph{A claim that did not replicate at full strength.}
+Section~\ref{sec:results-xai} reported region-attribution agreement collapsing
+to \VThreeXaiTenOld{} at $\varepsilon = 10$ while accuracy was untouched.  On
+the expanded cohort the same measurement gives \VFourXaiTen{}, against
+\VFourXaiNonPrivate{} non-private.  The direction survives and remains the
+point --- agreement roughly halves at a budget where accuracy does not fall at
+all, and in fact rises --- but the near-total collapse reported on
+\VThreeSubjects{}~subjects was substantially an artefact of that sample size.
+We report the revised figure rather than the original, and note that an
+explanation-stability claim measured on a few hundred subjects should be
+treated as provisional until it is repeated on more.  The weaker form of the
+claim is the one the evidence supports: explanation fidelity degrades markedly
+faster than accuracy under subject-level privacy, and accuracy-only
+privacy--utility curves therefore understate what a private model costs.
 
 \subsection{Removing the Confound by Design}
 \label{sec:cohort-design}

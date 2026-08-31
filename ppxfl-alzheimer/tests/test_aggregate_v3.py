@@ -271,17 +271,36 @@ def test_tables_cli_reports_nothing_missing_when_every_marker_exists(results_dir
             "handedness": "confirmed against anchor subjects",
         }
     }), encoding="utf-8")
+    confounds = tmp_path / "confounds.json"
+    confounds.write_text(json.dumps({
+        "results": {
+            "cn-mci-ad": {
+                name: {"balanced_accuracy": {"mean": value, "std": 0.01}}
+                for name, value in (("sex", 0.414), ("age", 0.365),
+                                    ("sex+age", 0.411), ("imaging", 0.516),
+                                    ("imaging+demographics", 0.537))
+            },
+        },
+        "stratified": {
+            "cn-mci-ad": {
+                "F": {"balanced_accuracy": {"mean": 0.505, "std": 0.01}, "n": 146},
+                "M": {"balanced_accuracy": {"mean": 0.496, "std": 0.01}, "n": 150},
+            },
+        },
+    }), encoding="utf-8")
+
     paper = tmp_path / "paper.tex"
     paper.write_text("\n".join(
         f"% BEGIN AUTO:{name}\n% END AUTO:{name}"
         for name in ("v3-centralised", "v3-federated", "v3-privacy",
-                     "v3-dimension-law", "v3-orientation")
+                     "v3-dimension-law", "v3-confounds-rows", "v3-orientation")
     ) + "\n", encoding="utf-8")
 
     assert tables_main(["--summary", str(summary_path), "--paper", str(paper),
-                        "--law", str(law),
+                        "--law", str(law), "--confounds", str(confounds),
                         "--orientation", str(orientation)]) == 0
     output = capsys.readouterr().out
-    assert "wrote 5 table blocks" in output
+    assert "wrote 6 table blocks" in output
     assert "markers not found" not in output
+    assert "Sex only" in paper.read_text(encoding="utf-8")
     assert r"256 \times 240" in paper.read_text(encoding="utf-8")

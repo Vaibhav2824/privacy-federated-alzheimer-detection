@@ -1,0 +1,84 @@
+{
+  "model": "logreg",
+  "label_set": "cn-mci",
+  "class_names": [
+    "CN",
+    "MCI"
+  ],
+  "split_scheme": "site",
+  "n_splits": 5,
+  "seed": 2024,
+  "n_subjects": 384,
+  "class_counts": {
+    "CN": 192,
+    "MCI": 192
+  },
+  "chance_accuracy": 0.5,
+  "uniform_chance": 0.5,
+  "overall": {
+    "accuracy": 0.5885416666666666,
+    "macro_f1": 0.5884411884411884,
+    "balanced_accuracy": 0.5885416666666666,
+    "macro_auroc": 0.6299913194444444,
+    "accuracy_ci95": [
+      0.5416666666666666,
+      0.6380208333333334
+    ],
+    "macro_f1_ci95": [
+      0.5412186379928315,
+      0.6379604343761122
+    ],
+    "balanced_accuracy_ci95": [
+      0.5415054579904471,
+      0.638570350008052
+    ],
+    "macro_auroc_ci95": [
+      0.5754179150820654,
+      0.6860104542324398
+    ]
+  },
+  "per_fold": [
+    {
+      "accuracy": 0.618421052631579,
+      "macro_f1": 0.6178255592162303,
+      "balanced_accuracy": 0.618421052631579,
+      "macro_auroc": 0.6488919667590027
+    },
+    {
+      "accuracy": 0.5128205128205128,
+      "macro_f1": 0.5128205128205128,
+      "balanced_accuracy": 0.5128205128205128,
+      "macro_auroc": 0.5312294543063774
+    },
+    {
+      "accuracy": 0.64,
+      "macro_f1": 0.64,
+      "balanced_accuracy": 0.641025641025641,
+      "macro_auroc": 0.6944444444444444
+    },
+    {
+      "accuracy": 0.5866666666666667,
+      "macro_f1": 0.5866666666666667,
+      "balanced_accuracy": 0.5876068376068376,
+      "macro_auroc": 0.6559829059829059
+    },
+    {
+      "accuracy": 0.5875,
+      "macro_f1": 0.5869191049913942,
+      "balanced_accuracy": 0.5875,
+      "macro_auroc": 0.638125
+    }
+  ],
+  "fold_mean": {
+    "accuracy": 0.5890816464237516,
+    "macro_f1": 0.5888463687389608,
+    "balanced_accuracy": 0.589474808816914,
+    "macro_auroc": 0.6337347542985461
+  },
+  "fold_std": {
+    "accuracy": 0.04307568622467131,
+    "macro_f1": 0.042999729503143395,
+    "balanced_accuracy": 0.04330968393650381,
+    "macro_auroc": 0.05465711043287292
+  }
+}

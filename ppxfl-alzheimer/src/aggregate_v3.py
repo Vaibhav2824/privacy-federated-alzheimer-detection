@@ -42,9 +42,19 @@ def load_runs(results_dir: str) -> list[dict]:
         name = os.path.basename(path)
         if name.endswith("_summary.json") or name == "dimension_law.json":
             continue
-        with open(path, encoding="utf-8") as handle:
-            payload = json.load(handle)
-        if "overall" not in payload:
+        # A results directory is written by several tools and can contain a
+        # path that merely looks like a run: a directory whose name ends .json,
+        # a partial write from an interrupted job.  One of those should not
+        # abort aggregation of every real run beside it.
+        if not os.path.isfile(path):
+            continue
+        try:
+            with open(path, encoding="utf-8") as handle:
+                payload = json.load(handle)
+        except (OSError, json.JSONDecodeError) as error:
+            print(f"  [skip] {name}: {error}")
+            continue
+        if not isinstance(payload, dict) or "overall" not in payload:
             continue
         payload["_file"] = name
         if name.startswith("dp_"):

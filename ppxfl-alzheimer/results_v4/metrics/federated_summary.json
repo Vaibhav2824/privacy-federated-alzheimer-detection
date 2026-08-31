@@ -1,0 +1,256 @@
+{
+  "runs": [
+    {
+      "tag": "fed_natural_cn-mci-ad_subject_s42",
+      "accuracy": 0.5026315789473684,
+      "balanced_accuracy": 0.5031521909211456,
+      "macro_f1": 0.5001235548433954,
+      "macro_auroc": 0.6625233740313985
+    },
+    {
+      "tag": "fed_natural_cn-mci-ad_subject_s123",
+      "accuracy": 0.45921052631578946,
+      "balanced_accuracy": 0.46012570189934593,
+      "macro_f1": 0.4570892681592738,
+      "macro_auroc": 0.6479893233317612
+    },
+    {
+      "tag": "fed_natural_cn-mci-ad_subject_s2024",
+      "accuracy": 0.45394736842105265,
+      "balanced_accuracy": 0.4548969437294113,
+      "macro_f1": 0.45188374861040964,
+      "macro_auroc": 0.6580454809491626
+    },
+    {
+      "tag": "fed_iid_cn-mci-ad_subject_s42",
+      "accuracy": 0.49605263157894736,
+      "balanced_accuracy": 0.4952803289707573,
+      "macro_f1": 0.4890116051974922,
+      "macro_auroc": 0.6706112389336932
+    },
+    {
+      "tag": "fed_iid_cn-mci-ad_subject_s123",
+      "accuracy": 0.5092105263157894,
+      "balanced_accuracy": 0.5104088262332754,
+      "macro_f1": 0.5081537394096376,
+      "macro_auroc": 0.6736894131406123
+    },
+    {
+      "tag": "fed_iid_cn-mci-ad_subject_s2024",
+      "accuracy": 0.49605263157894736,
+      "balanced_accuracy": 0.4975660087128149,
+      "macro_f1": 0.4908095380993767,
+      "macro_auroc": 0.672781268051072
+    },
+    {
+      "tag": "fed_dirichlet_cn-mci-ad_subject_s42",
+      "accuracy": 0.48026315789473684,
+      "balanced_accuracy": 0.4814138266332004,
+      "macro_f1": 0.46604303282744014,
+      "macro_auroc": 0.6597566289603493
+    },
+    {
+      "tag": "fed_dirichlet_cn-mci-ad_subject_s123",
+      "accuracy": 0.475,
+      "balanced_accuracy": 0.4708418227453941,
+      "macro_f1": 0.47138839202566607,
+      "macro_auroc": 0.6660987506333419
+    },
+    {
+      "tag": "fed_dirichlet_cn-mci-ad_subject_s2024",
+      "accuracy": 0.4763157894736842,
+      "balanced_accuracy": 0.47593767008381566,
+      "macro_f1": 0.47389504617944644,
+      "macro_auroc": 0.656379077263376
+    },
+    {
+      "tag": "fed_natural_cn-mci-ad_site_s42",
+      "accuracy": 0.48157894736842105,
+      "balanced_accuracy": 0.4823864773098552,
+      "macro_f1": 0.4788190565715482,
+      "macro_auroc": 0.662677975991337
+    },
+    {
+      "tag": "fed_natural_cn-mci-ad_site_s123",
+      "accuracy": 0.4986842105263158,
+      "balanced_accuracy": 0.4991765655832912,
+      "macro_f1": 0.49516855151465844,
+      "macro_auroc": 0.6586401718462757
+    },
+    {
+      "tag": "fed_natural_cn-mci-ad_site_s2024",
+      "accuracy": 0.49078947368421055,
+      "balanced_accuracy": 0.49117900995823716,
+      "macro_f1": 0.48861337121701326,
+      "macro_auroc": 0.663090771132247
+    },
+    {
+      "tag": "fed_iid_cn-mci-ad_site_s42",
+      "accuracy": 0.48947368421052634,
+      "balanced_accuracy": 0.4899927848993227,
+      "macro_f1": 0.4853093368105963,
+      "macro_auroc": 0.6668687082397892
+    },
+    {
+      "tag": "fed_iid_cn-mci-ad_site_s123",
+      "accuracy": 0.49605263157894736,
+      "balanced_accuracy": 0.49727002303527296,
+      "macro_f1": 0.4927780052170576,
+      "macro_auroc": 0.6688750631321586
+    },
+    {
+      "tag": "fed_iid_cn-mci-ad_site_s2024",
+      "accuracy": 0.49736842105263157,
+      "balanced_accuracy": 0.49874448201067106,
+      "macro_f1": 0.4906636460950944,
+      "macro_auroc": 0.6659961223662041
+    },
+    {
+      "tag": "fed_dirichlet_cn-mci-ad_site_s42",
+      "accuracy": 0.4986842105263158,
+      "balanced_accuracy": 0.5011687064901568,
+      "macro_f1": 0.481051005357525,
+      "macro_auroc": 0.6618387296380441
+    },
+    {
+      "tag": "fed_dirichlet_cn-mci-ad_site_s123",
+      "accuracy": 0.45526315789473687,
+      "balanced_accuracy": 0.45251318467635165,
+      "macro_f1": 0.4562215516131453,
+      "macro_auroc": 0.6409599815182424
+    },
+    {
+      "tag": "fed_dirichlet_cn-mci-ad_site_s2024",
+      "accuracy": 0.49078947368421055,
+      "balanced_accuracy": 0.4906333435524985,
+      "macro_f1": 0.488041739502104,
+      "macro_auroc": 0.6594200361390432
+    },
+    {
+      "tag": "fed_natural_cn-ad_subject_s42",
+      "accuracy": 0.7603960396039604,
+      "balanced_accuracy": 0.759390631390191,
+      "macro_f1": 0.7595474667978357,
+      "macro_auroc": 0.8202567087174002
+    },
+    {
+      "tag": "fed_natural_cn-ad_subject_s123",
+      "accuracy": 0.7524752475247525,
+      "balanced_accuracy": 0.7510224305533708,
+      "macro_f1": 0.7513481362434956,
+      "macro_auroc": 0.82631264353352
+    },
+    {
+      "tag": "fed_natural_cn-ad_subject_s2024",
+      "accuracy": 0.7742574257425743,
+      "balanced_accuracy": 0.7744596847767955,
+      "macro_f1": 0.7739374234285176,
+      "macro_auroc": 0.8224195425803001
+    },
+    {
+      "tag": "fed_iid_cn-ad_subject_s42",
+      "accuracy": 0.7623762376237624,
+      "balanced_accuracy": 0.761482681599396,
+      "macro_f1": 0.761590029270135,
+      "macro_auroc": 0.8442445024695631
+    },
+    {
+      "tag": "fed_iid_cn-ad_subject_s123",
+      "accuracy": 0.7881188118811882,
+      "balanced_accuracy": 0.7865558247082141,
+      "macro_f1": 0.7870365626317843,
+      "macro_auroc": 0.8379526221411269
+    },
+    {
+      "tag": "fed_iid_cn-ad_subject_s2024",
+      "accuracy": 0.7841584158415842,
+      "balanced_accuracy": 0.7823717242898041,
+      "macro_f1": 0.7829293204143843,
+      "macro_auroc": 0.8408783464938496
+    },
+    {
+      "tag": "fed_dirichlet_cn-ad_subject_s42",
+      "accuracy": 0.7623762376237624,
+      "balanced_accuracy": 0.7595715229496335,
+      "macro_f1": 0.76029998101386,
+      "macro_auroc": 0.8334146034542423
+    },
+    {
+      "tag": "fed_dirichlet_cn-ad_subject_s123",
+      "accuracy": 0.7821782178217822,
+      "balanced_accuracy": 0.7807043760027684,
+      "macro_f1": 0.7811268715524035,
+      "macro_auroc": 0.8524790008494039
+    },
+    {
+      "tag": "fed_dirichlet_cn-ad_subject_s2024",
+      "accuracy": 0.7465346534653465,
+      "balanced_accuracy": 0.7455956837700948,
+      "macro_f1": 0.7456960312214773,
+      "macro_auroc": 0.8158759870387264
+    },
+    {
+      "tag": "fed_natural_cn-ad_site_s42",
+      "accuracy": 0.7485148514851485,
+      "balanced_accuracy": 0.7483247868625538,
+      "macro_f1": 0.7480366620701577,
+      "macro_auroc": 0.8108346179255671
+    },
+    {
+      "tag": "fed_natural_cn-ad_site_s123",
+      "accuracy": 0.7584158415841584,
+      "balanced_accuracy": 0.7583603359864095,
+      "macro_f1": 0.7579973603997109,
+      "macro_auroc": 0.8223880831786579
+    },
+    {
+      "tag": "fed_natural_cn-ad_site_s2024",
+      "accuracy": 0.7841584158415842,
+      "balanced_accuracy": 0.7836458300563123,
+      "macro_f1": 0.7835847595233321,
+      "macro_auroc": 0.8404536445716804
+    },
+    {
+      "tag": "fed_iid_cn-ad_site_s42",
+      "accuracy": 0.7524752475247525,
+      "balanced_accuracy": 0.7501730267090321,
+      "macro_f1": 0.7507512013298534,
+      "macro_auroc": 0.830410230597414
+    },
+    {
+      "tag": "fed_iid_cn-ad_site_s123",
+      "accuracy": 0.7544554455445545,
+      "balanced_accuracy": 0.7535391826847453,
+      "macro_f1": 0.7536430302458061,
+      "macro_auroc": 0.8302293390379715
+    },
+    {
+      "tag": "fed_iid_cn-ad_site_s2024",
+      "accuracy": 0.7900990099009901,
+      "balanced_accuracy": 0.7892849278006733,
+      "macro_f1": 0.789404525855286,
+      "macro_auroc": 0.8581102337433542
+    },
+    {
+      "tag": "fed_dirichlet_cn-ad_site_s42",
+      "accuracy": 0.7564356435643564,
+      "balanced_accuracy": 0.7549941800106962,
+      "macro_f1": 0.7553265660635997,
+      "macro_auroc": 0.8232610815742285
+    },
+    {
+      "tag": "fed_dirichlet_cn-ad_site_s123",
+      "accuracy": 0.7504950495049505,
+      "balanced_accuracy": 0.7482933274609117,
+      "macro_f1": 0.7488395225464191,
+      "macro_auroc": 0.8202409790165791
+    },
+    {
+      "tag": "fed_dirichlet_cn-ad_site_s2024",
+      "accuracy": 0.7584158415841584,
+      "balanced_accuracy": 0.7581479850253248,
+      "macro_f1": 0.7579136803721866,
+      "macro_auroc": 0.8246138358448424
+    }
+  ]
+}

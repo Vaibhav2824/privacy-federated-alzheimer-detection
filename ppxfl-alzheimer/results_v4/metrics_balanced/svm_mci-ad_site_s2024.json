@@ -1,0 +1,84 @@
+{
+  "model": "svm",
+  "label_set": "mci-ad",
+  "class_names": [
+    "MCI",
+    "AD"
+  ],
+  "split_scheme": "site",
+  "n_splits": 5,
+  "seed": 2024,
+  "n_subjects": 384,
+  "class_counts": {
+    "MCI": 192,
+    "AD": 192
+  },
+  "chance_accuracy": 0.5,
+  "uniform_chance": 0.5,
+  "overall": {
+    "accuracy": 0.6458333333333334,
+    "macro_f1": 0.6457468457468458,
+    "balanced_accuracy": 0.6458333333333334,
+    "macro_auroc": 0.6800672743055554,
+    "accuracy_ci95": [
+      0.5989583333333334,
+      0.6927083333333334
+    ],
+    "macro_f1_ci95": [
+      0.5982608695652174,
+      0.6924121242681884
+    ],
+    "balanced_accuracy_ci95": [
+      0.5987264020328537,
+      0.6936876610736168
+    ],
+    "macro_auroc_ci95": [
+      0.6274537537853978,
+      0.7313741678328548
+    ]
+  },
+  "per_fold": [
+    {
+      "accuracy": 0.575,
+      "macro_f1": 0.5725958516656191,
+      "balanced_accuracy": 0.575,
+      "macro_auroc": 0.6043750000000001
+    },
+    {
+      "accuracy": 0.72,
+      "macro_f1": 0.72,
+      "balanced_accuracy": 0.7201280227596016,
+      "macro_auroc": 0.8435277382645805
+    },
+    {
+      "accuracy": 0.6973684210526315,
+      "macro_f1": 0.6947791164658634,
+      "balanced_accuracy": 0.6973684210526316,
+      "macro_auroc": 0.7853185595567868
+    },
+    {
+      "accuracy": 0.6266666666666667,
+      "macro_f1": 0.6260683760683761,
+      "balanced_accuracy": 0.62624466571835,
+      "macro_auroc": 0.5867709815078236
+    },
+    {
+      "accuracy": 0.6153846153846154,
+      "macro_f1": 0.6151315789473684,
+      "balanced_accuracy": 0.6153846153846154,
+      "macro_auroc": 0.6778435239973701
+    }
+  ],
+  "fold_mean": {
+    "accuracy": 0.6468839406207827,
+    "macro_f1": 0.6457149846294454,
+    "balanced_accuracy": 0.6468251449830398,
+    "macro_auroc": 0.6995671606653122
+  },
+  "fold_std": {
+    "accuracy": 0.05378268769643406,
+    "macro_f1": 0.054024613053520396,
+    "balanced_accuracy": 0.05384951090994412,
+    "macro_auroc": 0.10033383496039544
+  }
+}

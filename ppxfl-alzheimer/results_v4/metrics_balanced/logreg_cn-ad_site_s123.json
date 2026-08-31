@@ -1,0 +1,84 @@
+{
+  "model": "logreg",
+  "label_set": "cn-ad",
+  "class_names": [
+    "CN",
+    "AD"
+  ],
+  "split_scheme": "site",
+  "n_splits": 5,
+  "seed": 123,
+  "n_subjects": 384,
+  "class_counts": {
+    "CN": 192,
+    "AD": 192
+  },
+  "chance_accuracy": 0.5,
+  "uniform_chance": 0.5,
+  "overall": {
+    "accuracy": 0.7708333333333334,
+    "macro_f1": 0.7708084644601194,
+    "balanced_accuracy": 0.7708333333333333,
+    "macro_auroc": 0.8458116319444444,
+    "accuracy_ci95": [
+      0.7291666666666666,
+      0.8125
+    ],
+    "macro_f1_ci95": [
+      0.7290472204916503,
+      0.8123192622653354
+    ],
+    "balanced_accuracy_ci95": [
+      0.7291292493335535,
+      0.8126181522013781
+    ],
+    "macro_auroc_ci95": [
+      0.8088432496176101,
+      0.8847492534092636
+    ]
+  },
+  "per_fold": [
+    {
+      "accuracy": 0.85,
+      "macro_f1": 0.85,
+      "balanced_accuracy": 0.85,
+      "macro_auroc": 0.90125
+    },
+    {
+      "accuracy": 0.7162162162162162,
+      "macro_f1": 0.7157490396927016,
+      "balanced_accuracy": 0.7162162162162162,
+      "macro_auroc": 0.8086194302410519
+    },
+    {
+      "accuracy": 0.7837837837837838,
+      "macro_f1": 0.7837837837837838,
+      "balanced_accuracy": 0.7843567251461989,
+      "macro_auroc": 0.8691520467836258
+    },
+    {
+      "accuracy": 0.8,
+      "macro_f1": 0.7998576765700054,
+      "balanced_accuracy": 0.80049786628734,
+      "macro_auroc": 0.8556187766714084
+    },
+    {
+      "accuracy": 0.7037037037037037,
+      "macro_f1": 0.7025703794369644,
+      "balanced_accuracy": 0.7023809523809523,
+      "macro_auroc": 0.782051282051282
+    }
+  ],
+  "fold_mean": {
+    "accuracy": 0.7707407407407408,
+    "macro_f1": 0.770392175896691,
+    "balanced_accuracy": 0.7706903520061414,
+    "macro_auroc": 0.8433383071494737
+  },
+  "fold_std": {
+    "accuracy": 0.054360175702218336,
+    "macro_f1": 0.054718598226611084,
+    "balanced_accuracy": 0.0547702172253313,
+    "macro_auroc": 0.04273739138871529
+  }
+}
