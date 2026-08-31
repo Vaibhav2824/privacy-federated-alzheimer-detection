@@ -31,6 +31,35 @@ LABEL_SETS = {
 }
 
 
+def restrict_to_cohort(X, y, subjects, sites, cohort: str, features_path: str,
+                       demographics_path: str, seed: int = 42):
+    """Subset to the named analysis cohort, or pass everything through.
+
+    ``balanced`` removes the sex confound by construction rather than adjusting
+    for it afterwards; ``full`` keeps every QC-passing subject.  Both are
+    reported, since they answer different questions -- see analysis_cohort.
+    """
+    if cohort == "all":
+        return X, y, subjects, sites
+    import os
+
+    from .analysis_cohort import balanced_indices, load_demographics
+
+    if not os.path.exists(demographics_path):
+        return X, y, subjects, sites
+    demographics = load_demographics(demographics_path)
+    if cohort == "full":
+        index = [i for i, s in enumerate(subjects) if s in demographics]
+    elif cohort == "balanced":
+        index = balanced_indices(subjects, y, demographics, seed=seed)
+    else:
+        raise ValueError(f"unknown cohort: {cohort}")
+    if not index:
+        return X, y, subjects, sites
+    return (X[index], y[index], [subjects[i] for i in index],
+            [sites[i] for i in index])
+
+
 def load_features(path: str):
     data = np.load(path, allow_pickle=True)
     return (
@@ -202,9 +231,17 @@ def main(argv=None) -> int:
     parser.add_argument("--schemes", nargs="+", default=["subject", "site"])
     parser.add_argument("--seeds", nargs="+", type=int, default=[42, 123, 2024])
     parser.add_argument("--n-splits", type=int, default=5)
+    parser.add_argument("--cohort", choices=["all", "full", "balanced"],
+                        default="all",
+                        help="balanced removes the sex confound by construction")
+    parser.add_argument("--demographics",
+                        default=os.path.join("data", "ida_search_v4.csv"))
     args = parser.parse_args(argv)
 
     X, y, subjects, sites, feature_names = load_features(args.features)
+    X, y, subjects, sites = restrict_to_cohort(
+        X, y, subjects, sites, args.cohort, args.features, args.demographics
+    )
     print(f"{X.shape[0]} subjects, {X.shape[1]} features, "
           f"{len(set(sites))} sites")
     os.makedirs(args.out_dir, exist_ok=True)
