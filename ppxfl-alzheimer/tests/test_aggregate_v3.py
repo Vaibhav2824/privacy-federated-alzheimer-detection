@@ -304,3 +304,41 @@ def test_tables_cli_reports_nothing_missing_when_every_marker_exists(results_dir
     assert "markers not found" not in output
     assert "Sex only" in paper.read_text(encoding="utf-8")
     assert r"256 \times 240" in paper.read_text(encoding="utf-8")
+
+
+def test_a_directory_that_looks_like_a_run_does_not_abort_aggregation(results_dir):
+    """A mis-typed --out can create a directory named like a run beside the real ones."""
+    (results_dir / "mia_v4.json").mkdir()
+    runs = load_runs(str(results_dir))
+    assert runs
+    assert all(r["_file"] != "mia_v4.json" for r in runs)
+
+
+def test_a_truncated_run_is_reported_and_skipped(results_dir, capsys):
+    """An interrupted write leaves invalid JSON; the runs beside it still count."""
+    before = len(load_runs(str(results_dir)))
+    (results_dir / "partial_run.json").write_text('{"overall": {', encoding="utf-8")
+
+    runs = load_runs(str(results_dir))
+    assert len(runs) == before
+    assert "[skip] partial_run.json" in capsys.readouterr().out
+
+
+def test_tables_cli_emits_only_the_blocks_it_has_inputs_for(results_dir, tmp_path,
+                                                            capsys):
+    """A run without the optional analyses still writes the three core tables."""
+    summary_path = tmp_path / "summary.json"
+    summary_path.write_text(json.dumps(aggregate(str(results_dir))), encoding="utf-8")
+    paper = tmp_path / "paper.tex"
+    paper.write_text("\n".join(
+        f"% BEGIN AUTO:{name}\n% END AUTO:{name}"
+        for name in ("v3-centralised", "v3-federated", "v3-privacy")
+    ) + "\n", encoding="utf-8")
+
+    assert tables_main([
+        "--summary", str(summary_path), "--paper", str(paper),
+        "--law", str(tmp_path / "absent.json"),
+        "--confounds", str(tmp_path / "absent.json"),
+        "--orientation", str(tmp_path / "absent.json"),
+    ]) == 0
+    assert "wrote 3 table blocks" in capsys.readouterr().out

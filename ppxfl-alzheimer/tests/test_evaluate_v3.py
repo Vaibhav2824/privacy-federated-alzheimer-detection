@@ -162,3 +162,100 @@ def test_evaluate_cli_writes_one_file_per_configuration(tmp_path, cohort, capsys
     written = sorted(p.name for p in out.iterdir())
     assert written == ["centralised_summary.json", "lda_cn-ad_subject_s42.json"]
     assert "lda_cn-ad_subject_s42" in capsys.readouterr().out
+
+
+def _demographics_export(path, subjects, labels, confounded: bool):
+    import csv
+
+    names = ("CN", "MCI", "AD")
+    with open(path, "w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["Subject ID", "Sex", "Research Group", "Visit", "Age",
+                         "Description"])
+        for i, (subject, label) in enumerate(zip(subjects, labels)):
+            sex = ("F" if label == 0 else "M") if confounded else ("F", "M")[i % 2]
+            writer.writerow([subject, sex, names[int(label)], "sc", 65 + i % 20,
+                             "MP-RAGE"])
+
+
+@pytest.fixture
+def cohort_with_demographics(tmp_path, cohort):
+    from src.evaluate_v3 import restrict_to_cohort  # noqa: F401
+
+    X, y, sites = cohort
+    subjects = [f"{i // 15 + 1:03d}_S_{8000 + i:04d}" for i in range(len(y))]
+    export = tmp_path / "export.csv"
+    _demographics_export(export, subjects, y, confounded=False)
+    return X, y, subjects, sites, str(export)
+
+
+def test_cohort_all_passes_every_subject_through(cohort_with_demographics):
+    from src.evaluate_v3 import restrict_to_cohort
+
+    X, y, subjects, sites, export = cohort_with_demographics
+    out = restrict_to_cohort(X, y, subjects, sites, "all", "", export)
+    assert out[0].shape == X.shape
+    assert out[2] == subjects
+
+
+def test_full_cohort_keeps_only_subjects_with_demographics(cohort_with_demographics,
+                                                           tmp_path):
+    from src.evaluate_v3 import restrict_to_cohort
+
+    X, y, subjects, sites, _ = cohort_with_demographics
+    export = tmp_path / "partial.csv"
+    _demographics_export(export, subjects[:100], y[:100], confounded=False)
+
+    _, y_out, subjects_out, sites_out = restrict_to_cohort(
+        X, y, subjects, sites, "full", "", str(export)
+    )
+    assert subjects_out == subjects[:100]
+    assert len(y_out) == len(sites_out) == 100
+
+
+def test_balanced_cohort_is_smaller_and_sex_balanced(cohort_with_demographics,
+                                                     tmp_path):
+    from src.analysis_cohort import describe, load_demographics
+    from src.evaluate_v3 import restrict_to_cohort
+
+    X, y, subjects, sites, _ = cohort_with_demographics
+    balanced_export = tmp_path / "balanced.csv"
+    _demographics_export(balanced_export, subjects, y, confounded=False)
+    _, y_out, subjects_out, _ = restrict_to_cohort(
+        X, y, subjects, sites, "balanced", "", str(balanced_export)
+    )
+    demographics = load_demographics(str(balanced_export))
+    summary = describe(subjects_out, y_out, demographics,
+                       list(range(len(subjects_out))))
+    assert summary["sex_only_rate"] <= 1 / 3 + 1e-4
+
+
+def test_a_missing_demographics_file_leaves_the_cohort_untouched(cohort_with_demographics):
+    from src.evaluate_v3 import restrict_to_cohort
+
+    X, y, subjects, sites, _ = cohort_with_demographics
+    out = restrict_to_cohort(X, y, subjects, sites, "full", "", "does-not-exist.csv")
+    assert out[2] == subjects
+
+
+def test_an_impossible_balance_falls_back_but_says_so(cohort_with_demographics,
+                                                      tmp_path, capsys):
+    """A silent fallback would file a full-cohort number under a balanced heading."""
+    from src.evaluate_v3 import restrict_to_cohort
+
+    X, y, subjects, sites, _ = cohort_with_demographics
+    export = tmp_path / "confounded.csv"
+    # CN entirely female and the others entirely male: no cell can be balanced.
+    _demographics_export(export, subjects, y, confounded=True)
+
+    out = restrict_to_cohort(X, y, subjects, sites, "balanced", "", str(export))
+    assert out[2] == subjects
+    assert "selected no subjects" in capsys.readouterr().out
+
+
+def test_an_unknown_cohort_name_is_refused(cohort_with_demographics):
+    from src.evaluate_v3 import restrict_to_cohort
+
+    X, y, subjects, sites, export = cohort_with_demographics
+    with pytest.raises(ValueError, match="unknown cohort"):
+        restrict_to_cohort(X, y, subjects, sites, "everything", "", export)

@@ -167,6 +167,7 @@ def run(features_path: str, demographics_path: str, label_sets, scheme: str,
 
     for label_set in label_sets:
         classes = LABEL_SETS[label_set]["classes"]
+        n_classes = len(classes)
         mask = np.isin(y, classes)
         remap = {c: i for i, c in enumerate(classes)}
         y_sub = np.asarray([remap[v] for v in y[mask]])
@@ -188,7 +189,12 @@ def run(features_path: str, demographics_path: str, label_sets, scheme: str,
         report["stratified"][label_set] = {}
         for stratum in ("F", "M"):
             index = [i for i, s in enumerate(sex_sub) if s == stratum]
-            if len(index) < 40:
+            # A stratum is only informative if it is large enough to fit on and
+            # actually contains the comparison.  On a strongly confounded cohort
+            # one sex can hold a single diagnosis, which is not a small result
+            # but no result at all -- and it would otherwise reach the
+            # classifier as a one-class fit and abort the analysis.
+            if len(index) < 40 or len(np.unique(y_sub[index])) < n_classes:
                 continue
             report["stratified"][label_set][stratum] = evaluate_matrix(
                 X[mask][index], y_sub[index], [sites_sub[i] for i in index],

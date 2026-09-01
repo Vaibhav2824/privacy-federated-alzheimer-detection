@@ -55,6 +55,11 @@ def restrict_to_cohort(X, y, subjects, sites, cohort: str, features_path: str,
     else:
         raise ValueError(f"unknown cohort: {cohort}")
     if not index:
+        # Falling back silently would report a full-cohort number under a
+        # balanced-cohort heading, which is the one confusion this module
+        # exists to prevent.
+        print(f"[cohort] {cohort!r} selected no subjects; "
+              "reporting on the whole cohort instead")
         return X, y, subjects, sites
     return (X[index], y[index], [subjects[i] for i in index],
             [sites[i] for i in index])

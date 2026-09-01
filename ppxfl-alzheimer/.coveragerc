@@ -39,6 +39,11 @@ omit =
     src/cnn_experiments_v3.py
     src/experiments_v3.py
     src/figures_v3.py
+    # v4 expansion: DICOM series reading through SimpleITK's GDCM backend, which
+    # needs real multi-slice DICOM studies to exercise at all. Its pure logic --
+    # which series are structural, where a subject is filed, what the cohort is
+    # short of -- lives in src/cohort_v4.py and src/ingest_v4.py, both covered.
+    src/dicom_to_nifti_v4.py
 
 [report]
 fail_under = 100
