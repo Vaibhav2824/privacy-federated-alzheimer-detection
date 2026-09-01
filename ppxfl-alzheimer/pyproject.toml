@@ -57,15 +57,6 @@ packages = ["ppxfl"]
 [tool.setuptools.package-dir]
 ppxfl = "src"
 
-[tool.pytest.ini_options]
-# The tests import the modules as ``src.*``, which is the layout on disk and in
-# the repository. The installed distribution exposes the same code as ``ppxfl``,
-# so without this a CI runner that installs the package finds ``ppxfl`` and not
-# ``src``, and every test module fails to import. Putting the project root on
-# the path makes the two spellings agree.
-pythonpath = ["."]
-testpaths = ["tests"]
-
 [tool.ruff]
 line-length = 110
 target-version = "py310"
