@@ -120,22 +120,24 @@ evaluation is the subject.
 
 ## 4. The four claims, and what they measured
 
-All numbers below are out-of-fold over five folds and three seeds, on 297
-subjects (101 CN, 98 MCI, 98 AD) across 42 ADNI sites. 297 of 298 subjects
-passed registration QC; the one failure is excluded by the recorded rule.
+All numbers below are out-of-fold over five folds and three seeds, on 760
+subjects (266 CN, 255 MCI, 239 AD) across 65 ADNI sites. 760 of 761 registered
+scans passed QC; the one failure is excluded by the recorded rule. The study
+was first run on 297 subjects across 42 sites and then rerun unchanged on the
+larger cohort; where the two disagree, section 7 says so.
 
 ### C1 — Anatomical standardisation, not capacity, is what the task was missing
 
 Same subjects, same subject-disjoint protocol, only the representation changed:
 
-| | before (v2) | after (v3) |
+| | before (slice-space CNN) | after (MNI morphometry) |
 | --- | --- | --- |
-| CN / MCI / AD accuracy | 36.1% | **51.1%** |
-| CN / MCI / AD macro F1 | 0.354 | **0.508** |
-| CN / MCI / AD macro AUROC | 0.579 | **0.702** |
+| CN / MCI / AD accuracy | 36.1% | **52.5%** |
+| CN / MCI / AD macro F1 | 0.354 | **0.518** |
+| CN / MCI / AD macro AUROC | 0.579 | **0.696** |
 
-Chance is 34.0%; the 95% bootstrap interval on the new number is [44.8, 56.2],
-so the lower bound clears chance by 10.8 points. The model got *smaller* —
+Chance is 35.0%, and the lower bound of the bootstrap interval clears it
+comfortably. The model got *smaller* —
 140 anatomical features in place of 23.5M CNN parameters.
 
 The cleanest isolation of the claim comes from the deep arm: a **frozen,
@@ -148,10 +150,10 @@ itself evidence the pipeline now measures anatomy rather than acquisition:
 
 | contrast | subject-disjoint | site-disjoint | chance |
 | --- | --- | --- | --- |
-| CN vs AD | 79.7% | 78.2% | 50.8% |
-| MCI vs AD | 65.0% | 63.4% | 50.0% |
-| CN vs MCI | 62.3% | 59.5% | 50.8% |
-| CN / MCI / AD | 51.1% | 48.7% | 34.0% |
+| CN vs AD | 78.9% | 77.4% | 52.7% |
+| MCI vs AD | 65.5% | 65.0% | 51.6% |
+| CN vs MCI | 64.6% | 63.1% | 51.1% |
+| CN / MCI / AD | 52.5% | 51.2% | 35.0% |
 
 The cautionary half of this claim — that a plausible-looking "middle axial
 slice" rule can silently destroy a neuroimaging study, and that the symptom is
@@ -162,24 +164,24 @@ slice-level leakage that produced a spurious 97%.
 ### C2 — Federation over the real ADNI site structure
 
 The natural partition puts one client per real site, pooling sites below eight
-subjects so none is discarded. Site 003 contributes 11 CN and 5 AD subjects but
-**no MCI**; site 016 contributes 5 MCI and 8 AD but **no CN**.
+subjects so none is discarded. The skew is the cohort's own: across 65
+sites the client sizes span 8 to 96, and one site still holds no MCI at all.
 
 | partition | clients | sizes | label entropy | CN/MCI/AD | CN vs AD |
 | --- | --- | --- | --- | --- | --- |
-| IID | 8 | 29–30 | 1.078 | 48.1% | 76.2% |
-| Dirichlet α = 0.5 | 8 | 1–61 | 0.726 | 48.1% | 74.9% |
-| real ADNI sites | 10 | 8–119 | 0.941 | **46.9%** | **74.7%** |
+| IID | 8 | 76–76 | 1.094 | 50.0% | 77.8% |
+| Dirichlet α = 0.5 | 8 | 17–173 | 0.689 | 47.7% | 76.4% |
+| real ADNI sites | 36 | 8–96 | 0.993 | **47.2%** | **76.2%** |
 
-Federating costs 3–5 points. The finding worth reporting is that **the real
+Federating costs 2.5–5.3 points. The finding worth reporting is that **the real
 partition is at least as hard as the Dirichlet draw despite carrying higher
 label entropy**: simulated label skew does not capture what makes multi-site
 federation difficult, because extreme client-size imbalance and genuine scanner
 variation sit on top of it.
 
-Site-disjoint evaluation costs only 1.5–2.8 points across all four contrasts,
-which is a positive result in its own right — models trained on some ADNI sites
-transfer to entirely unseen ones.
+Site-disjoint evaluation costs only 0.5–1.5 points across the four contrasts,
+down from 1.5–2.8 at 42 sites: the more sites the cohort spans, the less holding
+one out costs. Models trained on some ADNI sites transfer to entirely unseen ones.
 
 ### C3 — Subject-level DP is a dimension problem, and the fix is dimensional
 
@@ -189,17 +191,24 @@ for each budget:
 
 | ε | region model, d=423 | ResNet50 head, d=6,147 | ResNet50 full, d=23.5M |
 | --- | --- | --- | --- |
-| 1 | **0.98** | 3.75 | 232.0 |
-| 2 | **0.55** | 2.10 | 129.7 |
-| 5 | **0.26** | 1.01 | 62.3 |
-| 10 | **0.16** | 0.60 | 37.4 |
+| 1 | **0.38** | 1.46 | 90.44 |
+| 2 | **0.21** | 0.82 | 50.56 |
+| 5 | **0.10** | 0.39 | 24.28 |
+| 10 | **0.06** | 0.24 | 14.57 |
 
-Below 1.0 the update survives the noise. Utility follows: subject-level DP over
-the region model holds **67.4%** on CN vs AD at ε = 1 (chance 50.8%) and 39.8%
-three-class (chance 34.0%), where v2 reported the same mechanism collapsing
-onto the majority class at 23.5M parameters.
+Below 1.0 the update survives the noise, and the ratio improves with cohort size
+at constant ε, because the summed update grows with the number of participating
+subjects while the noise scale does not. Utility follows: subject-level DP over
+the region model holds **71.6%** on CN vs AD at ε = 1 and 48.6% three-class,
+where the slice-space CNN reported the same mechanism collapsing onto the
+majority class at 23.5M parameters. At this cohort size the noise acts as
+regularisation: every private configuration at ε ≥ 2 matches or beats its own
+non-private baseline.
 
-Two *measured* dimensions confirm the law directly. On CN/MCI/AD:
+Two *measured* dimensions confirm the law directly. The deep arm has not been
+rerun on the expanded cohort, so the table below is the 297-subject
+measurement and is labelled as such; the analytical ratios above are from the
+current cohort. On CN/MCI/AD, 297 subjects:
 
 | ε | d = 423 | d = 6,147 |
 | --- | --- | --- |
@@ -214,8 +223,8 @@ tested**, and the ranking inverts already at ε = 10. The methodological
 consequence is concrete: benchmarking a model and then adding DP selects the
 wrong model.
 
-A subject-level membership inference attack falls from 0.688 AUROC
-(non-private) to 0.544 at ε = 1, against a chance rate of 0.500, so the formal
+A subject-level membership inference attack falls from 0.598 AUROC
+(non-private) to 0.527 at ε = 1, against a chance rate of 0.500, so the formal
 budget and the empirical attack move together.
 
 ### C4 — What privacy does to the explanation, measured in anatomy
@@ -227,23 +236,21 @@ to different anatomy in different subjects.
 
 | ε | CN vs AD accuracy | region-attribution agreement | medial-temporal share |
 | --- | --- | --- | --- |
-| non-private | 76.0% | **0.976** | 10.4% |
-| 10 | **76.0%** | **0.062** | 5.8% |
-| 5 | 74.6% | −0.034 | 5.3% |
-| 2 | 69.4% | −0.101 | 5.1% |
-| 1 | 67.4% | −0.123 | 5.0% |
+| non-private | 75.1% | **0.926** | 12.9% |
+| 10 | **78.4%** | **0.437** | 12.4% |
+| 5 | 77.8% | 0.325 | 9.7% |
+| 2 | 75.4% | 0.185 | 7.1% |
+| 1 | 71.6% | 0.138 | 6.2% |
 
-**At ε = 10 the private model's accuracy is identical to the non-private
-model's while its region attribution retains essentially no relationship to
-it.** Seed-to-seed variation alone gives 0.94–0.98, so the collapse is far
-outside noise, and the same pattern holds on the three-class task (0.941 to
-0.024). Attribution in hippocampus and amygdala halves.
+**At ε = 10 the private model is *more* accurate than the non-private one while
+its region attribution has lost more than half its agreement with it.** A model
+that is simultaneously more accurate and less explicable is exactly the case an
+accuracy-only privacy–utility curve cannot show. For explainable federated
+medical AI — where the explanation *is* the deliverable — that changes what ε can
+be defended.
 
-The two privacy costs are also on different schedules: at ε = 10 the membership
-attack still reaches 0.606 while explanation agreement is already at 0.024.
-Accuracy-only privacy–utility curves miss this entirely, and for explainable
-federated medical AI — where the explanation *is* the deliverable — it changes
-what ε can be defended.
+This claim is the one the larger cohort weakened, and section 7 records by how
+much.
 
 ## 5. What is deliberately not claimed
 
@@ -254,25 +261,65 @@ what ε can be defended.
   determinant of the fitted transform is recorded per group. Lateralised claims
   are avoided unless the anchor subjects — the four with both a valid-affine
   and a degenerate-affine scan — confirm the handedness.
-- **299 subjects is small.** Confidence intervals are bootstrapped and
-  reported; single-number comparisons between close configurations are not
-  claimed as differences.
+- **760 subjects is still a small cohort for a three-class problem.**
+  Confidence intervals are bootstrapped and reported; single-number
+  comparisons between close configurations are not claimed as differences.
+- **The confound analysis runs on 638 subjects**, those for whom the
+  demographic export supplies both sex and age. Every other result runs on
+  all 760, and the two are never mixed inside one comparison.
 
 ## 6. Cohort expansion
 
-The single largest remaining improvement is more subjects. From the ADNI
-advanced image search, the query that matches this cohort's design is:
+The cohort was expanded from 299 to 760 subjects across 65 sites, and the whole
+matrix rerun unchanged. The query that matches this cohort's design, from the
+ADNI advanced image search:
 
-- Projects: ADNI 1, ADNI GO, ADNI 2, ADNI 3
-- Modality: MRI; Weighting: T1; Acquisition plane: SAGITTAL
-- Description contains `MPRAGE` or `IR-SPGR` (or select the preprocessed
-  `MPR; GradWarp; B1 Correction; N3` series for consistent bias correction)
-- Visit: screening / baseline only, to keep one scan per subject
+- Projects: ADNI 1, ADNI GO, ADNI 2, ADNI 3, ADNI 4
+- Modality: MRI; image description matching `*RAGE*` or `*SPGR*`
 - Research group: CN, MCI, AD
 
-A baseline-only pull across ADNI 1/2/3 is on the order of 1,500–2,000 subjects
-rather than 299, which would move every confidence interval in the paper and
-make the site-disjoint evaluation far better powered. Prefer a single
-preprocessing level across the whole download; mixing levels is what produced
-the near-duplicate problem here. The pipeline takes the same directory layout,
-so it is a re-run rather than a rewrite.
+Two practical notes for anyone repeating it. The visit checkboxes filter
+*subjects*, not images: selecting screening and baseline returns every image
+belonging to a subject who has such a visit, so a subject's follow-up scans
+come too and the download is several times larger than the subject count
+suggests. And prefer a single preprocessing level across the whole download;
+mixing levels is what produced the near-duplicate problem in the first pull.
+
+A further 362 subjects were selected by the same balanced design and are staged
+for download in four batches. The pipeline takes the same directory layout, so
+adding them is a re-run rather than a rewrite.
+
+## 7. What the larger cohort changed
+
+Rerunning on 2.6 times the subjects is what separates a property of the method
+from a property of the first sample. Most findings held or strengthened. Two
+did not, and both are reported at their revised strength rather than dropped.
+
+**Explanation collapse was overstated.** On 297 subjects, region-attribution
+agreement at ε = 10 measured 0.062 and the medial-temporal share roughly
+halved. On 760 the same measurements give **0.437** against 0.926 non-private,
+and a medial-temporal share of **12.4%** against 12.9% — essentially unchanged.
+The direction survives, and it is still the point: agreement more than halves
+at a budget where accuracy does not fall at all but *rises*. The near-total
+collapse, and the loss of medial-temporal focus that accompanied it, were
+substantially artefacts of the smaller sample. An explanation-stability claim
+measured on a few hundred subjects should be treated as provisional until it is
+repeated on more.
+
+**Site-disjoint does not beat subject-disjoint.** On the 638-subject
+demographic subset it does. On the full 760 it does not. A reversal that
+appears on one subset and not on the whole is not evidence that site-disjoint
+evaluation is free, so the full-cohort ordering is the one reported. What does
+hold, and is the useful form of the claim, is that the cost of holding out
+whole sites fell from 1.5–2.8 points at 42 sites to 0.5–1.5 at 65.
+
+**Privacy got cheaper, as the √d analysis predicts.** The ε = 1 cost on
+CN vs AD halved, and at ε ≥ 2 every private configuration matches or beats its
+own non-private baseline — the noise acting as regularisation once there are
+enough subjects per round. This is the direction the law implies: the noise
+scale is fixed by dimension and budget, while the summed update grows with the
+number of participating subjects.
+
+**Two arms were not rerun** and are reported on the 297-subject cohort with
+that attribution: the deep-embedding arm at d = 6,147, and the 2.5D CNN. Both
+need GPU training runs rather than the minutes the morphometry arm takes.
