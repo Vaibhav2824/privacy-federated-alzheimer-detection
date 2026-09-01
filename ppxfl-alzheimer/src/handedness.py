@@ -156,7 +156,12 @@ def resolve(data_root: str, table_path: str, out_path: str,
             fitted_score = qc_correlation(fitted, reference, template_mask)
             mirrored_score = qc_correlation(mirrored, reference, template_mask)
             votes[key].append({
-                "subject": subject,
+                # The report is committed as the evidence behind the handedness
+                # claim, so it carries an anchor index rather than the ADNI
+                # subject identifier. Nothing downstream needs the identifier,
+                # and anyone with their own approved download regenerates the
+                # file with their own subjects anyway.
+                "anchor": len(votes[key]) + 1,
                 "reference_qc": round(reference_qc, 4),
                 "fitted": round(fitted_score, 4),
                 "mirrored": round(mirrored_score, 4),

@@ -6,28 +6,28 @@
     "mirror_applied": false,
     "evidence": [
       {
-        "subject": "027_S_1277",
+        "anchor": 1,
         "reference_qc": 0.4545,
         "fitted": 0.9312,
         "mirrored": 0.6399,
         "prefers_mirror": false
       },
       {
-        "subject": "033_S_0733",
+        "anchor": 2,
         "reference_qc": 0.6429,
         "fitted": 0.8714,
         "mirrored": 0.6147,
         "prefers_mirror": false
       },
       {
-        "subject": "133_S_1055",
+        "anchor": 3,
         "reference_qc": 0.5726,
         "fitted": 0.8842,
         "mirrored": 0.6568,
         "prefers_mirror": false
       },
       {
-        "subject": "133_S_1170",
+        "anchor": 4,
         "reference_qc": 0.5594,
         "fitted": 0.9263,
         "mirrored": 0.7005,
