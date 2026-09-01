@@ -75,3 +75,9 @@ dicom_staging/
 logs/
 dicom_staging/
 commitmsg.txt
+
+# Local tooling state. Untracked but not previously ignored, which left it one
+# `git add -A` away from being published.
+.claude/
+.agents/
+skills-lock.json
