@@ -14,6 +14,7 @@
 \usepackage{amssymb}
 \usepackage{amsfonts}
 \usepackage{graphicx}
+\usepackage{adjustbox}
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{booktabs}
@@ -912,11 +913,12 @@ whether its handedness rests on the anchors or on that consistency rule.
 % ---------------------------------------------------------------------
 % Methodology: representations
 % ---------------------------------------------------------------------
-\begin{table}[t]
+\begin{table*}[t]
 \centering
 \caption{Measured array orientation of each degenerate-affine series group, and
 the evidence its left--right handedness rests on.}
 \label{tab:orientation-table}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lrccl}
 \toprule
 Series group & Scans & Permutation & Flips & Handedness \\
@@ -931,7 +933,8 @@ MPRAGE $256 \times 256 \times 160$ & 1 & (1, 0, 2) & (T, T, T) & consistent with
 % END AUTO:v3-orientation
 \bottomrule
 \end{tabular}
-\end{table}
+\end{adjustbox}
+\end{table*}
 
 \subsection{Two Representations at Opposite Dimensions}
 \label{sec:representations}
@@ -1407,6 +1410,7 @@ the centralised baselines from Table~\ref{tab:centralised}.
   \label{tab:fedavg}
   \renewcommand{\arraystretch}{1.2}
   \setlength{\tabcolsep}{3pt}
+  \begin{adjustbox}{max width=\columnwidth}
   \begin{tabular}{lcccc}
     \toprule
     \textbf{Configuration} & \textbf{Acc.\ (\%)} & \textbf{F1 (macro)} & \textbf{AUROC} & \textbf{Runs} \\
@@ -1417,6 +1421,7 @@ FedAvg ResNet50 ($K{=}4$) & 33.3 $\pm$ 7.8 & 0.304 $\pm$ 0.070 & 0.530 $\pm$ 0.0
 % END AUTO:federated
     \bottomrule
   \end{tabular}
+  \end{adjustbox}
 \end{table}
 
 Under the corrected, subject-level protocol, FedAvg ResNet50's mean
@@ -1466,6 +1471,7 @@ Section~\ref{sec:limitations}).
   \renewcommand{\arraystretch}{1.15}
   \setlength{\tabcolsep}{2.5pt}
   \footnotesize
+  \begin{adjustbox}{max width=\columnwidth}
   \begin{tabular}{llccc}
     \toprule
     \textbf{Setting} & $\boldsymbol{\varepsilon}$ & \textbf{Acc.\ (\%)} &
@@ -1493,6 +1499,7 @@ Section~\ref{sec:limitations}).
     FedAvg, full-network DP & 5 & 36.0 & 0.177 & 0.387 \\
     \bottomrule
   \end{tabular}
+  \end{adjustbox}
 \end{table}
 
 Two patterns emerge from the 32-subject cohort of
@@ -1631,6 +1638,7 @@ noise norm by its square root, roughly $62\times$.
   \renewcommand{\arraystretch}{1.15}
   \setlength{\tabcolsep}{2.5pt}
   \footnotesize
+  \begin{adjustbox}{max width=\columnwidth}
   \begin{tabular}{llcccc}
     \toprule
     \textbf{Configuration} & \textbf{Perturbed} & \textbf{Acc.\ (\%)} &
@@ -1649,6 +1657,7 @@ Head only, $\varepsilon = 10$ & 6{,}147 & 34.4 $\pm$ 4.9 & 0.258 $\pm$ 0.034 & 0
 % END AUTO:userlevel
     \bottomrule
   \end{tabular}
+  \end{adjustbox}
 \end{table}
 
 Table~\ref{tab:userlevel_dp} reports both scopes.  Two points deserve
@@ -1789,6 +1798,7 @@ honest null results rather than searching for a favourable framing.
 five folds and three seeds. The majority-class rate is given for each label set
 so that results near chance are visible as such.}
 \label{tab:v3-centralised}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lllcccccc}
 \toprule
 Task & Split & Model & Accuracy (\%) & Balanced acc.\ (\%) & Macro F1 &
@@ -1838,6 +1848,7 @@ MCI vs AD & subject-disjoint & RBF SVM & 63.6 $\pm$ 1.2 & 63.6 $\pm$ 1.1 & 0.636
 % END AUTO:v3-centralised
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table*}
 
 \subsection{Federated Performance and the Effect of the Partition}
@@ -1848,10 +1859,11 @@ MCI vs AD & subject-disjoint & RBF SVM & 63.6 $\pm$ 1.2 & 63.6 $\pm$ 1.1 & 0.636
 \caption{Federated averaging over the region representation, by client
 partition and split scheme.}
 \label{tab:v3-federated}
-\begin{tabular}{llccccc}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{llcccccc}
 \toprule
 Task & Split & Partition & Accuracy (\%) & Balanced acc.\ (\%) & Macro F1 &
-Macro AUROC \\
+Macro AUROC & Runs \\
 \midrule
 % BEGIN AUTO:v3-federated
 CN vs AD & site-disjoint & Dirichlet ($\alpha$ = 0.5) & 75.5 $\pm$ 0.4 & 75.4 $\pm$ 0.5 & 0.754 $\pm$ 0.005 & 0.823 $\pm$ 0.002 & 3 \\
@@ -1869,6 +1881,7 @@ CN / MCI / AD & subject-disjoint & real ADNI sites & 47.2 $\pm$ 2.7 & 47.3 $\pm$
 % END AUTO:v3-federated
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table*}
 
 \subsection{Subject-Level Differential Privacy}
@@ -1881,10 +1894,11 @@ agreement is the Spearman correlation between the private model's region
 importance and the non-private reference; the medial temporal share is the
 fraction of attribution mass in hippocampus and amygdala.}
 \label{tab:v3-privacy}
-\begin{tabular}{llcccccc}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{llccccccc}
 \toprule
 Task & $\varepsilon$ & $\sigma$ & Accuracy (\%) & Balanced acc.\ (\%) &
-Macro F1 & Expl.\ agreement & MTL share (\%) \\
+Macro F1 & Expl.\ agreement & MTL share (\%) & Runs \\
 \midrule
 % BEGIN AUTO:v3-privacy
 CN vs AD & non-private & --- & 75.1 $\pm$ 2.5 & 75.0 $\pm$ 2.6 & 0.750 $\pm$ 0.026 & 0.926 $\pm$ 0.064 & 12.9 $\pm$ 0.2 & 3 \\
@@ -1900,6 +1914,7 @@ CN / MCI / AD & 10 & 1.83 & 53.7 $\pm$ 0.8 & 53.7 $\pm$ 0.8 & 0.513 $\pm$ 0.010 
 % END AUTO:v3-privacy
 \bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table*}
 
 \subsection{The Cost of Privacy Is Set by Dimension}
@@ -1926,11 +1941,12 @@ Table~\ref{tab:v3-dimension-law} evaluates
 Equation~\ref{eq:noise-signal} at each budget for the three configurations,
 and Table~\ref{tab:v3-privacy} reports the utility that follows.
 
-\begin{table}[t]
+\begin{table*}[t]
 \centering
 \caption{Worst-case noise-to-signal ratio by perturbed dimension, from
 Equation~\ref{eq:noise-signal}.}
 \label{tab:v3-dimension-law}
+\begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{llccccc}
 \toprule
 $\varepsilon$ & Model & $d$ & $\sigma$ & $\mathbb{E}\|\boldsymbol{\xi}\|$ &
@@ -1952,7 +1968,8 @@ $NC$ & Ratio \\
 % END AUTO:v3-dimension-law
 \bottomrule
 \end{tabular}
-\end{table}
+\end{adjustbox}
+\end{table*}
 
 
 \subsection{What the Cohort Alone Could Explain}
