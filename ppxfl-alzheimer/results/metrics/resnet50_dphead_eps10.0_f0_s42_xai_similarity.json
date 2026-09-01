@@ -1,6 +1,6 @@
 {
-  "dp_checkpoint": "C:\\Users\\Vaibhav\\Desktop\\PPxFL_Alzheimer_Detection\\ppxfl-alzheimer\\results\\checkpoints\\resnet50_dphead_eps10.0_f0_s42.pth",
-  "reference_checkpoint": "C:\\Users\\Vaibhav\\Desktop\\PPxFL_Alzheimer_Detection\\ppxfl-alzheimer\\results\\checkpoints\\best_resnet50_centralised_f0_s42.pth",
+  "dp_checkpoint": "results\\checkpoints\\resnet50_dphead_eps10.0_f0_s42.pth",
+  "reference_checkpoint": "results\\checkpoints\\best_resnet50_centralised_f0_s42.pth",
   "model": "resnet50",
   "fold": 0,
   "n_slices": 150,

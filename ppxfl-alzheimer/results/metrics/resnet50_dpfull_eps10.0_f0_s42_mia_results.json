@@ -1,6 +1,6 @@
 {
   "run_tag": "resnet50_dpfull_eps10.0_f0_s42",
-  "checkpoint": "C:\\Users\\Vaibhav\\Desktop\\PPxFL_Alzheimer_Detection\\ppxfl-alzheimer\\results\\checkpoints\\resnet50_dpfull_eps10.0_f0_s42.pth",
+  "checkpoint": "results\\checkpoints\\resnet50_dpfull_eps10.0_f0_s42.pth",
   "yeom": {
     "auc": 0.5324675324675325,
     "tpr_at_fpr_0.1": 0.0,

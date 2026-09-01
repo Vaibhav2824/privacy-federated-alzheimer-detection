@@ -1,6 +1,6 @@
 {
   "run_tag": "resnet50_fedavg_K4_T20_E3_f0_s42_dphead_eps2.0",
-  "checkpoint": "C:\\Users\\Vaibhav\\Desktop\\PPxFL_Alzheimer_Detection\\ppxfl-alzheimer\\results\\checkpoints\\best_resnet50_fedavg_K4_T20_E3_f0_s42_dphead_eps2.0.pth",
+  "checkpoint": "results\\checkpoints\\best_resnet50_fedavg_K4_T20_E3_f0_s42_dphead_eps2.0.pth",
   "yeom": {
     "auc": 0.4350649350649351,
     "tpr_at_fpr_0.1": 0.0,

@@ -1,6 +1,6 @@
 {
-  "dp_checkpoint": "C:\\Users\\Vaibhav\\Desktop\\PPxFL_Alzheimer_Detection\\ppxfl-alzheimer\\results\\checkpoints\\best_resnet50_fedavg_K4_T20_E3_f0_s42_dphead_eps5.0.pth",
-  "reference_checkpoint": "C:\\Users\\Vaibhav\\Desktop\\PPxFL_Alzheimer_Detection\\ppxfl-alzheimer\\results\\checkpoints\\best_resnet50_fedavg_K4_T20_E3_f0_s42.pth",
+  "dp_checkpoint": "results\\checkpoints\\best_resnet50_fedavg_K4_T20_E3_f0_s42_dphead_eps5.0.pth",
+  "reference_checkpoint": "results\\checkpoints\\best_resnet50_fedavg_K4_T20_E3_f0_s42.pth",
   "model": "resnet50",
   "fold": 0,
   "n_slices": 150,

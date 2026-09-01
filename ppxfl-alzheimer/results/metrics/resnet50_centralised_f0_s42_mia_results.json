@@ -1,6 +1,6 @@
 {
   "run_tag": "resnet50_centralised_f0_s42",
-  "checkpoint": "C:\\Users\\Vaibhav\\Desktop\\PPxFL_Alzheimer_Detection\\ppxfl-alzheimer\\results\\checkpoints\\best_resnet50_centralised_f0_s42.pth",
+  "checkpoint": "results\\checkpoints\\best_resnet50_centralised_f0_s42.pth",
   "yeom": {
     "auc": 1.0,
     "tpr_at_fpr_0.1": 1.0,
