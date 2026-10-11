@@ -1,15 +1,16 @@
 import { attackAt, BUDGETS, budgetLabel, fixed, pct, points, privacyAt, type SiteData } from '../lib/site';
 import { icon, kpi, mountPage, pageHead, section } from '../ui/layout';
+import { animate } from '../ui/motion';
 
 const sigma = (data: SiteData, eps: number | null): string =>
   (privacyAt(data, 'cn-ad', eps)?.noise_multiplier ?? 0).toFixed(2);
 
 function steps(data: SiteData, active: number | null): string {
   return BUDGETS.map((eps, i) => `<button type="button" data-eps="${eps ?? 'none'}"
-      class="rounded-lg border p-3 text-left transition-colors ${eps === active ? 'border-teal bg-teal/[0.06]' : 'border-hairline bg-surface hover:border-teal/50'}"
+      class="rounded-xl border p-3 text-left transition-colors ${eps === active ? 'border-teal bg-teal/[0.06]' : 'border-hairline bg-surface hover:border-teal/50'}"
       aria-pressed="${eps === active}">
       <span class="font-mono text-xs text-slate">Step 0${i + 1}</span>
-      <span class="block font-serif text-lg">${budgetLabel(eps)}</span>
+      <span class="block font-display text-lg">${budgetLabel(eps)}</span>
       <span class="num text-xs text-slate">σ = ${sigma(data, eps)}</span></button>`).join('');
 }
 
@@ -37,7 +38,7 @@ function chart(data: SiteData): string {
   const line = (pts: [number, number][]): string => pts.map(([px, py], i) => `${i ? 'L' : 'M'}${px.toFixed(1)},${py.toFixed(1)}`).join(' ');
   const acc = rows.map((r, i): [number, number] => [x(i), yAcc(r?.accuracy ?? 0.5)]);
   const agr = rows.map((r, i): [number, number] => [x(i), yAgr(Math.max(0, r?.explanation_agreement ?? 0))]);
-  const grid = [0.5, 0.6, 0.7, 0.8, 0.9, 1].map((v) => `<line x1="${L}" x2="${W - R}" y1="${yAcc(v)}" y2="${yAcc(v)}" stroke="#E6E2DA" stroke-dasharray="3 3"/>
+  const grid = [0.5, 0.6, 0.7, 0.8, 0.9, 1].map((v) => `<line x1="${L}" x2="${W - R}" y1="${yAcc(v)}" y2="${yAcc(v)}" stroke="#e2e8f0" stroke-dasharray="3 3"/>
       <text x="${L - 6}" y="${yAcc(v) + 4}" text-anchor="end" class="fill-slate font-mono text-[10px]">${v * 100}%</text>`).join('');
   const labels = BUDGETS.map((eps, i) => `<text x="${x(i)}" y="${H - B + 20}" text-anchor="middle" class="fill-ink font-mono text-[11px]">${budgetLabel(eps)}</text>`).join('');
   const dots = (pts: [number, number][], vals: string[], color: string, dy: number): string =>
@@ -46,9 +47,9 @@ function chart(data: SiteData): string {
     ${grid}
     <line x1="${L}" x2="${W - R}" y1="${yAcc(0.5)}" y2="${yAcc(0.5)}" stroke="#D55E00" stroke-dasharray="4 3"/>
     <path d="${line(acc)}" fill="none" stroke="#0F766E" stroke-width="2"/>
-    <path d="${line(agr)}" fill="none" stroke="#14213D" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <path d="${line(agr)}" fill="none" stroke="#0f172a" stroke-width="1.5" stroke-dasharray="5 4"/>
     ${dots(acc, rows.map((r) => pct(r?.accuracy)), '#0F766E', -10)}
-    ${dots(agr, rows.map((r) => `ρ ${fixed(r?.explanation_agreement, 2)}`), '#14213D', 16)}
+    ${dots(agr, rows.map((r) => `ρ ${fixed(r?.explanation_agreement, 2)}`), '#0f172a', 16)}
     <text x="${W - R + 4}" y="${acc[acc.length - 1][1] + 4}" class="fill-teal font-mono text-[10px]">acc</text>
     <text x="${W - R + 4}" y="${agr[agr.length - 1][1] + 4}" class="fill-ink font-mono text-[10px]">ρ</text>
     ${labels}
@@ -92,7 +93,7 @@ function render(data: SiteData): string {
       <p class="font-mono text-xs uppercase tracking-wider text-slate">Interactive parameter</p>
       <h2 class="mt-1 font-sans text-lg font-semibold">Select a privacy budget (ε)</h2>
       <div id="steps" class="mt-4 grid grid-cols-2 gap-3 md:grid-cols-5">${steps(data, 10)}</div>
-      <p class="mt-4 rounded bg-muted p-3 text-sm text-slate" id="explain"></p>
+      <p class="mt-4 rounded-xl bg-muted p-3 text-sm text-slate" id="explain"></p>
     </div>
     <div id="cards" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">${cards(data, 10)}</div>
   </section>
@@ -101,12 +102,12 @@ function render(data: SiteData): string {
       <p class="mt-2 text-xs text-slate">Solid: CN vs AD accuracy (left axis). Dashed: attribution agreement ρ (0 to 1). Orange dashed line: 50% chance.</p></div>
     <div class="card flex flex-col gap-4">
       <span class="badge badge-amber w-fit">${icon('lightbulb', '!text-sm')} Key finding</span>
-      <p class="font-serif text-xl italic leading-8">At ε = 10 the private model scores ${pct(p10?.accuracy)} against
+      <p class="font-display text-xl leading-8">At ε = 10 the private model scores ${pct(p10?.accuracy)} against
         ${pct(p0?.accuracy)} for its non-private twin, while the agreement of its region attributions falls from
         ${fixed(p0?.explanation_agreement)} to ${fixed(p10?.explanation_agreement)}.</p>
       <p class="text-sm text-slate">At this cohort size the noise acts partly as regularisation, which is why accuracy can rise.
         An accuracy-only privacy-utility curve cannot show that the explanation moved.</p>
-      <div class="rounded bg-muted p-4 text-sm"><p class="font-mono text-xs uppercase tracking-wider text-slate">Calibration</p>
+      <div class="rounded-xl bg-muted p-4 text-sm"><p class="font-mono text-xs uppercase tracking-wider text-slate">Calibration</p>
         <p class="mt-2">σ is the smallest noise multiplier for which the Rényi DP accountant certifies (ε, δ = ${dp.delta}) after
           ${dp.rounds} rounds with subject sampling rate ${dp.subject_sample_rate} and per-subject clipping at C = ${dp.clip_norm}.</p></div>
     </div></div>`)}
@@ -129,7 +130,10 @@ void mountPage('privacy', render).then((data) => {
     const stepsNode = document.getElementById('steps');
     const cardsNode = document.getElementById('cards');
     if (stepsNode) stepsNode.innerHTML = steps(data, eps);
-    if (cardsNode) cardsNode.innerHTML = cards(data, eps);
+    if (cardsNode) {
+      cardsNode.innerHTML = cards(data, eps);
+      animate(cardsNode, true);
+    }
     explain(eps);
   });
 });

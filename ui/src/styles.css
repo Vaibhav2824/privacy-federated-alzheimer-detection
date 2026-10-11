@@ -1,66 +1,141 @@
-/* "Empirical Editorial" design tokens (see the Stitch DESIGN.md), compiled by Tailwind v4. */
+/* Clinical light theme: shadcn-style tokens compiled by Tailwind v4. */
 @import 'tailwindcss';
 
 @theme {
-  --color-paper: #faf8f4;
+  --color-paper: #f8fafc;
   --color-surface: #ffffff;
-  --color-muted: #f5f3ef;
-  --color-ink: #14213d;
-  --color-slate: #5b6475;
-  --color-hairline: #e6e2da;
+  --color-muted: #f1f5f9;
+  --color-ink: #0f172a;
+  --color-slate: #64748b;
+  --color-hairline: #e2e8f0;
   --color-teal: #0f766e;
-  --color-teal-dark: #0d625c;
+  --color-teal-dark: #115e59;
+  --color-teal-bright: #14b8a6;
+  --color-mint: #ccfbf1;
+  --color-sky: #0ea5e9;
+  --color-indigo: #6366f1;
   --color-amber: #b45309;
-  --color-amber-bg: #fef3c7;
+  --color-amber-bg: #fde68a;
   --color-amber-tint: #fffbeb;
-  --color-danger: #ba1a1a;
+  --color-danger: #be123c;
   --color-cn: #0072b2;
   --color-mci: #e69f00;
   --color-ad: #d55e00;
-  --font-serif: 'Newsreader', Georgia, serif;
+  --font-display: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 12px 32px -16px rgb(15 23 42 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(15 23 42 / 0.04), 0 24px 48px -20px rgb(13 148 136 / 0.28);
 }
+
+/* Animatable angle for the rotating border beam. */
+@property --beam-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes beam-spin { to { --beam-angle: 360deg; } }
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@keyframes float { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(2%, -4%, 0) scale(1.06); } }
+@keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 0.7; } 100% { transform: scale(2.2); opacity: 0; } }
 
 @layer base {
   html { scroll-behavior: smooth; }
   body { @apply bg-paper text-ink font-sans text-[15px] leading-6 antialiased; }
-  h1, h2, h3 { @apply font-serif font-normal tracking-tight; }
+  h1, h2, h3 { @apply font-display font-semibold tracking-tight; }
   table { font-variant-numeric: tabular-nums; }
+  ::selection { @apply bg-mint text-ink; }
   :focus-visible { @apply outline-2 outline-offset-2 outline-teal; }
 }
 
 @layer components {
   .shell { @apply mx-auto max-w-6xl px-4 md:px-8; }
-  .eyebrow { @apply font-mono text-xs font-medium uppercase tracking-wider text-teal; }
-  .card { @apply rounded-lg border border-hairline bg-surface p-6; }
+  .eyebrow { @apply inline-flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-wider text-teal; }
+  .card { @apply rounded-2xl border border-hairline bg-surface p-6 shadow-(--shadow-card); }
   .num { @apply font-mono tabular-nums; }
-  .btn { @apply inline-flex items-center gap-1.5 rounded-lg border border-hairline bg-surface px-4 py-2 text-sm text-ink transition-colors hover:bg-paper; }
-  .btn-primary { @apply border-teal bg-teal text-white hover:bg-teal-dark; }
-  .badge { @apply inline-flex items-center gap-1.5 rounded border border-teal/20 bg-teal/[0.08] px-2 py-0.5 font-mono text-xs text-teal; }
+  .btn {
+    @apply inline-flex h-10 items-center gap-1.5 whitespace-nowrap rounded-xl border border-hairline bg-surface px-4 text-sm font-medium text-ink
+      shadow-sm transition-all hover:-translate-y-px hover:border-slate/30 hover:shadow-md active:translate-y-0 disabled:pointer-events-none disabled:opacity-60;
+  }
+  .btn-primary {
+    @apply border-transparent bg-linear-to-b from-teal-bright to-teal text-white shadow-(--shadow-lift) hover:border-transparent hover:brightness-105;
+  }
+  .badge { @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-teal/15 bg-mint/60 px-2.5 py-0.5 font-mono text-xs text-teal; }
   .badge-amber { @apply border-amber-bg bg-amber-tint text-amber; }
-  .notice { @apply rounded-lg border border-amber-bg bg-amber-tint p-5 text-amber; }
-  .track { @apply relative h-2 overflow-hidden rounded bg-muted; }
-  .fill { @apply absolute inset-y-0 left-0 rounded; }
+  .notice { @apply rounded-2xl border border-amber-bg/70 bg-amber-tint p-5 text-amber; }
+  .track { @apply relative h-2 overflow-hidden rounded-full bg-muted; }
+  .fill { @apply absolute inset-y-0 left-0 rounded-full; }
   .material-symbols-outlined { font-size: 18px; line-height: 1; vertical-align: middle; }
+
+  /* Gradient headline text with a slow sheen. */
+  .text-gradient {
+    background: linear-gradient(110deg, var(--color-teal) 0%, var(--color-teal-bright) 30%, var(--color-sky) 50%, var(--color-teal-bright) 70%, var(--color-teal) 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 6s linear infinite;
+  }
+
+  /* Faint clinical grid behind hero sections. */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgb(15 23 42 / 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(15 23 42 / 0.045) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 40%, transparent 100%);
+  }
+  .aurora { @apply pointer-events-none absolute rounded-full blur-3xl; animation: float 14s ease-in-out infinite; }
+
+  /* Card whose surface lights up under the cursor (motion.ts sets --mx / --my). */
+  .spotlight { @apply relative overflow-hidden transition-colors; }
+  .spotlight::before {
+    content: '';
+    @apply pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(20 184 166 / 0.12), transparent 60%);
+  }
+  .spotlight:hover::before { @apply opacity-100; }
+  .spotlight:hover { @apply border-teal-bright/40; }
+
+  /* Rotating gradient border, for the one result each page wants seen first. */
+  .beam { @apply relative isolate; }
+  .beam::after {
+    content: '';
+    @apply pointer-events-none absolute -inset-px rounded-[inherit];
+    padding: 1.5px;
+    background: conic-gradient(from var(--beam-angle), transparent 0 62%, var(--color-teal-bright) 75%, var(--color-sky) 85%, transparent 95%);
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    animation: beam-spin 5s linear infinite;
+  }
+
+  .live-dot { @apply relative inline-flex h-2 w-2 rounded-full bg-teal-bright; }
+  .live-dot::after { content: ''; @apply absolute inset-0 rounded-full bg-teal-bright; animation: pulse-ring 1.6s ease-out infinite; }
 
   /* Demo chat, built by src/ui/chat.ts. */
   .transcript { @apply flex max-h-[28rem] flex-col gap-3 overflow-y-auto; }
-  .message { @apply rounded-lg border border-hairline p-4; }
-  .message-user { @apply self-end bg-muted; }
+  .message { @apply max-w-[85%] rounded-2xl border border-hairline bg-surface p-4; }
+  .message-user { @apply self-end bg-mint/50; }
   .message-role { @apply mb-1 block font-mono text-xs uppercase tracking-wider text-slate; }
   .message-body p + p { @apply mt-2; }
   .caveat { @apply text-sm text-amber; }
-  .thumb { @apply max-h-40 rounded; }
-  .skeleton { @apply my-2 h-3 animate-pulse rounded bg-muted; }
-  .dropzone { @apply mt-4 flex flex-col items-center gap-2 rounded-lg border border-dashed border-hairline p-8 text-center text-sm text-slate; }
-  .dropzone.is-active { @apply border-teal bg-teal/[0.04]; }
-  .dropzone .button { @apply inline-flex items-center rounded-lg bg-teal px-4 py-2 text-sm text-white hover:bg-teal-dark disabled:opacity-60; }
+  .thumb { @apply max-h-40 rounded-xl; }
+  .skeleton { @apply my-2 h-3 animate-pulse rounded-full bg-muted; }
+  .dropzone { @apply mt-4 flex flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-hairline bg-paper p-8 text-center text-sm text-slate transition-colors; }
+  .dropzone.is-active { @apply border-teal-bright bg-mint/40; }
+  .dropzone .button {
+    @apply inline-flex h-10 items-center rounded-xl bg-linear-to-b from-teal-bright to-teal px-4 text-sm font-medium text-white shadow-(--shadow-lift) disabled:opacity-60;
+  }
   .status { @apply mt-3 min-h-6 font-mono text-xs text-slate; }
   .status[data-state='error'] { @apply text-danger; }
   .scores { @apply mt-3 flex flex-col gap-2; }
   .score { @apply grid grid-cols-[3rem_1fr_4rem] items-center gap-3 font-mono text-sm; }
-  .score-track { @apply relative h-2 overflow-hidden rounded bg-muted; }
-  .score-fill { @apply absolute inset-y-0 left-0 rounded bg-teal; }
+  .score-track { @apply relative h-2.5 overflow-hidden rounded-full bg-muted; }
+  .score-fill { @apply absolute inset-y-0 left-0 rounded-full bg-linear-to-r from-teal to-teal-bright; }
   .score-value { @apply text-right; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-gradient, .beam::after, .aurora, .live-dot::after { animation: none; }
+  html { scroll-behavior: auto; }
 }

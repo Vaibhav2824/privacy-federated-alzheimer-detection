@@ -21,7 +21,7 @@ function dimensionLaw(data: SiteData): string {
         <div class="flex justify-between text-sm"><span class="font-medium">${DIM_NAMES[r.model] ?? r.model}
           <span class="num text-slate">(d = ${r.dimension.toLocaleString('en')})</span></span>
           <span class="num ${ok ? 'text-teal' : 'text-danger'}">${r.worst_case_ratio.toFixed(2)} · ${ok ? 'signal survives' : 'noise dominates'}</span></div>
-        <div class="relative h-6 rounded bg-muted">
+        <div class="relative h-6 rounded-xl bg-muted">
           <span class="absolute inset-y-0 left-0 rounded ${ok ? 'bg-teal' : r.worst_case_ratio < 10 ? 'bg-slate' : 'bg-danger'}" style="width:${logWidth(r.worst_case_ratio) * 100}%"></span>
           <span class="absolute -inset-y-1 border-l-2 border-dashed border-ad" style="left:${threshold}%"></span>
         </div></div>`;
@@ -29,7 +29,7 @@ function dimensionLaw(data: SiteData): string {
     .join('');
   return `<div class="grid gap-8 lg:grid-cols-2">
     <div>
-      <p class="font-serif text-lg leading-8">The Gaussian noise added to a summed update is isotropic, so its expected
+      <p class="font-display text-lg leading-8">The Gaussian noise added to a summed update is isotropic, so its expected
         norm grows as <span class="num">σC√d</span>, while the update itself is bounded by <span class="num">NC</span>
         whatever the dimension. Whether a private model is usable is therefore set by the number of
         parameters it perturbs, not by the cohort or the mechanism.</p>
@@ -37,7 +37,7 @@ function dimensionLaw(data: SiteData): string {
         <span class="num text-ink">${pct(privacyAt(data, 'cn-ad', 1)?.accuracy)}</span> CN vs AD accuracy.</p>
     </div>
     <div class="card">
-      <p class="font-serif text-xl">Worst-case noise-to-signal ratio at ε = 1</p>
+      <p class="font-display text-xl">Worst-case noise-to-signal ratio at ε = 1</p>
       <p class="mt-1 text-sm text-slate">Log scale. Dashed line: ratio 1.0, above which the noise outweighs the update.</p>
       <div class="mt-6 flex flex-col gap-5">${bars}</div>
     </div>
@@ -50,7 +50,7 @@ function costs(data: SiteData): string {
   const p1 = privacyAt(data, 'cn-ad', 1);
   const p0 = privacyAt(data, 'cn-ad', null);
   const p10 = privacyAt(data, 'cn-ad', 10);
-  const card = (n: string, i: string, title: string, value: string, body: string): string => `<div class="card">
+  const card = (n: string, i: string, title: string, value: string, body: string): string => `<div class="card spotlight">
     <div class="flex items-center justify-between"><span class="text-teal">${icon(i)}</span><span class="font-mono text-xs text-slate">Cost ${n}</span></div>
     <h3 class="mt-4 font-sans text-base font-medium">${title}</h3>
     <p class="num mt-1 text-2xl font-semibold text-ad">${value}</p>
@@ -72,15 +72,18 @@ function render(data: SiteData): string {
   const triad = (c: string, label: string): string =>
     `<span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full ${c}"></span><span class="font-mono text-xs">${label}</span></span>`;
   return `
-  <section class="border-b border-hairline bg-[#fbf9f5] py-16">
-    <div class="shell flex flex-col gap-8">
+  <section class="relative overflow-hidden border-b border-hairline bg-surface py-16 md:py-24">
+    <div class="bg-grid absolute inset-0"></div>
+    <div class="aurora -top-40 right-[0%] h-[30rem] w-[30rem] bg-teal-bright/20"></div>
+    <div class="aurora -bottom-48 left-[10%] h-96 w-96 bg-sky/15 [animation-delay:-7s]"></div>
+    <div class="shell relative flex flex-col gap-8" data-stagger>
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <p class="eyebrow">Research paper <span class="text-slate">/ Federated healthcare machine learning</span></p>
+        <p class="eyebrow"><span class="live-dot"></span>Research paper <span class="text-slate">/ Federated healthcare machine learning</span></p>
         <span class="badge">Open source · MIT</span>
       </div>
       <div class="max-w-4xl">
-        <h1 class="text-4xl leading-tight md:text-[54px] md:leading-[62px]">Federated brain MRI, measured honestly.</h1>
-        <p class="mt-4 font-serif text-xl leading-8 text-slate">CN / MCI / AD classification from ADNI structural MRI,
+        <h1 class="text-5xl leading-[1.05] tracking-tighter md:text-[72px]">Federated brain MRI, <span class="text-gradient">measured honestly.</span></h1>
+        <p class="mt-6 max-w-3xl text-xl leading-8 text-slate">CN / MCI / AD classification from ADNI structural MRI,
           trained without pooling scans across sites, evaluated so that no subject, and under the stricter protocol no
           site, appears in more than one split.</p>
       </div>
@@ -93,18 +96,28 @@ function render(data: SiteData): string {
           <a class="btn" href="${href('integrity')}">Splits and integrity</a>
         </div>
       </div>
-      <div class="card flex flex-wrap items-center gap-5 !py-3">
+      <div class="card flex flex-wrap items-center gap-5 !py-3 !shadow-none">
         <span class="font-mono text-xs text-slate">Colour-blind-safe class palette</span>
         ${triad('bg-cn', 'CN · cognitively normal')}${triad('bg-mci', 'MCI · mild cognitive impairment')}${triad('bg-ad', "AD · Alzheimer's disease")}
       </div>
     </div>
   </section>
 
-  <section class="shell mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+  <section class="shell -mt-8 relative grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-stagger>
     ${kpi('Cohort', String(three.n_subjects), 'ADNI subjects with T1 MRI, one scan each')}
     ${kpi('Sites → clients', `${data.partition.n_sites} → ${data.partition.n_clients}`, 'Real acquisition sites, small ones pooled into federated clients')}
     ${kpi('CN vs AD', pct(cnad.accuracy), `Imaging only, subject-disjoint (AUROC ${fixed(cnad.macro_auroc)}); ${pct(bestCentralised(data, 'cn-ad', 'subject', COV).accuracy)} with age and sex`, 'text-teal')}
     ${kpi('Private CN vs AD', pct(privacyAt(data, 'cn-ad', 1)?.accuracy), `Subject-level DP at ε = 1, δ = ${data.dp_config.delta}`)}
+  </section>
+
+  <section class="shell mt-10" data-reveal>
+    <a href="${href('results')}" class="card beam group flex flex-col items-start justify-between gap-6 bg-linear-to-br from-mint/50 via-surface to-sky/10 !p-8 md:flex-row md:items-center">
+      <div><p class="eyebrow">Headline result</p>
+        <p class="mt-2 font-display text-3xl font-bold tracking-tight md:text-4xl"><span class="text-gradient" data-count>${pct(cnad.accuracy)}</span> CN vs AD on unseen subjects,
+          <span class="text-teal" data-count>${pct(bestCentralised(data, 'cn-ad', 'site').accuracy)}</span> on unseen hospitals.</p>
+        <p class="mt-2 text-slate">${points(cnad.accuracy, cnad.chance_accuracy)} above chance, and it barely moves when whole acquisition sites are held out.</p></div>
+      <span class="btn btn-primary shrink-0">See all results <span class="transition-transform group-hover:translate-x-1">${icon('arrow_forward')}</span></span>
+    </a>
   </section>
 
   <section class="shell mt-10">
@@ -123,8 +136,8 @@ function render(data: SiteData): string {
   ${section('Evaluation dimensions', 'What we measured across the pipeline', costs(data),
     'Three trade-offs measured on the same subjects and folds: what federating costs, what privacy costs, and what privacy does to explanations.')}
 
-  <section class="shell mt-14">
-    <div class="card flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+  <section class="shell mt-20" data-reveal>
+    <div class="card spotlight flex flex-col items-start justify-between gap-4 !p-8 md:flex-row md:items-center">
       <div><p class="eyebrow">Live demo</p>
         <h2 class="mt-1 text-2xl">Run the paper's private model</h2>
         <p class="mt-1 text-slate">The ε = 10 region model answers from a small API on region volumes, so no scan is uploaded;
@@ -144,7 +157,7 @@ function render(data: SiteData): string {
     <div class="card">
       <div class="flex items-center justify-between"><p class="font-mono text-xs uppercase tracking-wider">BibTeX</p>
         <button class="btn !px-2 !py-1 text-xs" id="copy-bib" type="button">${icon('content_copy')} Copy</button></div>
-      <pre class="mt-3 overflow-x-auto rounded bg-paper p-4 font-mono text-xs leading-5" id="bib">${BIBTEX}</pre>
+      <pre class="mt-3 overflow-x-auto rounded-xl bg-paper p-4 font-mono text-xs leading-5" id="bib">${BIBTEX}</pre>
     </div>
   </section>`;
 }
