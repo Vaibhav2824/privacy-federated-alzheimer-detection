@@ -1,4 +1,4 @@
-import { bestCentralised, fixed, pct, privacyAt, TASKS, type SiteData } from '../lib/site';
+import { bestCentralised, fixed, pct, TASKS, type SiteData } from '../lib/site';
 import { icon, mountPage, pageHead, REPO, section } from '../ui/layout';
 
 type Status = 'Retracted' | 'Superseded' | 'Current';
@@ -41,9 +41,12 @@ function timeline(data: SiteData): string {
     ${milestone('Superseded', `v4 · Cohort expanded to ${h.v4.n_subjects} subjects`, pct(h.v4.accuracy), 'Best model, subject-disjoint',
       'Smaller cohort was not systematically biased',
       'Rerun unchanged on 2.6 times the subjects. The headline barely moved; two secondary findings did not survive (below).')}
-    ${milestone('Current', `v5 · ${h.v5.n_subjects} subjects, real-site federation, subject-level DP`, pct(h.v5.accuracy), 'Best model, subject-disjoint',
-      'Numbers on this site',
+    ${milestone('Superseded', `v5 · ${h.v5.n_subjects} subjects, real-site federation, subject-level DP`, pct(h.v5.accuracy), 'Best model, subject-disjoint',
+      'Privacy, federation and explanations measured together',
       'Federated over real acquisition sites with subject-level differential privacy, membership-inference auditing and region-level explanations, under both subject- and site-disjoint evaluation.')}
+    ${milestone('Current', `v6 · Proper tissue segmentation, same ${h.v6.n_subjects} subjects`, pct(h.v6.accuracy), 'Best model, subject-disjoint, imaging only',
+      'The features were the bottleneck',
+      'The intensity-only tissue mixture on affine-registered volumes was replaced by network segmentation, nonlinear warping and Neuromorphometrics region volumes over intracranial volume. Same subjects, folds and seeds. These are the numbers on this site.')}
   </ol>`;
 }
 
@@ -64,7 +67,6 @@ const ORIENTATION = [
 ];
 
 function downgraded(data: SiteData): string {
-  const now = privacyAt(data, 'cn-ad', 10)?.explanation_agreement;
   const siteWins = TASKS.filter((t) => (bestCentralised(data, t.key, 'site').accuracy ?? 0) > (bestCentralised(data, t.key, 'subject').accuracy ?? 0)).length;
   const claim = (n: string, title: string, original: string, audited: string, resolution: string): string => `<div class="card flex flex-col">
     <span class="badge badge-amber w-fit">Downgraded claim ${n}</span>
@@ -77,7 +79,7 @@ function downgraded(data: SiteData): string {
   return `<div class="grid gap-6 md:grid-cols-2">
     ${claim('01', 'Explanation collapse was overstated',
       `On ${data.history.v3.n_subjects} subjects, attribution agreement at ε = 10 measured ${fixed(data.history.v3.agreement_eps10)}: a near-total collapse.`,
-      `On the current cohort the same measurement gives ${fixed(now)}. Agreement still falls by more than half at a budget where accuracy rises, but the collapse was substantially a small-sample artefact.`,
+      `On ${data.history.v5.n_subjects} subjects with the same pipeline the measurement gives ${fixed(data.history.v5.agreement_eps10)}. Agreement still falls by more than half at a budget where accuracy rises, but the collapse was substantially a small-sample artefact.`,
       'Reported at its revised strength.')}
     ${claim('02', 'Site-disjoint evaluation is not free',
       'On a demographic subset, site-disjoint accuracy came out above subject-disjoint.',
@@ -89,7 +91,7 @@ function downgraded(data: SiteData): string {
 function render(data: SiteData): string {
   return `
   ${pageHead('Methodological integrity · audit trail', 'The path to honest measurement',
-    `A record of the errors found, the claims retracted, and how the headline went from ${pct(data.history.v1.accuracy)} to a defensible ${pct(data.history.v5.accuracy)} on three classes.`)}
+    `A record of the errors found, the claims retracted, and how the headline went from ${pct(data.history.v1.accuracy)} to a defensible ${pct(data.history.v6.accuracy)} on three classes.`)}
   ${section('01 · Chronological evolution', 'Milestones and corrections', timeline(data))}
   ${section('02 · Root cause', 'The slice-axis defect', `${DEFECT}
     <div class="mt-6 overflow-x-auto rounded-lg border border-hairline bg-surface"><table class="w-full text-sm">

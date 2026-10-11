@@ -101,7 +101,7 @@ export async function mountPage(
   } catch (error) {
     app.innerHTML = `${header(active)}<main id="main" class="shell py-16"><p class="notice">
       The results file could not be loaded (${error instanceof Error ? error.message : String(error)}).
-      Rebuild it with <code>python -m src.export_site_v5</code>.</p></main>${FOOTER}`;
+      Rebuild it with <code>python -m src.export_site</code>.</p></main>${FOOTER}`;
     return null;
   }
 }

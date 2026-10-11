@@ -83,7 +83,7 @@ w_t+1 ← w_t + Δ / participants</pre>
 
 function render(data: SiteData): string {
   const fed = (s: string): Condition | undefined => pick(data, { family: 'federated', label_set: 'cn-mci-ad', split_scheme: 'subject', client_scheme: s });
-  const central = pick(data, { family: 'centralised', model: 'logreg', label_set: 'cn-mci-ad', split_scheme: 'subject' });
+  const central = pick(data, { family: 'centralised', model: 'logreg_cv', label_set: 'cn-mci-ad', split_scheme: 'subject' });
   const best = bestCentralised(data, 'cn-mci-ad', 'subject');
   return `
   ${pageHead('Federated topology · real sites vs simulated partitions', 'Hospital topology vs simulated benchmarks',

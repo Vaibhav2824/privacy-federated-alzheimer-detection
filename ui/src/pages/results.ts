@@ -30,6 +30,7 @@ function table(data: SiteData): string {
         <td class="num p-3 text-right">${fixed(c.macro_f1)}</td>
         <td class="num p-3 text-right">${fixed(c.macro_auroc)}</td>
         <td class="num p-3 text-right text-slate">${pct(c.chance_accuracy)}</td>
+        <td class="num p-3 text-right">${pct(bestCentralised(data, task.key, split.key, 'centralised+cov').accuracy)}</td>
         <td class="p-3 text-sm text-slate">${MODEL_NAMES[c.model] ?? c.model}</td>
         ${i === 0 ? `<td rowspan="2" class="num p-4 text-right align-middle">${points(bestCentralised(data, task.key, 'site').accuracy, c.accuracy)}</td>` : ''}
       </tr>`;
@@ -41,11 +42,12 @@ function table(data: SiteData): string {
       <thead class="bg-muted text-left font-mono text-xs uppercase tracking-wider text-slate"><tr>
         <th class="p-3">Task</th><th class="p-3">Evaluation</th><th class="p-3">Accuracy (± sd, dashed = chance)</th>
         <th class="p-3 text-right">Macro F1</th><th class="p-3 text-right">Macro AUROC</th><th class="p-3 text-right">Chance</th>
-        <th class="p-3">Best model</th><th class="p-3 text-right">Site − subject</th></tr></thead>
+        <th class="p-3 text-right">+ age &amp; sex</th><th class="p-3">Best model</th><th class="p-3 text-right">Site − subject</th></tr></thead>
       <tbody>${rows}</tbody>
     </table></div>
     <p class="mt-2 text-xs text-slate">Mean ± standard deviation over three seeds of five-fold out-of-fold evaluation. Chance is the majority-class rate.
-      Each row shows the best of five model families; the paper reports all five.</p>`;
+      Imaging features only; each row shows the best of an ensemble, a tuned ensemble and a tuned logistic regression, with hyperparameters
+      chosen by nested cross-validation. The age-and-sex column appends both to the same features.</p>`;
 }
 
 function demographics(data: SiteData): string {

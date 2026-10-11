@@ -50,6 +50,9 @@ describe('site queries', () => {
     expect(() => bestCentralised(data, 'cn-ad', 'site')).toThrow(/no centralised result/);
     const missingFirst = { conditions: [condition({ model: 'rf' }), condition({ model: 'lda', accuracy: 0.6 })] } as SiteData;
     expect(bestCentralised(missingFirst, 'cn-ad', 'subject').model).toBe('lda');
+    const withCovariates = { conditions: [condition({ family: 'centralised+cov', model: 'logreg_cv', accuracy: 0.8 })] } as SiteData;
+    expect(bestCentralised(withCovariates, 'cn-ad', 'subject', 'centralised+cov').accuracy).toBe(0.8);
+    expect(() => bestCentralised(withCovariates, 'cn-ad', 'subject')).toThrow();
   });
 
   it('separates the private and non-private privacy arms', () => {

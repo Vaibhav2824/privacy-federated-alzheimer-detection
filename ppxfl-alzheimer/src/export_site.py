@@ -1,5 +1,5 @@
 """
-export_site_v5.py — every number the multi-page site shows, in one file.
+export_site.py — every number the multi-page site shows, in one file.
 
 The site renders ``ui/public/data/site.json`` and nothing else, so no figure is
 typed into a page by hand.  Only aggregates leave this script: per-condition
@@ -45,8 +45,15 @@ def _headline(summary_path, label_set="cn-mci-ad", split="subject", model="ensem
     return None
 
 
+def _agreement_eps10(summary_path):
+    """CN-vs-AD attribution agreement at eps 10 for one cohort's summary."""
+    return next(
+        c["explanation_agreement"]["mean"] for c in _load(summary_path)["conditions"]
+        if c["family"] == "privacy" and c["label_set"] == "cn-ad" and c["target_epsilon"] == 10.0)
+
+
 def _history(root):
-    """v1 slice-leak headline, v2 subject-disjoint rebuild, then v3/v4/v5."""
+    """v1 slice-leak headline, v2 subject-disjoint rebuild, then v3 to v6."""
     with open(os.path.join(root, "results", "metrics", "all_experiments_results.csv"),
               encoding="utf-8") as handle:
         v1 = max(float(r["accuracy"]) for r in csv.DictReader(handle)
@@ -54,24 +61,25 @@ def _history(root):
     v2 = mean(_load(p)["accuracy"] for p in
               glob.glob(os.path.join(root, "results_v2", "metrics", "resnet50_centralised_*_metrics.json")))
     v3_path = os.path.join(root, "results_v3", "results_summary_v3.json")
-    v3 = _headline(v3_path)
-    # The first cohort's CN-vs-AD attribution agreement at eps 10, which the
-    # integrity page reports as the finding that did not survive the larger cohort.
-    v3["agreement_eps10"] = next(
-        c["explanation_agreement"]["mean"] for c in _load(v3_path)["conditions"]
-        if c["family"] == "privacy" and c["label_set"] == "cn-ad" and c["target_epsilon"] == 10.0)
+    v5_path = os.path.join(root, "results_v5", "results_summary_v5.json")
+    # The agreement at eps 10 on the first cohort and on the same pipeline at
+    # 799 subjects: the finding the integrity page reports as downgraded.
+    v3 = {**_headline(v3_path), "agreement_eps10": _agreement_eps10(v3_path)}
+    v5 = {**_headline(v5_path), "agreement_eps10": _agreement_eps10(v5_path)}
     return {
         "v1": {"accuracy": v1},
         "v2": {"accuracy": v2},
         "v3": v3,
         "v4": _headline(os.path.join(root, "results_v4", "results_summary_v4.json")),
-        "v5": _headline(os.path.join(root, "results_v5", "results_summary_v5.json")),
+        "v5": v5,
+        "v6": _headline(os.path.join(root, "results_v6", "results_summary_v6_imaging_only.json"),
+                        model="ensemble_cv"),
     }
 
 
 def build(root: str) -> dict:
-    v5 = os.path.join(root, "results_v5")
-    metrics = os.path.join(v5, "metrics")
+    results = os.path.join(root, "results_v6")
+    metrics = os.path.join(results, "metrics")
     run = _load(os.path.join(metrics, "dp_cn-mci-ad_eps1.0_s42.json"))
     partition = run["partition"]
     clients = sorted(
@@ -84,9 +92,19 @@ def build(root: str) -> dict:
     for r in _load(os.path.join(metrics, "mia_v3.json"))["runs"]:
         key = "none" if r["target_epsilon"] is None else str(float(r["target_epsilon"]))
         attacks.setdefault(f"{r['label_set']}|{key}", []).append(r["attack_auroc"])
+    # Centralised headline numbers are imaging only, like the federated and
+    # private arms; the age-and-sex variant is kept as its own family.
+    imaging = _load(os.path.join(results, "results_summary_v6_imaging_only.json"))["conditions"]
+    with_covariates = _load(os.path.join(results, "results_summary_v6.json"))["conditions"]
+    conditions = [_condition(c) for c in imaging if c["family"] == "centralised"]
+    for c in with_covariates:
+        row = _condition(c)
+        if row["family"] == "centralised":
+            row["family"] = "centralised+cov"
+        conditions.append(row)
     return {
-        "cohort": "v5",
-        "conditions": [_condition(c) for c in _load(os.path.join(v5, "results_summary_v5.json"))["conditions"]],
+        "cohort": "v6",
+        "conditions": conditions,
         "attack_auroc": {k: mean(v) for k, v in attacks.items()},
         "confounds": _load(os.path.join(metrics, "confounds.json")),
         "dimension_law": _load(os.path.join(metrics, "dimension_law.json"))["rows"],

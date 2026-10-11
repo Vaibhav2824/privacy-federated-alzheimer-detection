@@ -1,13 +1,14 @@
 /**
  * Shape of, and queries over, `public/data/site.json`, written by
- * `ppxfl-alzheimer/src/export_site_v5.py`.
+ * `ppxfl-alzheimer/src/export_site.py`.
  *
  * Every number on every page comes through here, so no figure is typed into a
  * page by hand and the site cannot drift from the recorded runs.
  */
 
 export interface Condition {
-  family: 'centralised' | 'federated' | 'privacy';
+  /** `centralised+cov` is the centralised model with age and sex appended. */
+  family: 'centralised' | 'centralised+cov' | 'federated' | 'privacy';
   model: string;
   label_set: string;
   split_scheme: string;
@@ -68,7 +69,8 @@ export interface SiteData {
     v2: { accuracy: number };
     v3: { accuracy: number; n_subjects: number; agreement_eps10: number };
     v4: { accuracy: number; n_subjects: number };
-    v5: { accuracy: number; n_subjects: number };
+    v5: { accuracy: number; n_subjects: number; agreement_eps10: number };
+    v6: { accuracy: number; n_subjects: number };
   };
 }
 
@@ -84,6 +86,8 @@ export const BUDGETS: (number | null)[] = [null, 10, 5, 2, 1];
 
 export const MODEL_NAMES: Record<string, string> = {
   ensemble: 'Ensemble',
+  ensemble_cv: 'Tuned ensemble',
+  logreg_cv: 'Tuned logistic regression',
   logreg: 'Logistic regression',
   lda: 'Shrinkage LDA',
   rf: 'Random forest',
@@ -97,10 +101,15 @@ export function pick(data: SiteData, query: Partial<Condition>): Condition | und
   return data.conditions.find((c) => entries.every(([key, value]) => c[key] === value));
 }
 
-/** The most accurate centralised model for a task and split. */
-export function bestCentralised(data: SiteData, labelSet: string, split: string): Condition {
+/** The most accurate centralised model for a task and split (imaging only by default). */
+export function bestCentralised(
+  data: SiteData,
+  labelSet: string,
+  split: string,
+  family: Condition['family'] = 'centralised',
+): Condition {
   const candidates = data.conditions.filter(
-    (c) => c.family === 'centralised' && c.label_set === labelSet && c.split_scheme === split,
+    (c) => c.family === family && c.label_set === labelSet && c.split_scheme === split,
   );
   if (candidates.length === 0) throw new Error(`no centralised result for ${labelSet}/${split}`);
   return candidates.reduce((a, b) => ((b.accuracy ?? 0) > (a.accuracy ?? 0) ? b : a));

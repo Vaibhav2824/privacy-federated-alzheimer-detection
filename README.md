@@ -16,37 +16,48 @@ hospital sites costs, what subject-level differential privacy costs, and what
 privacy does to a model's explanations.
 
 The headline result is that the cost of subject-level privacy is set by the
-**perturbed dimension**, not by the cohort or the mechanism. A 423-parameter
-model over standardised anatomical regions stays usable at ε = 1, where the
+**perturbed dimension**, not by the cohort or the mechanism. A 405-parameter
+model over named anatomical regions stays usable at ε = 1, where the
 23.5M-parameter network it replaces collapses onto the majority class.
+
+> The numbers below and on the site come from the current **v6** features
+> (deepmriprep segmentation; same subjects, folds and seeds as v5). The paper
+> still describes the earlier Harvard-Oxford features and has not yet been
+> updated to them.
 
 ---
 
 ## Cohort and protocol
 
-760 ADNI subjects (266 CN, 255 MCI, 239 AD) across 65 sites, each registered to
-the MNI152 2 mm template and represented by 140 grey-matter and CSF fractions
-over Harvard-Oxford regions. Every arm is measured out-of-fold over five folds
-and three seeds, on the same subjects, so comparisons between arms are
-comparisons of method rather than of sample.
+799 ADNI subjects (275 CN, 271 MCI, 253 AD) across 65 sites. Each scan is
+oriented, skull-stripped and registered to MNI152 for quality control, then
+segmented with [deepmriprep](https://pypi.org/project/deepmriprep/) (CAT12 in
+PyTorch): a trained network separates grey matter, white matter and CSF, a
+nonlinear warp aligns the brain to the CAT12 template, and the Neuromorphometrics
+atlas is warped back so that each of 134 regions is measured on the subject's
+own anatomy, as a volume over total intracranial volume. Every arm is measured
+out-of-fold over five folds and three seeds, on the same subjects, so
+comparisons between arms are comparisons of method rather than of sample.
 
-Accuracy below is the best of five model families (ensemble, shrinkage LDA,
-logistic regression, random forest, RBF SVM); the paper reports all five.
+Accuracy is from imaging features alone: the best of an ensemble, a tuned
+ensemble and a tuned logistic regression, with hyperparameters chosen by nested
+cross-validation inside each training fold. The last column appends age and sex.
 
-| Task | Split | Accuracy | Macro F1 | Macro AUROC | Chance |
-| --- | --- | --- | --- | --- | --- |
-| CN vs AD | subject-disjoint | **78.9%** | 0.787 | 0.862 | 52.7% |
-| CN vs AD | site-disjoint | 77.4% | 0.773 | 0.853 | 52.7% |
-| MCI vs AD | subject-disjoint | **65.5%** | 0.655 | 0.703 | 51.6% |
-| MCI vs AD | site-disjoint | 65.0% | 0.650 | 0.699 | 51.6% |
-| CN vs MCI | subject-disjoint | **64.6%** | 0.644 | 0.662 | 51.1% |
-| CN vs MCI | site-disjoint | 63.1% | 0.630 | 0.661 | 51.1% |
-| CN / MCI / AD | subject-disjoint | **52.5%** | 0.518 | 0.696 | 35.0% |
-| CN / MCI / AD | site-disjoint | 51.2% | 0.498 | 0.673 | 35.0% |
+| Task | Split | Accuracy | Macro F1 | Macro AUROC | + age & sex | Chance |
+| --- | --- | --- | --- | --- | --- | --- |
+| CN vs AD | subject-disjoint | **87.3%** | 0.872 | 0.919 | 88.8% | 52.1% |
+| CN vs AD | site-disjoint | 86.7% | 0.866 | 0.923 | 87.2% | 52.1% |
+| MCI vs AD | subject-disjoint | **69.3%** | 0.693 | 0.751 | 69.8% | 51.7% |
+| MCI vs AD | site-disjoint | 69.3% | 0.693 | 0.749 | 68.7% | 51.7% |
+| CN vs MCI | subject-disjoint | **67.5%** | 0.675 | 0.718 | 68.9% | 50.4% |
+| CN vs MCI | site-disjoint | 68.9% | 0.688 | 0.725 | 68.9% | 50.4% |
+| CN / MCI / AD | subject-disjoint | **58.6%** | 0.569 | 0.748 | 58.4% | 34.4% |
+| CN / MCI / AD | site-disjoint | 57.9% | 0.566 | 0.747 | 58.1% | 34.4% |
 
 The difficulty ordering across the four contrasts is the clinically expected
 one, which is itself evidence that the pipeline measures anatomy rather than
-acquisition.
+acquisition. Three-class accuracy sits where blinded structural-MRI benchmarks
+do: the best entry to the CADDementia challenge reached 63% on an unseen test set.
 
 ## Two measurement defects, and how they were corrected
 
@@ -119,26 +130,26 @@ registration failures are excluded by a stated rule rather than by inspection.
 ## Federating over the real ADNI sites
 
 The natural partition puts one client per real site, pooling sites below eight
-subjects so that none is discarded, which yields 36 clients from 65 sites. The
-heterogeneity is the cohort's own, and one client still holds no MCI at all.
+subjects so that none is discarded, which yields 39 clients from 65 sites. The
+heterogeneity is the cohort's own: one client holds no MCI and another no AD.
 
-| Partition | Clients | CN / MCI / AD | CN vs AD |
-| --- | --- | --- | --- |
-| IID | 8 | 50.0% | 77.8% |
-| Dirichlet α = 0.5 | 8 | 47.7% | 76.4% |
-| **Real ADNI sites** | 36 | **47.2%** | **76.2%** |
+| Partition | CN / MCI / AD | CN vs AD |
+| --- | --- | --- |
+| IID | 53.9% | 84.6% |
+| Dirichlet α = 0.5 | 53.1% | 83.7% |
+| **Real ADNI sites** | **51.3%** | **82.1%** |
 
-Federating costs 2.5–5.3 points. The real partition proves at least as hard as
-the Dirichlet draw *despite carrying higher label entropy*, which indicates that
-the standard simulated benchmark does not capture what makes multi-site
-federation difficult — extreme client-size imbalance and genuine scanner
-variation sit on top of label skew.
+Against a tuned logistic regression trained centrally on the same subjects
+(56.6% and 87.3%), federating over the real sites costs 5.3 and 5.2 points; the
+simulated partitions cost 2.7–3.6. The real partition is the hardest of the
+three, which indicates that the standard simulated benchmark does not capture
+what makes multi-site federation difficult — extreme client-size imbalance and
+genuine scanner variation sit on top of label skew.
 
 A **site-disjoint** evaluation is reported next to the subject-disjoint one,
 since a federated model is deployed at hospitals that did not contribute to it.
-At 65 sites it costs 0.5–1.5 points across the four contrasts, down from 1.5–2.8
-points at 42 sites: the more sites the cohort spans, the less holding one out
-costs.
+Across the four contrasts it moves accuracy by −0.7 to +1.3 points: at 65 sites,
+holding a whole site out costs little.
 
 ## Subject-level differential privacy is a dimension problem
 
@@ -149,84 +160,101 @@ dimension:
 
 | model | d | noise/signal at ε=1 | ε=2 | ε=5 | ε=10 |
 | --- | --- | --- | --- | --- | --- |
-| MNI region model | 423 | **0.38** | **0.21** | **0.10** | **0.06** |
-| ResNet50 head | 6,147 | 1.46 | 0.82 | 0.39 | 0.24 |
-| ResNet50, full network | 23,508,035 | 90.44 | 50.56 | 24.28 | 14.57 |
+| Region model | 405 | **0.36** | **0.20** | **0.10** | **0.06** |
+| ResNet50 head | 6,147 | 1.39 | 0.78 | 0.37 | 0.22 |
+| ResNet50, full network | 23,508,035 | 86.05 | 48.11 | 23.10 | 13.86 |
 
 Below 1.0 the update survives the noise, and utility follows:
 
 | Task | ε | σ | Accuracy | Macro F1 | Attack AUROC |
 | --- | --- | --- | --- | --- | --- |
-| CN vs AD | non-private | — | 75.1% | 0.750 | — |
-| CN vs AD | 10 | 1.83 | **78.4%** | 0.782 | — |
-| CN vs AD | 5 | 3.04 | 77.8% | 0.777 | — |
-| CN vs AD | 2 | 6.34 | 75.4% | 0.753 | — |
-| CN vs AD | 1 | 11.34 | **71.6%** | 0.715 | — |
-| CN / MCI / AD | non-private | — | 47.1% | 0.470 | 0.598 |
-| CN / MCI / AD | 10 | 1.83 | 53.7% | 0.513 | 0.558 |
-| CN / MCI / AD | 5 | 3.04 | 53.5% | 0.513 | 0.553 |
-| CN / MCI / AD | 2 | 6.34 | 51.3% | 0.495 | 0.539 |
-| CN / MCI / AD | 1 | 11.34 | 48.6% | 0.472 | **0.527** |
+| CN vs AD | non-private | — | 81.9% | 0.819 | — |
+| CN vs AD | 10 | 1.83 | **86.2%** | 0.861 | — |
+| CN vs AD | 5 | 3.04 | 85.5% | 0.854 | — |
+| CN vs AD | 2 | 6.34 | 84.0% | 0.839 | — |
+| CN vs AD | 1 | 11.34 | **80.7%** | 0.806 | — |
+| CN / MCI / AD | non-private | — | 52.6% | 0.521 | 0.593 |
+| CN / MCI / AD | 10 | 1.83 | 57.6% | 0.541 | 0.554 |
+| CN / MCI / AD | 5 | 3.04 | 57.7% | 0.542 | 0.551 |
+| CN / MCI / AD | 2 | 6.34 | 55.8% | 0.532 | 0.540 |
+| CN / MCI / AD | 1 | 11.34 | 51.7% | 0.502 | **0.529** |
 
 At this cohort size the noise acts as regularisation: every private
-configuration at ε ≥ 2 matches or beats its own non-private baseline, and the
-region model stays usable down to ε = 1. A subject-level membership inference
-attack falls from 0.598 to 0.527 against a chance rate of 0.500, so the formal
-budget and the empirical attack move together.
+configuration at ε ≥ 2 beats its own non-private baseline, and the region model
+stays usable down to ε = 1. A subject-level membership inference attack falls
+from 0.593 to 0.529 against a chance rate of 0.500, so the formal budget and the
+empirical attack move together.
 
 ## Explanations degrade faster than accuracy
 
-Because every feature is a named Harvard-Oxford region on the MNI grid, an
-attribution is a value per region and two models' attributions are directly
-comparable — which slice-space heat maps are not, since pixel (i, j) refers to
-different anatomy in different subjects.
+Because every feature is a named atlas region, an attribution is a value per
+region and two models' attributions are directly comparable — which slice-space
+heat maps are not, since pixel (i, j) refers to different anatomy in different
+subjects.
 
 | ε | CN vs AD accuracy | Region-attribution agreement | Medial-temporal share |
 | --- | --- | --- | --- |
-| non-private | 75.1% | **0.926** | 12.9% |
-| 10 | **78.4%** | **0.437** | 12.4% |
-| 5 | 77.8% | 0.325 | 9.7% |
-| 2 | 75.4% | 0.185 | 7.1% |
-| 1 | 71.6% | 0.138 | 6.2% |
+| non-private | 81.9% | **0.860** | 10.8% |
+| 10 | **86.2%** | **0.198** | 9.9% |
+| 5 | 85.5% | 0.194 | 8.7% |
+| 2 | 84.0% | 0.187 | 5.9% |
+| 1 | 80.7% | 0.138 | 4.3% |
 
 At ε = 10 the private model is *more* accurate than the non-private one while
-the Spearman agreement of its region attribution has fallen by more than half,
-from 0.926 to 0.437. A model that is simultaneously more accurate and less
-explicable is exactly the case an accuracy-only privacy–utility curve cannot
-show.
-
-![Utility and explanation fidelity against the privacy budget](figures/v4/privacy_utility.png)
+the Spearman agreement of its region attribution has fallen by more than
+three-quarters, from 0.860 to 0.198. A model that is simultaneously more
+accurate and less explicable is exactly the case an accuracy-only
+privacy–utility curve cannot show.
 
 ## What the cohort alone could explain
 
 An imaging accuracy is evidence about imaging only if the cohort's demographics
 could not have produced it unaided. Measured under exactly the protocol used for
-the imaging models — same folds, same seeds, same metrics — on the 638 subjects
+the imaging models — same folds, same seeds, same metrics — on the 677 subjects
 for whom the demographic export supplies both sex and age:
 
 | Predictor | CN / MCI / AD | CN vs AD |
 | --- | --- | --- |
-| Sex only | 35.7% | 51.5% |
-| Age only | 33.3% | 48.6% |
-| Sex + age | 35.0% | 50.0% |
-| Imaging (MNI regions) | **51.2%** | **80.1%** |
-| Imaging + demographics | 53.6% | 80.4% |
-| Imaging, female only (*n* = 317) | 45.8% | 75.5% |
-| Imaging, male only (*n* = 321) | 54.6% | 80.6% |
+| Sex only | 32.5% | 47.2% |
+| Age only | 32.9% | 47.8% |
+| Sex + age | 32.7% | 47.1% |
+| Imaging (region volumes) | **56.2%** | **87.1%** |
+| Imaging + demographics | 56.4% | 86.9% |
+| Imaging, female only (*n* = 337) | 52.1% | 84.5% |
+| Imaging, male only (*n* = 340) | 51.1% | 84.7% |
 
-Chance is 34.0% and 50.6%. Imaging clearly exceeds what demographics buy, adding
-demographics to the imaging features is worth about two points, and the result
-survives stratification, where sex is constant and can contribute nothing at
-all. The two strata are not equally easy — the male stratum runs several points
-above the female one on both tasks — which is worth stating even though it is
-not what this analysis set out to test.
+Chance is 33.4% and 50.0%. Imaging clearly exceeds what demographics buy, adding
+demographics to the imaging features changes nothing, and the result survives
+stratification, where sex is constant and can contribute nothing at all. The two
+strata now come out level; the male-stratum advantage measured with the earlier
+features did not survive better segmentation.
 
 Rather than adjust for the imbalance, the cohort is also specified as a
 **design**: subjects are selected so that every diagnosis-by-sex cell holds the
 same number of subjects, drawn evenly across age bands. On that balanced cohort
-of 576 subjects a sex-only rule scores exactly 33.3% by construction, and the
-imaging model still reaches **50.8%** on three-class and **77.6%** on CN vs AD.
+of 630 subjects a sex-only rule scores exactly 33.3% by construction, and the
+imaging model still reaches **57.8%** on three-class and **88.6%** on CN vs AD.
 There is no confound left to adjust for.
+
+## What better features changed
+
+v5 and v6 use the same 799 subjects, folds and seeds; only the features differ.
+v5 segmented affine-registered volumes with a three-class intensity mixture and
+integrated over a fixed Harvard-Oxford atlas, which put the hippocampus label on
+different anatomy in different subjects. v6 replaces that with deepmriprep.
+
+| Measurement | v5 | v6 |
+| --- | --- | --- |
+| CN vs AD, centralised | 78.2% (AUROC 0.864) | **87.3%** (AUROC 0.919) |
+| CN / MCI / AD, centralised | 51.9% | **58.6%** |
+| CN vs AD, federated over real sites | 76.2% | **82.1%** |
+| CN / MCI / AD, federated over real sites | 47.8% | **51.3%** |
+| CN vs AD, subject-level DP at ε = 1 | 72.6% | **80.7%** |
+| Attribution agreement at ε = 10 | 0.440 | 0.198 |
+
+Every utility number rose, by 3.5 to 9.1 points, and the privacy and federation
+findings kept their direction. Explanations became *more* sensitive to privacy
+noise, not less, which strengthens the case for reporting them alongside accuracy.
 
 ## What the larger cohort changed
 
@@ -238,7 +266,7 @@ at their revised strength rather than at the one first measured:
 
 - **Explanation collapse was overstated.** On 297 subjects, agreement at ε = 10
   measured 0.062 and the medial-temporal share roughly halved. On 760 the same
-  measurements give **0.437** and an essentially unchanged **12.4%**. The
+  measurements gave **0.437** and an essentially unchanged **12.4%**. The
   direction survives — agreement more than halves at a budget where accuracy
   rises — but the near-total collapse was substantially a small-sample artefact.
 - **Site-disjoint does not beat subject-disjoint.** It does on the 638-subject
@@ -249,15 +277,16 @@ at their revised strength rather than at the one first measured:
 ## Repository layout
 
 ```
-paper.tex, paper.pdf     the write-up; every numeric table is generated
-figures/v4/              figures for the current 760-subject cohort
+paper.tex, paper.pdf     the write-up (still on the earlier features); tables are generated
+figures/v4/              figures for the 760-subject cohort
 figures/v3/              figures for the first, 297-subject cohort
-ui/                      in-browser demo and results dashboard
+ui/                      seven-page site and in-browser demo; reads ui/public/data/site.json
 ppxfl-alzheimer/
   src/preprocess_v3.py     scan selection, orientation, stripping, registration
   src/orientation*.py      the 48-candidate orientation search
   src/handedness.py        left/right resolution against anchor subjects
-  src/features.py          tissue segmentation and atlas region morphometry
+  src/vbm_features.py      deepmriprep region volumes (the current features)
+  src/features.py          the earlier intensity-mixture Harvard-Oxford features
   src/slices_v3.py         2.5D slices at named MNI coordinates
   src/deep_features.py     frozen-backbone embeddings (head dimension 6,147)
   src/splits_v3.py         subject and site folds; natural/IID/Dirichlet clients
@@ -265,6 +294,8 @@ ppxfl-alzheimer/
   src/xai_v3.py            region attribution and its stability under privacy
   src/mia_v3.py            subject-level membership inference
   src/paper_tables*.py     results JSON to the paper's generated table blocks
+  src/export_site.py       results JSON to the site's data file
+  results_v6/              the current runs (deepmriprep features, 799 subjects)
   results_v4/              the 760-subject cohort's runs
   results_v3/              the first, 297-subject cohort's runs
   results_v2/              the slice-space runs, kept for the audit trail
@@ -300,6 +331,22 @@ cached on disk:
 ```bash
 python run_v3.py --stages features centralised federated privacy aggregate figures
 ```
+
+Build the current region-volume features with deepmriprep (resumable; about a
+minute per scan on a laptop GPU), then evaluate them, rerun the federated and
+private arms, and rebuild the site's data file:
+
+```bash
+python -m src.vbm_features
+python -m src.evaluate_v3 --features data/mni2mm/features_vbm.npz --models ensemble ensemble_cv logreg_cv --out-dir results_v6/metrics_nocov
+python -m src.experiments_v3 --features data/mni2mm/features_vbm.npz --out-dir results_v6/metrics federated
+python -m src.experiments_v3 --features data/mni2mm/features_vbm.npz --out-dir results_v6/metrics privacy
+python -m src.export_site
+```
+
+`--covariates` appends age and sex to the centralised models, and
+`--adnimerge ADNIMERGE.csv` adds APOE4 and education. Diagnostic scores (MMSE,
+CDR, ADAS, FAQ) are never used as inputs: ADNI assigns the diagnosis from them.
 
 Tests and the coverage gate:
 

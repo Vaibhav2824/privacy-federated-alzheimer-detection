@@ -45,7 +45,7 @@ function dimensionLaw(data: SiteData): string {
 }
 
 function costs(data: SiteData): string {
-  const central = (ls: string): Condition | undefined => pick(data, { family: 'centralised', model: 'logreg', label_set: ls, split_scheme: 'subject' });
+  const central = (ls: string): Condition | undefined => pick(data, { family: 'centralised', model: 'logreg_cv', label_set: ls, split_scheme: 'subject' });
   const fed = (ls: string): Condition | undefined => pick(data, { family: 'federated', label_set: ls, split_scheme: 'subject', client_scheme: 'natural' });
   const p1 = privacyAt(data, 'cn-ad', 1);
   const p0 = privacyAt(data, 'cn-ad', null);
@@ -57,7 +57,7 @@ function costs(data: SiteData): string {
     <p class="mt-3 text-sm text-slate">${body}</p></div>`;
   return `<div class="grid gap-6 md:grid-cols-3">
     ${card('01', 'hub', 'Federating over real sites', `${points(fed('cn-mci-ad')?.accuracy, central('cn-mci-ad')?.accuracy)} / ${points(fed('cn-ad')?.accuracy, central('cn-ad')?.accuracy)}`,
-      `Three-class / CN vs AD accuracy of federated training over ${data.partition.n_clients} real-site clients, against the same logistic regression trained centrally.`)}
+      `Three-class / CN vs AD accuracy of federated training over ${data.partition.n_clients} real-site clients, against a tuned logistic regression trained centrally on the same subjects.`)}
     ${card('02', 'lock', 'Subject-level privacy at ε = 1', points(p1?.accuracy, p0?.accuracy),
       `CN vs AD accuracy of the private model against its non-private twin (${pct(p1?.accuracy)} vs ${pct(p0?.accuracy)}).`)}
     ${card('03', 'psychology', 'Explanations under privacy', `${fixed(p0?.explanation_agreement)} → ${fixed(p10?.explanation_agreement)}`,
@@ -103,7 +103,7 @@ function render(data: SiteData): string {
   <section class="shell mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
     ${kpi('Cohort', String(three.n_subjects), 'ADNI subjects with T1 MRI, one scan each')}
     ${kpi('Sites → clients', `${data.partition.n_sites} → ${data.partition.n_clients}`, 'Real acquisition sites, small ones pooled into federated clients')}
-    ${kpi('CN vs AD', pct(cnad.accuracy), `Best model, subject-disjoint (AUROC ${fixed(cnad.macro_auroc)})`, 'text-teal')}
+    ${kpi('CN vs AD', pct(cnad.accuracy), `Imaging only, subject-disjoint (AUROC ${fixed(cnad.macro_auroc)}); ${pct(bestCentralised(data, 'cn-ad', 'subject', 'centralised+cov').accuracy)} with age and sex`, 'text-teal')}
     ${kpi('Private CN vs AD', pct(privacyAt(data, 'cn-ad', 1)?.accuracy), `Subject-level DP at ε = 1, δ = ${data.dp_config.delta}`)}
   </section>
 

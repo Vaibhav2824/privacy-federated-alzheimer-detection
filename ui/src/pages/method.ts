@@ -6,8 +6,8 @@ function stages(features: number): string {
     ['ADNI T1 MRI', 'T1-weighted', 'One scan per subject, chosen by ADNI preprocessing level and then earliest acquisition; derived mask series excluded.', 'NIfTI'],
     ['Orientation search', '48 candidates', 'Every axis permutation and reflection registered to a whole-head ICBM152 target, fitted per series and array shape.', 'Measured, not read from headers'],
     ['Skull stripping', 'deepbet', 'Run after orientation, because the stripper leaves face and neck behind when a scan lies on its side.', 'Brain mask'],
-    ['MNI152 registration', '2 mm affine', 'Mutual-information translation, rigid and affine registration; a per-subject correlation score excludes failures by rule.', 'QC-gated'],
-    ['Region features', `${features} features`, 'Three-class tissue mixture; grey-matter and CSF fractions over Harvard-Oxford cortical and subcortical regions.', 'Named anatomy'],
+    ['MNI152 registration and QC', 'Affine', 'Mutual-information affine registration to MNI152; a per-subject correlation score excludes failures by a stated rule.', 'QC-gated cohort'],
+    ['Region volumes (deepmriprep)', `${features} regions`, 'Network tissue segmentation and nonlinear warping; the Neuromorphometrics atlas is warped back and each region’s grey-matter (or ventricular CSF) volume is divided by intracranial volume.', 'Named anatomy'],
     ['DP-FedAvg and audit', 'Subject-level', 'Federated over real sites with per-subject clipping and Gaussian noise, Rényi DP accounting, membership inference and region attribution.', 'ε, δ certified'],
   ];
   return `<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">${STAGES.map(([title, tag, body, out], i) => `
