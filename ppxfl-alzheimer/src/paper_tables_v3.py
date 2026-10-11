@@ -28,6 +28,7 @@ LABEL_SET_NAMES = {
 }
 MODEL_NAMES = {
     "logreg": "Logistic regression",
+    "ensemble": "Ensemble",
     "logreg_cv": "Tuned logistic regression",
     "ensemble_cv": "Tuned ensemble",
     "svm": "RBF SVM",

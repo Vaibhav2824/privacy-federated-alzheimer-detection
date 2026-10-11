@@ -253,7 +253,7 @@ def figure_dimension_law(law: dict, out_path: str) -> None:
     # Name the three configurations, so the axis reads as a design choice
     # rather than as an abstract dimension.
     labels = {
-        "roi_logreg": "MNI region model",
+        "roi_logreg": "Region model",
         "resnet50_head": "ResNet50 head",
         "resnet50_full": "ResNet50, full",
     }
