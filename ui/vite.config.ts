@@ -1,4 +1,10 @@
+import { resolve } from 'node:path';
+
+import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vitest/config';
+
+// One HTML entry per page; the shared header, nav and footer come from src/ui/layout.ts.
+const PAGES = ['index', 'demo', 'privacy', 'federation', 'results', 'integrity', 'method'];
 
 // The site is served from a project page (https://<user>.github.io/<repo>/),
 // so every asset URL has to be namespaced under the repository name. Vite's
@@ -7,8 +13,12 @@ const repositoryBase = '/privacy-federated-alzheimer-detection/';
 
 export default defineConfig({
   base: process.env.GITHUB_PAGES === 'true' ? repositoryBase : '/',
+  plugins: [tailwindcss()],
   build: {
     target: 'es2022',
+    rollupOptions: {
+      input: Object.fromEntries(PAGES.map((page) => [page, resolve(__dirname, `${page}.html`)])),
+    },
     // onnxruntime-web ships large wasm binaries; the warning is expected and
     // not actionable, so raise the threshold rather than leave noise in CI.
     chunkSizeWarningLimit: 1200,
