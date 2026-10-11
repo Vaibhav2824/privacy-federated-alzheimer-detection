@@ -42,7 +42,7 @@ def _headline(summary_path, label_set="cn-mci-ad", split="subject", model="ensem
         if (c["family"], c["model"], c["label_set"], c["split_scheme"]) == \
                 ("centralised", model, label_set, split):
             return {"accuracy": c["accuracy"]["mean"], "n_subjects": c["n_subjects"]}
-    return None
+    raise KeyError(f"no centralised {model} {label_set}/{split} result in {summary_path}")
 
 
 def _agreement_eps10(summary_path):
