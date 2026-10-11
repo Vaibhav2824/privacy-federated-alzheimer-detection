@@ -342,3 +342,20 @@ def test_tables_cli_emits_only_the_blocks_it_has_inputs_for(results_dir, tmp_pat
         "--orientation", str(tmp_path / "absent.json"),
     ]) == 0
     assert "wrote 3 table blocks" in capsys.readouterr().out
+
+
+def test_tables_cli_takes_centralised_rows_from_a_separate_summary(results_dir, tmp_path):
+    summary = aggregate(str(results_dir))
+    summary_path = tmp_path / "summary.json"
+    summary_path.write_text(json.dumps(summary), encoding="utf-8")
+    imaging_only = {"conditions": [dict(c, model="logreg_cv") for c in summary["conditions"]
+                                   if c["family"] == "centralised"]}
+    imaging_path = tmp_path / "imaging.json"
+    imaging_path.write_text(json.dumps(imaging_only), encoding="utf-8")
+    paper = tmp_path / "paper.tex"
+    paper.write_text("% BEGIN AUTO:v3-centralised\n% END AUTO:v3-centralised\n", encoding="utf-8")
+    assert tables_main(["--summary", str(summary_path), "--centralised-summary", str(imaging_path),
+                        "--paper", str(paper), "--law", str(tmp_path / "absent.json"),
+                        "--orientation", str(tmp_path / "absent.json")]) == 0
+    text = paper.read_text(encoding="utf-8")
+    assert "Tuned logistic regression" in text and "& Logistic regression &" not in text

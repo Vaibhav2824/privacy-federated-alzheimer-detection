@@ -51,42 +51,6 @@
 \newcommand{\CohortPerGroup}{334}
 \newcommand{\CohortPerCell}{167}
 \newcommand{\CohortAgeSpread}{0.7}
-% --- Expanded (v4) cohort. Filled from results_v4/results_summary_v4.json. ---
-\newcommand{\VFourBalN}{576}
-\newcommand{\VFourBalTri}{50.8\%}
-\newcommand{\VFourBalBin}{77.6\%}
-% --- Confound analysis, from results_v4/metrics/confounds.json. Measured on
-% --- the subjects for whom the demographic export supplies sex and age.
-\newcommand{\ConfSexTri}{35.7\%}
-\newcommand{\ConfAgeTri}{33.3\%}
-\newcommand{\ConfImgTri}{51.2\%}
-\newcommand{\ConfImgFemaleTri}{45.8\%}
-\newcommand{\ConfImgMaleTri}{54.6\%}
-\newcommand{\ConfNFemaleTri}{317}
-\newcommand{\ConfNMaleTri}{321}
-\newcommand{\ConfSexBin}{51.5\%}
-\newcommand{\ConfImgBin}{80.1\%}
-\newcommand{\ConfChanceTri}{34.0\%}
-\newcommand{\ConfChanceBin}{50.6\%}
-% --- The cohort this paper reports on, from results_v4/results_summary_v4.json.
-\newcommand{\CohSubjects}{760}
-\newcommand{\CohSites}{65}
-\newcommand{\CohFeatures}{140}
-\newcommand{\CohTriAcc}{52.5\%}
-\newcommand{\CohTriF}{0.518}
-\newcommand{\CohTriAUROC}{0.696}
-\newcommand{\CohTriSite}{51.2\%}
-\newcommand{\CohBinAcc}{78.9\%}
-\newcommand{\CohBinSite}{77.4\%}
-\newcommand{\CohBinAUROC}{0.862}
-\newcommand{\CohDpBinOne}{71.6\%}
-\newcommand{\CohDpBinTen}{78.4\%}
-\newcommand{\CohDpBinNone}{75.1\%}
-\newcommand{\CohXaiNonPrivate}{0.926}
-\newcommand{\CohXaiTen}{0.437}
-\newcommand{\CohMtNonPrivate}{12.9\%}
-\newcommand{\CohMtTen}{12.4\%}
-\newcommand{\CohDemog}{638}
 % --- The initial, smaller cohort the study was first run on. Retained because
 % --- the comparison between the two is itself a reported result.
 \newcommand{\InitSubjects}{297}
@@ -98,6 +62,72 @@
 \newcommand{\ChanceAccuracy}{33.3\%}
 \newcommand{\BestNonPrivateAcc}{36.1\%}
 % END AUTO:facts
+
+% The current cohort and representation (v6: deepmriprep region volumes on 799
+% subjects), plus the v3/v4/v5 values the comparisons quote. Written by
+% `python -m src.paper_facts` from the results JSONs; do not edit by hand.
+% BEGIN AUTO:current-facts
+\newcommand{\CohSubjects}{799}
+\newcommand{\CohSites}{65}
+\newcommand{\CohClients}{39}
+\newcommand{\CohFeatures}{134}
+\newcommand{\CohDim}{405}
+\newcommand{\CohTriAcc}{58.6\%}
+\newcommand{\CohTriF}{0.569}
+\newcommand{\CohTriAUROC}{0.748}
+\newcommand{\CohTriSite}{57.9\%}
+\newcommand{\CohBinAcc}{87.3\%}
+\newcommand{\CohBinSite}{86.7\%}
+\newcommand{\CohBinAUROC}{0.919}
+\newcommand{\CohBinCov}{88.8\%}
+\newcommand{\CohFedTri}{51.3\%}
+\newcommand{\CohFedBin}{82.1\%}
+\newcommand{\CohDpBinNone}{81.9\%}
+\newcommand{\CohDpBinOne}{80.7\%}
+\newcommand{\CohDpBinTen}{86.2\%}
+\newcommand{\CohXaiNonPrivate}{0.860}
+\newcommand{\CohXaiTen}{0.198}
+\newcommand{\CohMtNonPrivate}{10.8\%}
+\newcommand{\CohMtTen}{9.9\%}
+\newcommand{\CohAttackNone}{0.593}
+\newcommand{\CohAttackOne}{0.529}
+\newcommand{\CohDemog}{677}
+\newcommand{\ConfSexTri}{32.6\%}
+\newcommand{\ConfAgeTri}{32.9\%}
+\newcommand{\ConfImgTri}{56.2\%}
+\newcommand{\ConfImgDemoTri}{56.4\%}
+\newcommand{\ConfImgFemaleTri}{51.6\%}
+\newcommand{\ConfImgMaleTri}{51.5\%}
+\newcommand{\ConfNFemaleTri}{337}
+\newcommand{\ConfNMaleTri}{340}
+\newcommand{\ConfSexBin}{47.2\%}
+\newcommand{\ConfImgBin}{87.1\%}
+\newcommand{\ConfChanceTri}{33.4\%}
+\newcommand{\ConfChanceBin}{50.0\%}
+\newcommand{\BalN}{630}
+\newcommand{\BalTri}{57.8\%}
+\newcommand{\BalBin}{88.6\%}
+\newcommand{\VFourSubjects}{760}
+\newcommand{\VFourTriAcc}{52.5\%}
+\newcommand{\VFourBinAcc}{78.9\%}
+\newcommand{\VFourTriGap}{1.4}
+\newcommand{\VFourBinGap}{1.5}
+\newcommand{\InitTriGap}{0.6}
+\newcommand{\InitBinGap}{1.2}
+\newcommand{\VFourDpBinCost}{3.6}
+\newcommand{\InitDpBinCost}{8.5}
+\newcommand{\VFourXaiNonPrivate}{0.926}
+\newcommand{\VFourXaiTen}{0.437}
+\newcommand{\VFourMtNonPrivate}{12.9\%}
+\newcommand{\VFourMtTen}{12.4\%}
+\newcommand{\VFiveTriAcc}{51.9\%}
+\newcommand{\VFiveBinAcc}{78.2\%}
+\newcommand{\VFiveBinAUROC}{0.864}
+\newcommand{\VFiveFedTri}{47.8\%}
+\newcommand{\VFiveFedBin}{76.2\%}
+\newcommand{\VFiveDpBinOne}{72.6\%}
+\newcommand{\VFiveXaiTen}{0.440}
+% END AUTO:current-facts
 
 \title{Privacy-Preserving and Explainable Federated AI\\
        for Alzheimer's \& Dementia Detection}
@@ -152,14 +182,17 @@ whole-head template, anchored on four subjects holding both a degenerate scan
 and one with a usable header, for which the fitted orientation beats its mirror
 at correlation 0.87--0.93 against 0.61--0.70.
 
-With every subject registered to MNI152 and represented by
-\CohFeatures{}~grey-matter and CSF fractions over Harvard-Oxford regions,
-three-class accuracy rises from chance to \CohTriAcc{} (macro
-F1~\CohTriF{}, macro AUROC~\CohTriAUROC{}) and CN versus AD reaches
-\CohBinAcc{} (AUROC~\CohBinAUROC{}), on the same subjects under the same
-subject-disjoint protocol and with a model four orders of magnitude smaller
-than the network it replaces.  We report a site-disjoint evaluation alongside
-the subject-disjoint one (\CohTriSite{} three-class), since a federated
+With every subject registered, segmented by a trained network with nonlinear
+warping (deepmriprep), and represented by \CohFeatures{}~Neuromorphometrics
+region volumes over intracranial volume, three-class accuracy rises from chance
+to \CohTriAcc{} (macro F1~\CohTriF{}, macro AUROC~\CohTriAUROC{}) and CN versus
+AD reaches \CohBinAcc{} (AUROC~\CohBinAUROC{}), under the same subject-disjoint
+protocol and with a model four orders of magnitude smaller than the network it
+replaces.  The segmentation itself proved to be the largest lever: replacing an
+intensity-mixture segmentation over a fixed atlas with it, on the same
+\CohSubjects{}~subjects, raised CN versus AD from \VFiveBinAcc{} to \CohBinAcc{}.  We report a site-disjoint evaluation alongside
+the subject-disjoint one (\CohTriSite{} three-class, \CohBinSite{} CN versus
+AD), since a federated
 model is deployed at hospitals that did not contribute to it, and we federate
 over the \CohSites{}~real ADNI sites rather than a simulated partition.  The
 real partition proves at least as hard as a Dirichlet draw despite carrying
@@ -172,7 +205,7 @@ previous version showed the standard mechanism failing at this scale.  We show
 the cause is dimensional rather than statistical: the Gaussian noise added to a
 summed update has expected norm $\sigma C\sqrt{d}$ while the update itself does
 not grow with $d$, so the usable regime is fixed by the perturbed dimension.
-Measured over one mechanism and one cohort at $d = 423$, $d = 6{,}147$ and
+Measured over one mechanism and one cohort at $d = \CohDim{}$, $d = 6{,}147$ and
 $d = 2.35\times10^{7}$, the worst-case noise-to-signal ratio spans more than
 two orders of magnitude, and the region model stays usable down to
 $\varepsilon = 1$ (\CohDpBinOne{} on CN versus AD) where the full network
@@ -183,13 +216,14 @@ comparable across models rather than merely displayable, and we find that
 explanation fidelity degrades far faster than accuracy.  At
 $\varepsilon = 10$ the private model does not merely match the non-private
 model's accuracy but exceeds it (\CohDpBinTen{} against \CohDpBinNone{}), while
-the Spearman agreement of its region attribution falls by more than half, from
+the Spearman agreement of its region attribution falls from
 \CohXaiNonPrivate{} to \CohXaiTen{}.  A model that is more accurate and less
 explicable is exactly the case an accuracy-only privacy--utility curve cannot
 show, and such curves therefore understate the cost of differential privacy
 wherever the explanation is part of the deliverable.  We release the corrected
 pipeline, the measured orientation table, the subject-level and site-level
-splits, all runs, and an in-browser demonstration.
+splits, all runs, and a live demonstration whose public API serves only the
+$\varepsilon = 10$ subject-level private model.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -939,14 +973,25 @@ MPRAGE $256 \times 256 \times 160$ & 1 & (1, 0, 2) & (T, T, T) & consistent with
 \subsection{Two Representations at Opposite Dimensions}
 \label{sec:representations}
 
-Once every subject is on the MNI grid, anatomy can be summarised directly
-rather than learned from scratch. Each registered volume is segmented into
-CSF, grey matter and white matter by a three-component Gaussian mixture over
-brain-mask intensities, and the grey-matter and CSF maps are integrated over
-Harvard-Oxford cortical and subcortical regions. Region values are expressed
-as fractions of total brain volume, which removes head size --- the largest
-nuisance in raw region volumes. This yields 140 features, so a multinomial
-logistic model over them has 423 parameters.
+Once every subject is oriented, skull-stripped and passes registration
+quality control, anatomy can be summarised directly rather than learned from
+scratch.  Each scan is segmented with deepmriprep, a PyTorch implementation of
+the CAT12 voxel-based morphometry pipeline: a trained network separates grey
+matter, white matter and CSF, a nonlinear warp aligns the brain to the CAT12
+template, and the Neuromorphometrics atlas is warped back so that every region
+is measured on the subject's own anatomy.  Each region contributes the tissue
+CAT12 assigns it --- grey matter for cortex and nuclei, CSF for the ventricles
+--- as a volume divided by total intracranial volume, which removes head size,
+the largest nuisance in raw region volumes.  This yields \CohFeatures{}
+features, so a multinomial logistic model over them has \CohDim{} parameters.
+
+An earlier version of this representation segmented each affine-registered
+volume with a three-component intensity mixture and integrated grey matter and
+CSF over a fixed Harvard-Oxford atlas.  Without nonlinear warping that atlas
+places the hippocampal label on different anatomy in different subjects, and
+the intensity mixture counts voxels the skull strip removed inside the template
+mask as CSF.  Section~\ref{sec:results-features} reports what replacing it
+changed on the same subjects.
 
 The convolutional arm keeps the architecture family of the previous study so
 that the change in input can be isolated from a change in model. Slices are
@@ -958,7 +1003,7 @@ being averaged down to a single channel as it was previously. In both arms a
 subject's prediction is the mean of its slice or region probabilities, so the
 unit of evaluation is the subject.
 
-The dimensional gap between the two is the point. It spans 423 parameters to
+The dimensional gap between the two is the point. It spans \CohDim{} parameters to
 $23{,}508{,}035$, and Section~\ref{sec:dimension-law} shows that this, rather
 than the privacy budget alone, is what decides whether a subject-level private
 federated model is usable.
@@ -1794,9 +1839,11 @@ honest null results rather than searching for a favourable framing.
 
 \begin{table*}[t]
 \centering
-\caption{Centralised baselines on the MNI-registered cohort, out-of-fold over
-five folds and three seeds. The majority-class rate is given for each label set
-so that results near chance are visible as such.}
+\caption{Centralised baselines on the region-volume representation (imaging
+features only), out-of-fold over five folds and three seeds.  The tuned models
+choose their regularisation by nested cross-validation inside each training
+fold.  The majority-class rate is given for each label set so that results near
+chance are visible as such.}
 \label{tab:v3-centralised}
 \begin{adjustbox}{max width=\textwidth}
 \begin{tabular}{lllcccccc}
@@ -1805,46 +1852,30 @@ Task & Split & Model & Accuracy (\%) & Balanced acc.\ (\%) & Macro F1 &
 Macro AUROC & Chance (\%) & Runs \\
 \midrule
 % BEGIN AUTO:v3-centralised
-CN vs AD & site-disjoint & ensemble & 77.4 $\pm$ 0.9 & 77.2 $\pm$ 0.9 & 0.773 $\pm$ 0.009 & 0.853 $\pm$ 0.005 & 52.7 & 3 \\
-CN vs AD & site-disjoint & Shrinkage LDA & 75.6 $\pm$ 0.5 & 75.4 $\pm$ 0.4 & 0.754 $\pm$ 0.004 & 0.838 $\pm$ 0.004 & 52.7 & 3 \\
-CN vs AD & site-disjoint & Logistic regression & 76.4 $\pm$ 1.2 & 76.4 $\pm$ 1.2 & 0.764 $\pm$ 0.012 & 0.853 $\pm$ 0.007 & 52.7 & 3 \\
-CN vs AD & site-disjoint & Random forest & 76.0 $\pm$ 0.2 & 75.8 $\pm$ 0.2 & 0.759 $\pm$ 0.002 & 0.829 $\pm$ 0.004 & 52.7 & 3 \\
-CN vs AD & site-disjoint & RBF SVM & 76.4 $\pm$ 0.7 & 76.2 $\pm$ 0.7 & 0.763 $\pm$ 0.007 & 0.838 $\pm$ 0.005 & 52.7 & 3 \\
-CN vs AD & subject-disjoint & ensemble & 78.9 $\pm$ 1.2 & 78.7 $\pm$ 1.2 & 0.787 $\pm$ 0.012 & 0.862 $\pm$ 0.001 & 52.7 & 3 \\
-CN vs AD & subject-disjoint & Shrinkage LDA & 78.3 $\pm$ 0.4 & 78.1 $\pm$ 0.4 & 0.781 $\pm$ 0.004 & 0.851 $\pm$ 0.001 & 52.7 & 3 \\
-CN vs AD & subject-disjoint & Logistic regression & 78.7 $\pm$ 0.9 & 78.7 $\pm$ 0.9 & 0.787 $\pm$ 0.009 & 0.860 $\pm$ 0.003 & 52.7 & 3 \\
-CN vs AD & subject-disjoint & Random forest & 75.8 $\pm$ 0.5 & 75.6 $\pm$ 0.5 & 0.756 $\pm$ 0.005 & 0.830 $\pm$ 0.001 & 52.7 & 3 \\
-CN vs AD & subject-disjoint & RBF SVM & 77.0 $\pm$ 1.2 & 76.9 $\pm$ 1.2 & 0.769 $\pm$ 0.012 & 0.843 $\pm$ 0.004 & 52.7 & 3 \\
-CN vs MCI & site-disjoint & ensemble & 60.4 $\pm$ 1.1 & 60.3 $\pm$ 1.1 & 0.602 $\pm$ 0.011 & 0.646 $\pm$ 0.009 & 51.1 & 3 \\
-CN vs MCI & site-disjoint & Shrinkage LDA & 58.9 $\pm$ 0.9 & 58.7 $\pm$ 0.9 & 0.587 $\pm$ 0.009 & 0.620 $\pm$ 0.013 & 51.1 & 3 \\
-CN vs MCI & site-disjoint & Logistic regression & 59.1 $\pm$ 1.5 & 59.1 $\pm$ 1.5 & 0.591 $\pm$ 0.015 & 0.628 $\pm$ 0.014 & 51.1 & 3 \\
-CN vs MCI & site-disjoint & Random forest & 62.4 $\pm$ 2.3 & 62.2 $\pm$ 2.3 & 0.621 $\pm$ 0.023 & 0.655 $\pm$ 0.013 & 51.1 & 3 \\
-CN vs MCI & site-disjoint & RBF SVM & 63.1 $\pm$ 1.8 & 63.1 $\pm$ 1.7 & 0.630 $\pm$ 0.017 & 0.661 $\pm$ 0.011 & 51.1 & 3 \\
-CN vs MCI & subject-disjoint & ensemble & 62.8 $\pm$ 1.1 & 62.7 $\pm$ 1.0 & 0.626 $\pm$ 0.010 & 0.654 $\pm$ 0.018 & 51.1 & 3 \\
-CN vs MCI & subject-disjoint & Shrinkage LDA & 60.7 $\pm$ 0.8 & 60.5 $\pm$ 0.8 & 0.604 $\pm$ 0.008 & 0.627 $\pm$ 0.018 & 51.1 & 3 \\
-CN vs MCI & subject-disjoint & Logistic regression & 61.0 $\pm$ 1.9 & 60.9 $\pm$ 1.8 & 0.609 $\pm$ 0.018 & 0.637 $\pm$ 0.017 & 51.1 & 3 \\
-CN vs MCI & subject-disjoint & Random forest & 62.5 $\pm$ 1.7 & 62.4 $\pm$ 1.7 & 0.622 $\pm$ 0.018 & 0.660 $\pm$ 0.014 & 51.1 & 3 \\
-CN vs MCI & subject-disjoint & RBF SVM & 64.6 $\pm$ 1.0 & 64.4 $\pm$ 1.0 & 0.644 $\pm$ 0.011 & 0.662 $\pm$ 0.019 & 51.1 & 3 \\
-CN / MCI / AD & site-disjoint & ensemble & 50.6 $\pm$ 1.6 & 50.7 $\pm$ 1.5 & 0.500 $\pm$ 0.016 & 0.687 $\pm$ 0.001 & 35.0 & 3 \\
-CN / MCI / AD & site-disjoint & Shrinkage LDA & 49.6 $\pm$ 0.7 & 49.7 $\pm$ 0.7 & 0.495 $\pm$ 0.007 & 0.675 $\pm$ 0.002 & 35.0 & 3 \\
-CN / MCI / AD & site-disjoint & Logistic regression & 48.7 $\pm$ 1.1 & 48.9 $\pm$ 1.1 & 0.486 $\pm$ 0.010 & 0.674 $\pm$ 0.001 & 35.0 & 3 \\
-CN / MCI / AD & site-disjoint & Random forest & 50.2 $\pm$ 0.3 & 50.2 $\pm$ 0.3 & 0.486 $\pm$ 0.002 & 0.682 $\pm$ 0.002 & 35.0 & 3 \\
-CN / MCI / AD & site-disjoint & RBF SVM & 51.2 $\pm$ 0.9 & 51.1 $\pm$ 0.9 & 0.498 $\pm$ 0.006 & 0.673 $\pm$ 0.002 & 35.0 & 3 \\
-CN / MCI / AD & subject-disjoint & ensemble & 52.5 $\pm$ 1.4 & 52.6 $\pm$ 1.4 & 0.518 $\pm$ 0.014 & 0.696 $\pm$ 0.005 & 35.0 & 3 \\
-CN / MCI / AD & subject-disjoint & Shrinkage LDA & 50.9 $\pm$ 0.1 & 50.9 $\pm$ 0.1 & 0.507 $\pm$ 0.001 & 0.685 $\pm$ 0.005 & 35.0 & 3 \\
-CN / MCI / AD & subject-disjoint & Logistic regression & 50.4 $\pm$ 0.5 & 50.5 $\pm$ 0.5 & 0.502 $\pm$ 0.004 & 0.682 $\pm$ 0.006 & 35.0 & 3 \\
-CN / MCI / AD & subject-disjoint & Random forest & 52.1 $\pm$ 0.3 & 52.1 $\pm$ 0.2 & 0.505 $\pm$ 0.002 & 0.692 $\pm$ 0.003 & 35.0 & 3 \\
-CN / MCI / AD & subject-disjoint & RBF SVM & 52.2 $\pm$ 1.2 & 52.2 $\pm$ 1.2 & 0.508 $\pm$ 0.013 & 0.678 $\pm$ 0.006 & 35.0 & 3 \\
-MCI vs AD & site-disjoint & ensemble & 65.0 $\pm$ 1.8 & 65.0 $\pm$ 1.7 & 0.650 $\pm$ 0.018 & 0.699 $\pm$ 0.013 & 51.6 & 3 \\
-MCI vs AD & site-disjoint & Shrinkage LDA & 63.7 $\pm$ 1.2 & 63.6 $\pm$ 1.1 & 0.636 $\pm$ 0.011 & 0.678 $\pm$ 0.016 & 51.6 & 3 \\
-MCI vs AD & site-disjoint & Logistic regression & 64.5 $\pm$ 0.8 & 64.5 $\pm$ 0.8 & 0.645 $\pm$ 0.008 & 0.683 $\pm$ 0.012 & 51.6 & 3 \\
-MCI vs AD & site-disjoint & Random forest & 62.9 $\pm$ 0.8 & 62.9 $\pm$ 0.8 & 0.629 $\pm$ 0.008 & 0.695 $\pm$ 0.010 & 51.6 & 3 \\
-MCI vs AD & site-disjoint & RBF SVM & 63.9 $\pm$ 0.8 & 63.9 $\pm$ 0.9 & 0.639 $\pm$ 0.009 & 0.688 $\pm$ 0.012 & 51.6 & 3 \\
-MCI vs AD & subject-disjoint & ensemble & 65.5 $\pm$ 1.3 & 65.5 $\pm$ 1.4 & 0.655 $\pm$ 0.014 & 0.703 $\pm$ 0.016 & 51.6 & 3 \\
-MCI vs AD & subject-disjoint & Shrinkage LDA & 63.6 $\pm$ 1.6 & 63.4 $\pm$ 1.6 & 0.634 $\pm$ 0.016 & 0.683 $\pm$ 0.020 & 51.6 & 3 \\
-MCI vs AD & subject-disjoint & Logistic regression & 65.4 $\pm$ 2.5 & 65.3 $\pm$ 2.5 & 0.653 $\pm$ 0.025 & 0.689 $\pm$ 0.019 & 51.6 & 3 \\
-MCI vs AD & subject-disjoint & Random forest & 64.3 $\pm$ 2.0 & 64.4 $\pm$ 2.1 & 0.643 $\pm$ 0.020 & 0.702 $\pm$ 0.006 & 51.6 & 3 \\
-MCI vs AD & subject-disjoint & RBF SVM & 63.6 $\pm$ 1.2 & 63.6 $\pm$ 1.1 & 0.636 $\pm$ 0.011 & 0.693 $\pm$ 0.008 & 51.6 & 3 \\
+CN vs AD & site-disjoint & ensemble & 86.6 $\pm$ 0.4 & 86.5 $\pm$ 0.4 & 0.866 $\pm$ 0.004 & 0.926 $\pm$ 0.001 & 52.1 & 3 \\
+CN vs AD & site-disjoint & Tuned ensemble & 86.4 $\pm$ 0.5 & 86.2 $\pm$ 0.5 & 0.863 $\pm$ 0.005 & 0.926 $\pm$ 0.001 & 52.1 & 3 \\
+CN vs AD & site-disjoint & Tuned logistic regression & 86.7 $\pm$ 0.9 & 86.6 $\pm$ 0.9 & 0.866 $\pm$ 0.009 & 0.923 $\pm$ 0.000 & 52.1 & 3 \\
+CN vs AD & subject-disjoint & ensemble & 86.8 $\pm$ 0.6 & 86.7 $\pm$ 0.6 & 0.867 $\pm$ 0.006 & 0.926 $\pm$ 0.002 & 52.1 & 3 \\
+CN vs AD & subject-disjoint & Tuned ensemble & 86.9 $\pm$ 0.7 & 86.7 $\pm$ 0.7 & 0.868 $\pm$ 0.007 & 0.925 $\pm$ 0.002 & 52.1 & 3 \\
+CN vs AD & subject-disjoint & Tuned logistic regression & 87.3 $\pm$ 0.5 & 87.2 $\pm$ 0.5 & 0.872 $\pm$ 0.005 & 0.919 $\pm$ 0.002 & 52.1 & 3 \\
+CN vs MCI & site-disjoint & ensemble & 66.5 $\pm$ 0.5 & 66.5 $\pm$ 0.5 & 0.665 $\pm$ 0.005 & 0.724 $\pm$ 0.007 & 50.4 & 3 \\
+CN vs MCI & site-disjoint & Tuned ensemble & 67.5 $\pm$ 0.2 & 67.5 $\pm$ 0.2 & 0.675 $\pm$ 0.002 & 0.727 $\pm$ 0.006 & 50.4 & 3 \\
+CN vs MCI & site-disjoint & Tuned logistic regression & 68.9 $\pm$ 0.8 & 68.8 $\pm$ 0.8 & 0.688 $\pm$ 0.008 & 0.725 $\pm$ 0.002 & 50.4 & 3 \\
+CN vs MCI & subject-disjoint & ensemble & 66.1 $\pm$ 0.3 & 66.1 $\pm$ 0.3 & 0.661 $\pm$ 0.003 & 0.725 $\pm$ 0.004 & 50.4 & 3 \\
+CN vs MCI & subject-disjoint & Tuned ensemble & 67.3 $\pm$ 0.5 & 67.3 $\pm$ 0.5 & 0.672 $\pm$ 0.005 & 0.728 $\pm$ 0.004 & 50.4 & 3 \\
+CN vs MCI & subject-disjoint & Tuned logistic regression & 67.5 $\pm$ 0.6 & 67.5 $\pm$ 0.6 & 0.675 $\pm$ 0.005 & 0.718 $\pm$ 0.009 & 50.4 & 3 \\
+CN / MCI / AD & site-disjoint & ensemble & 57.3 $\pm$ 0.8 & 57.5 $\pm$ 0.8 & 0.566 $\pm$ 0.007 & 0.743 $\pm$ 0.003 & 34.4 & 3 \\
+CN / MCI / AD & site-disjoint & Tuned ensemble & 57.9 $\pm$ 0.5 & 58.2 $\pm$ 0.5 & 0.566 $\pm$ 0.004 & 0.747 $\pm$ 0.004 & 34.4 & 3 \\
+CN / MCI / AD & site-disjoint & Tuned logistic regression & 57.1 $\pm$ 1.0 & 57.4 $\pm$ 1.0 & 0.560 $\pm$ 0.010 & 0.746 $\pm$ 0.003 & 34.4 & 3 \\
+CN / MCI / AD & subject-disjoint & ensemble & 57.0 $\pm$ 0.1 & 57.2 $\pm$ 0.1 & 0.561 $\pm$ 0.001 & 0.744 $\pm$ 0.003 & 34.4 & 3 \\
+CN / MCI / AD & subject-disjoint & Tuned ensemble & 58.6 $\pm$ 0.3 & 58.8 $\pm$ 0.3 & 0.569 $\pm$ 0.002 & 0.748 $\pm$ 0.002 & 34.4 & 3 \\
+CN / MCI / AD & subject-disjoint & Tuned logistic regression & 56.6 $\pm$ 0.6 & 56.9 $\pm$ 0.6 & 0.554 $\pm$ 0.006 & 0.744 $\pm$ 0.004 & 34.4 & 3 \\
+MCI vs AD & site-disjoint & ensemble & 68.5 $\pm$ 1.5 & 68.5 $\pm$ 1.5 & 0.685 $\pm$ 0.015 & 0.733 $\pm$ 0.008 & 51.7 & 3 \\
+MCI vs AD & site-disjoint & Tuned ensemble & 68.4 $\pm$ 0.8 & 68.4 $\pm$ 0.8 & 0.684 $\pm$ 0.008 & 0.740 $\pm$ 0.008 & 51.7 & 3 \\
+MCI vs AD & site-disjoint & Tuned logistic regression & 69.3 $\pm$ 1.0 & 69.4 $\pm$ 1.0 & 0.693 $\pm$ 0.010 & 0.749 $\pm$ 0.010 & 51.7 & 3 \\
+MCI vs AD & subject-disjoint & ensemble & 67.9 $\pm$ 1.4 & 67.9 $\pm$ 1.4 & 0.679 $\pm$ 0.014 & 0.739 $\pm$ 0.011 & 51.7 & 3 \\
+MCI vs AD & subject-disjoint & Tuned ensemble & 69.1 $\pm$ 0.7 & 69.1 $\pm$ 0.6 & 0.691 $\pm$ 0.007 & 0.745 $\pm$ 0.008 & 51.7 & 3 \\
+MCI vs AD & subject-disjoint & Tuned logistic regression & 69.3 $\pm$ 1.2 & 69.4 $\pm$ 1.2 & 0.693 $\pm$ 0.012 & 0.751 $\pm$ 0.007 & 51.7 & 3 \\
 % END AUTO:v3-centralised
 \bottomrule
 \end{tabular}
@@ -1866,18 +1897,18 @@ Task & Split & Partition & Accuracy (\%) & Balanced acc.\ (\%) & Macro F1 &
 Macro AUROC & Runs \\
 \midrule
 % BEGIN AUTO:v3-federated
-CN vs AD & site-disjoint & Dirichlet ($\alpha$ = 0.5) & 75.5 $\pm$ 0.4 & 75.4 $\pm$ 0.5 & 0.754 $\pm$ 0.005 & 0.823 $\pm$ 0.002 & 3 \\
-CN vs AD & site-disjoint & IID & 76.6 $\pm$ 2.1 & 76.4 $\pm$ 2.2 & 0.765 $\pm$ 0.022 & 0.840 $\pm$ 0.016 & 3 \\
-CN vs AD & site-disjoint & real ADNI sites & 76.4 $\pm$ 1.8 & 76.3 $\pm$ 1.8 & 0.763 $\pm$ 0.018 & 0.825 $\pm$ 0.015 & 3 \\
-CN vs AD & subject-disjoint & Dirichlet ($\alpha$ = 0.5) & 76.4 $\pm$ 1.8 & 76.2 $\pm$ 1.8 & 0.762 $\pm$ 0.018 & 0.834 $\pm$ 0.018 & 3 \\
-CN vs AD & subject-disjoint & IID & 77.8 $\pm$ 1.4 & 77.7 $\pm$ 1.3 & 0.777 $\pm$ 0.014 & 0.841 $\pm$ 0.003 & 3 \\
-CN vs AD & subject-disjoint & real ADNI sites & 76.2 $\pm$ 1.1 & 76.2 $\pm$ 1.2 & 0.762 $\pm$ 0.011 & 0.823 $\pm$ 0.003 & 3 \\
-CN / MCI / AD & site-disjoint & Dirichlet ($\alpha$ = 0.5) & 48.2 $\pm$ 2.3 & 48.1 $\pm$ 2.6 & 0.475 $\pm$ 0.017 & 0.654 $\pm$ 0.011 & 3 \\
-CN / MCI / AD & site-disjoint & IID & 49.4 $\pm$ 0.4 & 49.5 $\pm$ 0.5 & 0.490 $\pm$ 0.004 & 0.667 $\pm$ 0.001 & 3 \\
-CN / MCI / AD & site-disjoint & real ADNI sites & 49.0 $\pm$ 0.9 & 49.1 $\pm$ 0.8 & 0.488 $\pm$ 0.008 & 0.661 $\pm$ 0.002 & 3 \\
-CN / MCI / AD & subject-disjoint & Dirichlet ($\alpha$ = 0.5) & 47.7 $\pm$ 0.3 & 47.6 $\pm$ 0.5 & 0.470 $\pm$ 0.004 & 0.661 $\pm$ 0.005 & 3 \\
-CN / MCI / AD & subject-disjoint & IID & 50.0 $\pm$ 0.8 & 50.1 $\pm$ 0.8 & 0.496 $\pm$ 0.011 & 0.672 $\pm$ 0.002 & 3 \\
-CN / MCI / AD & subject-disjoint & real ADNI sites & 47.2 $\pm$ 2.7 & 47.3 $\pm$ 2.6 & 0.470 $\pm$ 0.026 & 0.656 $\pm$ 0.007 & 3 \\
+CN vs AD & site-disjoint & Dirichlet ($\alpha$ = 0.5) & 84.5 $\pm$ 0.6 & 84.5 $\pm$ 0.5 & 0.844 $\pm$ 0.005 & 0.902 $\pm$ 0.005 & 3 \\
+CN vs AD & site-disjoint & IID & 85.5 $\pm$ 0.6 & 85.5 $\pm$ 0.6 & 0.855 $\pm$ 0.006 & 0.910 $\pm$ 0.001 & 3 \\
+CN vs AD & site-disjoint & real ADNI sites & 81.6 $\pm$ 0.5 & 81.7 $\pm$ 0.5 & 0.816 $\pm$ 0.005 & 0.877 $\pm$ 0.007 & 3 \\
+CN vs AD & subject-disjoint & Dirichlet ($\alpha$ = 0.5) & 83.7 $\pm$ 0.6 & 83.7 $\pm$ 0.6 & 0.837 $\pm$ 0.006 & 0.898 $\pm$ 0.002 & 3 \\
+CN vs AD & subject-disjoint & IID & 84.6 $\pm$ 1.0 & 84.5 $\pm$ 0.9 & 0.846 $\pm$ 0.010 & 0.906 $\pm$ 0.003 & 3 \\
+CN vs AD & subject-disjoint & real ADNI sites & 82.1 $\pm$ 1.6 & 82.2 $\pm$ 1.6 & 0.821 $\pm$ 0.016 & 0.875 $\pm$ 0.013 & 3 \\
+CN / MCI / AD & site-disjoint & Dirichlet ($\alpha$ = 0.5) & 52.5 $\pm$ 0.5 & 52.7 $\pm$ 0.4 & 0.525 $\pm$ 0.008 & 0.706 $\pm$ 0.003 & 3 \\
+CN / MCI / AD & site-disjoint & IID & 54.7 $\pm$ 0.4 & 54.8 $\pm$ 0.4 & 0.542 $\pm$ 0.004 & 0.723 $\pm$ 0.008 & 3 \\
+CN / MCI / AD & site-disjoint & real ADNI sites & 53.0 $\pm$ 0.5 & 53.2 $\pm$ 0.5 & 0.526 $\pm$ 0.005 & 0.717 $\pm$ 0.008 & 3 \\
+CN / MCI / AD & subject-disjoint & Dirichlet ($\alpha$ = 0.5) & 53.1 $\pm$ 0.9 & 53.2 $\pm$ 1.1 & 0.533 $\pm$ 0.008 & 0.710 $\pm$ 0.002 & 3 \\
+CN / MCI / AD & subject-disjoint & IID & 53.9 $\pm$ 3.0 & 54.0 $\pm$ 2.9 & 0.534 $\pm$ 0.030 & 0.718 $\pm$ 0.009 & 3 \\
+CN / MCI / AD & subject-disjoint & real ADNI sites & 51.3 $\pm$ 0.9 & 51.4 $\pm$ 1.0 & 0.510 $\pm$ 0.010 & 0.703 $\pm$ 0.007 & 3 \\
 % END AUTO:v3-federated
 \bottomrule
 \end{tabular}
@@ -1901,16 +1932,16 @@ Task & $\varepsilon$ & $\sigma$ & Accuracy (\%) & Balanced acc.\ (\%) &
 Macro F1 & Expl.\ agreement & MTL share (\%) & Runs \\
 \midrule
 % BEGIN AUTO:v3-privacy
-CN vs AD & non-private & --- & 75.1 $\pm$ 2.5 & 75.0 $\pm$ 2.6 & 0.750 $\pm$ 0.026 & 0.926 $\pm$ 0.064 & 12.9 $\pm$ 0.2 & 3 \\
-CN vs AD & 1 & 11.34 & 71.6 $\pm$ 1.5 & 71.5 $\pm$ 1.5 & 0.715 $\pm$ 0.015 & 0.138 $\pm$ 0.148 & 6.2 $\pm$ 0.8 & 3 \\
-CN vs AD & 2 & 6.34 & 75.4 $\pm$ 1.3 & 75.2 $\pm$ 1.4 & 0.753 $\pm$ 0.014 & 0.185 $\pm$ 0.144 & 7.1 $\pm$ 1.0 & 3 \\
-CN vs AD & 5 & 3.04 & 77.8 $\pm$ 0.3 & 77.6 $\pm$ 0.4 & 0.777 $\pm$ 0.004 & 0.325 $\pm$ 0.158 & 9.7 $\pm$ 1.7 & 3 \\
-CN vs AD & 10 & 1.83 & 78.4 $\pm$ 0.7 & 78.2 $\pm$ 0.7 & 0.782 $\pm$ 0.007 & 0.437 $\pm$ 0.095 & 12.4 $\pm$ 1.3 & 3 \\
-CN / MCI / AD & non-private & --- & 47.1 $\pm$ 2.6 & 47.2 $\pm$ 2.6 & 0.470 $\pm$ 0.027 & 0.951 $\pm$ 0.043 & 9.3 $\pm$ 0.0 & 3 \\
-CN / MCI / AD & 1 & 11.34 & 48.6 $\pm$ 1.4 & 48.6 $\pm$ 1.4 & 0.472 $\pm$ 0.014 & 0.156 $\pm$ 0.096 & 6.4 $\pm$ 0.4 & 3 \\
-CN / MCI / AD & 2 & 6.34 & 51.3 $\pm$ 0.3 & 51.3 $\pm$ 0.3 & 0.495 $\pm$ 0.006 & 0.276 $\pm$ 0.111 & 7.3 $\pm$ 0.2 & 3 \\
-CN / MCI / AD & 5 & 3.04 & 53.5 $\pm$ 0.5 & 53.5 $\pm$ 0.5 & 0.513 $\pm$ 0.005 & 0.507 $\pm$ 0.052 & 9.1 $\pm$ 0.1 & 3 \\
-CN / MCI / AD & 10 & 1.83 & 53.7 $\pm$ 0.8 & 53.7 $\pm$ 0.8 & 0.513 $\pm$ 0.010 & 0.597 $\pm$ 0.036 & 10.3 $\pm$ 0.1 & 3 \\
+CN vs AD & non-private & --- & 81.9 $\pm$ 1.9 & 81.9 $\pm$ 1.9 & 0.819 $\pm$ 0.019 & 0.860 $\pm$ 0.121 & 10.8 $\pm$ 0.2 & 3 \\
+CN vs AD & 1 & 11.34 & 80.7 $\pm$ 0.3 & 80.5 $\pm$ 0.4 & 0.806 $\pm$ 0.004 & 0.138 $\pm$ 0.071 & 4.3 $\pm$ 0.6 & 3 \\
+CN vs AD & 2 & 6.34 & 84.0 $\pm$ 1.0 & 83.8 $\pm$ 1.1 & 0.839 $\pm$ 0.011 & 0.187 $\pm$ 0.049 & 5.9 $\pm$ 0.7 & 3 \\
+CN vs AD & 5 & 3.04 & 85.5 $\pm$ 0.7 & 85.4 $\pm$ 0.7 & 0.854 $\pm$ 0.007 & 0.194 $\pm$ 0.014 & 8.7 $\pm$ 0.9 & 3 \\
+CN vs AD & 10 & 1.83 & 86.2 $\pm$ 0.8 & 86.0 $\pm$ 0.8 & 0.861 $\pm$ 0.008 & 0.198 $\pm$ 0.011 & 9.9 $\pm$ 0.6 & 3 \\
+CN / MCI / AD & non-private & --- & 52.6 $\pm$ 1.6 & 52.8 $\pm$ 1.6 & 0.521 $\pm$ 0.014 & 0.918 $\pm$ 0.071 & 6.0 $\pm$ 0.3 & 3 \\
+CN / MCI / AD & 1 & 11.34 & 51.7 $\pm$ 1.6 & 51.9 $\pm$ 1.5 & 0.502 $\pm$ 0.021 & 0.037 $\pm$ 0.102 & 4.3 $\pm$ 0.7 & 3 \\
+CN / MCI / AD & 2 & 6.34 & 55.8 $\pm$ 1.3 & 56.0 $\pm$ 1.2 & 0.532 $\pm$ 0.018 & 0.136 $\pm$ 0.068 & 5.3 $\pm$ 0.6 & 3 \\
+CN / MCI / AD & 5 & 3.04 & 57.7 $\pm$ 0.6 & 57.9 $\pm$ 0.6 & 0.542 $\pm$ 0.007 & 0.318 $\pm$ 0.025 & 6.7 $\pm$ 0.3 & 3 \\
+CN / MCI / AD & 10 & 1.83 & 57.6 $\pm$ 0.4 & 57.8 $\pm$ 0.4 & 0.541 $\pm$ 0.006 & 0.412 $\pm$ 0.014 & 7.4 $\pm$ 0.2 & 3 \\
 % END AUTO:v3-privacy
 \bottomrule
 \end{tabular}
@@ -1935,7 +1966,7 @@ noise-to-signal ratio is therefore
 \label{eq:noise-signal}
 \end{equation}
 which depends on the model only through $\sqrt{d}$. Halving the budget raises
-$\sigma$; moving from a $23.5$M-parameter network to a $423$-parameter model
+$\sigma$; moving from a $23.5$M-parameter network to a $\CohDim{}$-parameter model
 over standardised regions divides the numerator by more than $200$.
 Table~\ref{tab:v3-dimension-law} evaluates
 Equation~\ref{eq:noise-signal} at each budget for the three configurations,
@@ -1953,18 +1984,18 @@ $\varepsilon$ & Model & $d$ & $\sigma$ & $\mathbb{E}\|\boldsymbol{\xi}\|$ &
 $NC$ & Ratio \\
 \midrule
 % BEGIN AUTO:v3-dimension-law
-1 & MNI region model & 423 & 11.34 & 233.2 & 608.0 & 0.38 \\
-1 & ResNet50 head & 6\,147 & 11.34 & 889.1 & 608.0 & 1.46 \\
-1 & ResNet50, full network & 23\,508\,035 & 11.34 & 54985.5 & 608.0 & 90.44 \\
-2 & MNI region model & 423 & 6.34 & 130.4 & 608.0 & 0.21 \\
-2 & ResNet50 head & 6\,147 & 6.34 & 497.1 & 608.0 & 0.82 \\
-2 & ResNet50, full network & 23\,508\,035 & 6.34 & 30740.9 & 608.0 & 50.56 \\
-5 & MNI region model & 423 & 3.04 & 62.6 & 608.0 & 0.10 \\
-5 & ResNet50 head & 6\,147 & 3.04 & 238.7 & 608.0 & 0.39 \\
-5 & ResNet50, full network & 23\,508\,035 & 3.04 & 14762.5 & 608.0 & 24.28 \\
-10 & MNI region model & 423 & 1.83 & 37.6 & 608.0 & 0.06 \\
-10 & ResNet50 head & 6\,147 & 1.83 & 143.2 & 608.0 & 0.24 \\
-10 & ResNet50, full network & 23\,508\,035 & 1.83 & 8856.5 & 608.0 & 14.57 \\
+1 & Region model & 405 & 11.34 & 228.2 & 639.0 & 0.36 \\
+1 & ResNet50 head & 6\,147 & 11.34 & 889.1 & 639.0 & 1.39 \\
+1 & ResNet50, full network & 23\,508\,035 & 11.34 & 54985.5 & 639.0 & 86.05 \\
+2 & Region model & 405 & 6.34 & 127.6 & 639.0 & 0.20 \\
+2 & ResNet50 head & 6\,147 & 6.34 & 497.1 & 639.0 & 0.78 \\
+2 & ResNet50, full network & 23\,508\,035 & 6.34 & 30740.9 & 639.0 & 48.11 \\
+5 & Region model & 405 & 3.04 & 61.3 & 639.0 & 0.10 \\
+5 & ResNet50 head & 6\,147 & 3.04 & 238.7 & 639.0 & 0.37 \\
+5 & ResNet50, full network & 23\,508\,035 & 3.04 & 14762.5 & 639.0 & 23.10 \\
+10 & Region model & 405 & 1.83 & 36.8 & 639.0 & 0.06 \\
+10 & ResNet50 head & 6\,147 & 1.83 & 143.2 & 639.0 & 0.22 \\
+10 & ResNet50, full network & 23\,508\,035 & 1.83 & 8856.5 & 639.0 & 13.86 \\
 % END AUTO:v3-dimension-law
 \bottomrule
 \end{tabular}
@@ -1976,12 +2007,11 @@ $NC$ & Ratio \\
 \label{sec:results-confounds}
 
 An imaging accuracy is evidence about imaging only if the cohort's
-demographics could not have produced it unaided.  On this cohort they partly
-could.  The CN group is 53\% female while the MCI group is 54\% male, and even
-that mild asymmetry is enough for a rule that reads sex and nothing else to
-score \ConfSexTri{} against a \ConfChanceTri{} chance rate.  Cross-validation
-does not remove it, because it is a property of the sample rather than of the
-protocol.  This section is measured on the \CohDemog{}~subjects for whom the
+demographics could not have produced it unaided.  On this cohort they cannot: a
+rule that reads sex and nothing else scores \ConfSexTri{} against a
+\ConfChanceTri{} chance rate, and age alone \ConfAgeTri{}.  The question still
+has to be asked under the same protocol, because a demographic imbalance is a
+property of the sample that cross-validation does not remove.  This section is measured on the \CohDemog{}~subjects for whom the
 demographic export supplies both sex and age, so every row of
 Table~\ref{tab:v3-confounds} describes the same people.
 
@@ -2003,14 +2033,14 @@ demographics.  Chance is \ConfChanceTri{} for CN/MCI/AD and
 Predictor & CN / MCI / AD & CN vs AD \\
 \midrule
 % BEGIN AUTO:v3-confounds-rows
-Sex only & 35.7 & 51.5 \\
-Age only & 33.3 & 48.6 \\
-Sex + age & 35.0 & 50.0 \\
-Imaging (MNI regions) & 51.2 & 80.1 \\
-Imaging + demographics & 53.6 & 80.4 \\
+Sex only & 32.6 & 47.2 \\
+Age only & 32.9 & 47.8 \\
+Sex + age & 32.7 & 47.1 \\
+Imaging (region volumes) & 56.2 & 87.1 \\
+Imaging + demographics & 56.4 & 86.9 \\
 \midrule
-Imaging, female only & 45.8 ($n$ = 317) & 75.5 ($n$ = 221) \\
-Imaging, male only & 54.6 ($n$ = 321) & 80.6 ($n$ = 208) \\
+Imaging, female only & 51.6 ($n$ = 337) & 84.5 ($n$ = 232) \\
+Imaging, male only & 51.5 ($n$ = 340) & 84.7 ($n$ = 220) \\
 % END AUTO:v3-confounds-rows
 \bottomrule
 \end{tabular}
@@ -2021,17 +2051,18 @@ Three readings matter.  First, the imaging representation clearly exceeds what
 demographics buy: \ConfImgTri{} against \ConfSexTri{} for sex and
 \ConfAgeTri{} for age on the three-class task, and \ConfImgBin{} against
 \ConfSexBin{} on CN versus AD.  Second, adding demographics to the imaging
-features is worth only about two points, so the anatomy is carrying the
-decision rather than standing in for a demographic variable.
+features changes little (\ConfImgTri{} to \ConfImgDemoTri{}), so the anatomy
+is carrying the decision rather than standing in for a demographic variable.
 
 Third, the result survives stratification.  Within a single sex stratum sex is
 constant and can contribute nothing at all, yet three-class balanced accuracy
 is \ConfImgFemaleTri{} among the \ConfNFemaleTri{} female subjects and
 \ConfImgMaleTri{} among the \ConfNMaleTri{} male subjects, against
 \ConfImgTri{} pooled --- both far above the \ConfChanceTri{} chance rate, and
-the same holds for CN versus AD.  The two strata are not equally easy: the male
-stratum runs several points above the female one on both tasks, which is worth
-reporting even though it is not what this analysis set out to test.  What the
+the same holds for CN versus AD.  The two strata now come out level.  With
+the earlier intensity-mixture features the male stratum ran several points
+ahead of the female one; better segmentation removed that gap, which suggests
+it was a property of the measurement rather than of the disease.  What the
 stratification does establish is the narrow claim it was built for --- whatever
 the cohort's sex imbalance contributes to the headline figure, the imaging
 signal is not made of it.
@@ -2041,70 +2072,74 @@ question of whether the adjustment was correct.  The expansion described in
 Section~\ref{sec:cohort-design} removes the confound at its source instead: it
 selects subjects so that every diagnosis-by-sex cell holds the same number of
 subjects, which makes a sex-only rule exactly chance by construction and leaves
-nothing to adjust.
+nothing to adjust.  Applied to the current cohort, that selection keeps
+\BalN{}~subjects; there the imaging model still reaches \BalTri{} on three-class
+and \BalBin{} on CN versus AD, so the result survives with the confound removed
+rather than modelled.
 \subsection{What Changed When the Cohort Grew}
 \label{sec:results-v4}
 
-Every number above is measured on \CohSubjects{}~subjects across
-\CohSites{}~ADNI sites.  The study was first run on a smaller cohort of
-\InitSubjects{}~subjects across \InitSites{}~sites, and the entire matrix was
-then rerun unchanged on 2.6 times the subjects and 1.5 times the sites.  The
-comparison between the two is worth reporting: it says which of the findings
-were properties of the method and which were properties of that first sample.
-Every arm --- centralised, federated and private --- is measured on the same
-\CohSubjects{}~subjects, so comparisons between arms are comparisons of method
-rather than of sample.  The confound analysis is the one exception: it needs
-sex and age for every subject it touches, and the demographic export supplies
-both for \CohDemog{}~of the \CohSubjects{}, so that section is reported on
-those and says so.
+The study was first run on \InitSubjects{}~subjects across \InitSites{}~sites
+and then rerun unchanged, with the earlier intensity-mixture features, on
+\VFourSubjects{}~subjects across \CohSites{}~sites.  Because the pipeline was
+held fixed, the comparison says which findings were properties of the method
+and which were properties of that first sample.
 
-Centralised accuracy rose rather than regressed: \CohTriAcc{} on three-class
-against \InitTriAcc{} before, and \CohBinAcc{} on CN versus AD against
-\InitBinAcc{}.  The gap between the two protocols narrowed as the site count
-grew: holding out whole sites now costs 1.3~points on three-class
-(\CohTriSite{}) and 1.5~points on CN versus AD (\CohBinSite{}), against 2.4 and
-1.5 on \InitSites{}~sites.  With \CohSites{}~sites the model generalises to an
-unseen scanner nearly as well as to an unseen patient, which is the property a
-federated deployment actually needs.  On the \CohDemog{}-subject demographic
-subset the site-disjoint figure is in fact the higher of the two; we report the
-full-cohort ordering instead, since a reversal that appears on one subset and
-not on the whole is not evidence that site-disjoint evaluation is free.
+Centralised accuracy held: \VFourTriAcc{} on three-class against \InitTriAcc{}
+before, and \VFourBinAcc{} on CN versus AD against \InitBinAcc{}, so the
+smaller cohort was neither systematically optimistic nor pessimistic.  Holding
+out whole sites cost \VFourTriGap{} and \VFourBinGap{}~points on the larger
+cohort against \InitTriGap{} and \InitBinGap{} on the smaller one, comparing
+the best model under each protocol.  The penalty is small at both sizes and
+shows no consistent trend across model families, so we do not claim that it
+narrows as sites are added.
 
-The demographic confound weakened on its own.  A sex-only rule scores
-\ConfSexTri{} on the expanded cohort against \InitSexOnly{} on the smaller one,
-simply because the larger sample is better balanced.  On the balanced cohort of
-\VFourBalN{}~subjects, where diagnosis and sex are orthogonal by construction
-and a sex-only rule scores exactly one third, the imaging model still reaches
-\VFourBalTri{} on three-class and \VFourBalBin{} on CN versus AD.  That is the
-result the confound analysis was built to test, and it survives.
-
-Subject-level differential privacy became substantially cheaper.  At
-$\varepsilon = 1$ the cost on CN versus AD fell from 8.6 points to 3.5
-(\CohDpBinOne{} against \CohDpBinNone{} non-private), and on the three-class
-task every private configuration at $\varepsilon \geq 2$ matched or exceeded
-the non-private federated baseline, the added noise acting as regularisation at
-this sample size.  This is the direction the $\sqrt{d}$ analysis predicts: the
-noise scale is fixed by the model dimension and the budget, while the summed
-update grows with the number of participating subjects, so the ratio improves
-with cohort size at constant $\varepsilon$.
+The confound weakened on its own, simply because the larger sample is better
+balanced: a sex-only rule scores \InitSexOnly{} on the smaller cohort and is at
+chance on the current one.  Subject-level differential privacy became
+substantially cheaper: at $\varepsilon = 1$ the cost on CN versus AD fell from
+\InitDpBinCost{} points to \VFourDpBinCost{}.  This is the direction the
+$\sqrt{d}$ analysis predicts: the noise scale is fixed by the model dimension
+and the budget, while the summed update grows with the number of participating
+subjects, so the ratio improves with cohort size at constant $\varepsilon$.
 
 \paragraph{A claim that did not survive the larger cohort at full strength.}
 On \InitSubjects{}~subjects, region-attribution agreement collapsed to
 \InitXaiTen{} at $\varepsilon = 10$ while accuracy was untouched, and the
 attribution mass in hippocampus and amygdala roughly halved.  On
-\CohSubjects{}~subjects the same measurements give \CohXaiTen{} against
-\CohXaiNonPrivate{} non-private, and a medial-temporal share of \CohMtTen{}
-against \CohMtNonPrivate{} --- essentially unchanged.  The direction survives
-and remains the point: agreement roughly halves at a budget where accuracy does
-not fall at all, and in fact rises.  But the near-total collapse of agreement,
-and the loss of medial-temporal focus that accompanied it, were substantially
-artefacts of the smaller sample.  We report the revised figures rather than the
-originals, and note that an explanation-stability claim measured on a few
-hundred subjects should be treated as provisional until it is repeated on more.
-The weaker form of the claim is the one the evidence supports: explanation
-fidelity degrades markedly faster than accuracy under subject-level privacy,
-and accuracy-only privacy--utility curves therefore understate what a private
-model costs.
+\VFourSubjects{}~subjects the same measurements gave \VFourXaiTen{} against
+\VFourXaiNonPrivate{} non-private, and a medial-temporal share of \VFourMtTen{}
+against \VFourMtNonPrivate{} --- essentially unchanged.  The direction
+survived: agreement more than halved at a budget where accuracy did not fall.
+But the near-total collapse, and the loss of medial-temporal focus that
+accompanied it, were substantially artefacts of the smaller sample, and we
+report the revised figures rather than the originals.
+
+\subsection{What Better Segmentation Changed}
+\label{sec:results-features}
+
+The current representation and the earlier one were measured on the same
+\CohSubjects{}~subjects with the same folds, seeds and federated configuration,
+so the difference between them is the difference in features alone.  Replacing
+the intensity mixture over a fixed atlas with deepmriprep raised centralised CN
+versus AD from \VFiveBinAcc{} (AUROC~\VFiveBinAUROC{}) to \CohBinAcc{}
+(AUROC~\CohBinAUROC{}), three-class from \VFiveTriAcc{} to \CohTriAcc{},
+federated accuracy over the real sites from \VFiveFedBin{} to \CohFedBin{} on CN
+versus AD and from \VFiveFedTri{} to \CohFedTri{} on three-class, and the
+subject-level private model at $\varepsilon = 1$ from \VFiveDpBinOne{} to
+\CohDpBinOne{}.  Adding age and sex to the new features lifts CN versus AD only
+to \CohBinCov{}.
+
+Every utility figure rose and every privacy and federation finding kept its
+direction.  One measurement moved the other way: at $\varepsilon = 10$ the
+agreement of the private model's region attribution with the non-private
+reference is \CohXaiTen{}, against \VFiveXaiTen{} with the earlier features,
+while the share of attribution falling in hippocampus and amygdala moves only
+from \CohMtNonPrivate{} to \CohMtTen{}.  A
+sharper representation gives the non-private model a more specific anatomical
+signature, and that signature is what the privacy noise disturbs, so the case
+for reporting explanation fidelity beside accuracy is stronger, not weaker, on
+the better features.
 
 \subsection{Removing the Confound by Design}
 \label{sec:cohort-design}
@@ -2277,6 +2312,17 @@ utility-constrained non-DP baseline}---the accuracy DP ``gives up'' is
 mostly accuracy the non-DP model did not meaningfully have either.
 Fig.~\ref{fig:tradeoff}(b) plots MIA AUC against $\varepsilon$
 alongside the utility curve for direct comparison.
+
+\paragraph{Subject-level attack on the region model.}
+The results above are for the earlier slice models.  For the current region
+model we run a subject-level loss-threshold attack under the same
+subject-disjoint folds: members are training subjects and non-members are the
+held-out fold.  Against the non-private federated model the attack reaches an
+AUROC of \CohAttackNone{}; under subject-level DP-FedAvg at $\varepsilon = 1$
+it falls to \CohAttackOne{}, against a chance rate of 0.500, so the formal
+budget and the empirical attack move together.  The publicly served model is
+the $\varepsilon = 10$ one, which carries a formal guarantee for every training
+subject.
 
 % ============================================================
 \section{Explainability Analysis}
@@ -2492,13 +2538,14 @@ coverage gate fails the build rather than reporting a lower number.
 \label{sec:limitations}
 % ============================================================
 
-\textbf{Cohort Size.}\;This is the paper's central limitation, not a
-minor caveat: our ADNI cohort contains only 32~unique subjects.  Every
-subject-level result in this paper should be read as a
-small-cohort feasibility and methodology study, not as evidence of
-clinical-grade diagnostic accuracy---held-out accuracy across every
-architecture and training regime we evaluated (Sections~\ref{sec:results}--\ref{sec:privacy})
-sits within a few points of three-class chance (33.3\%). We disclose
+\textbf{Cohort Size and Clinical Scope.}\;The current results are measured
+on \CohSubjects{}~ADNI subjects; the slice-model results of the earlier phase
+come from a 32-subject cohort and sit within a few points of three-class chance
+(33.3\%).  Neither is evidence of clinical-grade diagnostic accuracy: the
+three-class task in particular remains far from it at \CohTriAcc{}, in line
+with the best blinded structural-MRI benchmarks, because mild cognitive
+impairment is a heterogeneous group that structural MRI alone separates
+poorly. We disclose
 this prominently precisely because our own earlier slice-level
 evaluation of the identical models and data did not, and reported
 91--97\% accuracy instead (Section~\ref{sec:leakage}).  No claim in
@@ -2602,7 +2649,17 @@ Federated Learning framework for Alzheimer's Disease detection from
 MRI data---and, more centrally, a corrected re-evaluation of that same
 framework after discovering that our initial slice-level evaluation
 protocol had leaked subject identity across train/validation/test
-splits.  Our key findings are:
+splits.  On \CohSubjects{}~ADNI subjects across \CohSites{}~sites, with
+subject-disjoint evaluation, the current region-volume model reaches
+\CohBinAcc{} on CN versus AD (AUROC~\CohBinAUROC{}) and \CohTriAcc{} on
+CN/MCI/AD; federated over \CohClients{}~real-site clients it reaches
+\CohFedBin{} and \CohFedTri{}; under subject-level differential privacy at
+$\varepsilon = 1$ it keeps \CohDpBinOne{} on CN versus AD while a membership
+attack falls to an AUROC of \CohAttackOne{}; and at $\varepsilon = 10$ it is
+more accurate than its non-private counterpart (\CohDpBinTen{} against
+\CohDpBinNone{}) while the agreement of its explanations falls from
+\CohXaiNonPrivate{} to \CohXaiTen{}.  The findings of the earlier, slice-level
+phase of the study, on its 32-subject cohort, are:
 
 \begin{enumerate}
 \item \textbf{Slice-level evaluation severely inflates reported

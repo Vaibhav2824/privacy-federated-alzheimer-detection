@@ -1,0 +1,84 @@
+{
+  "model": "ensemble",
+  "label_set": "cn-ad",
+  "class_names": [
+    "CN",
+    "AD"
+  ],
+  "split_scheme": "site",
+  "n_splits": 5,
+  "seed": 42,
+  "n_subjects": 420,
+  "class_counts": {
+    "CN": 210,
+    "AD": 210
+  },
+  "chance_accuracy": 0.5,
+  "uniform_chance": 0.5,
+  "overall": {
+    "accuracy": 0.8,
+    "macro_f1": 0.7999274113056891,
+    "balanced_accuracy": 0.8,
+    "macro_auroc": 0.860249433106576,
+    "accuracy_ci95": [
+      0.7619047619047619,
+      0.8380952380952381
+    ],
+    "macro_f1_ci95": [
+      0.7615587246798075,
+      0.8380034032898469
+    ],
+    "balanced_accuracy_ci95": [
+      0.7618368338098036,
+      0.8379002630624093
+    ],
+    "macro_auroc_ci95": [
+      0.8227352342872806,
+      0.8947259188378041
+    ]
+  },
+  "per_fold": [
+    {
+      "accuracy": 0.8111111111111111,
+      "macro_f1": 0.8105263157894738,
+      "balanced_accuracy": 0.8151904997525977,
+      "macro_auroc": 0.8159327065809006
+    },
+    {
+      "accuracy": 0.8292682926829268,
+      "macro_f1": 0.8291666666666666,
+      "balanced_accuracy": 0.8292682926829269,
+      "macro_auroc": 0.8673408685306365
+    },
+    {
+      "accuracy": 0.7831325301204819,
+      "macro_f1": 0.7831010452961673,
+      "balanced_accuracy": 0.7837209302325582,
+      "macro_auroc": 0.8895348837209303
+    },
+    {
+      "accuracy": 0.75,
+      "macro_f1": 0.7485857950974231,
+      "balanced_accuracy": 0.75,
+      "macro_auroc": 0.84
+    },
+    {
+      "accuracy": 0.8235294117647058,
+      "macro_f1": 0.8234316576651433,
+      "balanced_accuracy": 0.8239202657807309,
+      "macro_auroc": 0.8914728682170542
+    }
+  ],
+  "fold_mean": {
+    "accuracy": 0.7994082691358452,
+    "macro_f1": 0.7989622961029748,
+    "balanced_accuracy": 0.8004199976897628,
+    "macro_auroc": 0.8608562654099042
+  },
+  "fold_std": {
+    "accuracy": 0.02938191204720511,
+    "macro_f1": 0.029779695560691957,
+    "balanced_accuracy": 0.029744543958595684,
+    "macro_auroc": 0.02917190270799981
+  }
+}

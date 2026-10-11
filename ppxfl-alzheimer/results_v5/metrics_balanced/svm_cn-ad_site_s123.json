@@ -1,0 +1,84 @@
+{
+  "model": "svm",
+  "label_set": "cn-ad",
+  "class_names": [
+    "CN",
+    "AD"
+  ],
+  "split_scheme": "site",
+  "n_splits": 5,
+  "seed": 123,
+  "n_subjects": 420,
+  "class_counts": {
+    "CN": 210,
+    "AD": 210
+  },
+  "chance_accuracy": 0.5,
+  "uniform_chance": 0.5,
+  "overall": {
+    "accuracy": 0.7738095238095238,
+    "macro_f1": 0.7737979828902835,
+    "balanced_accuracy": 0.7738095238095238,
+    "macro_auroc": 0.847936507936508,
+    "accuracy_ci95": [
+      0.735654761904762,
+      0.8142857142857143
+    ],
+    "macro_f1_ci95": [
+      0.7340007853270802,
+      0.8142688679245282
+    ],
+    "balanced_accuracy_ci95": [
+      0.7347014214841184,
+      0.8143982825230629
+    ],
+    "macro_auroc_ci95": [
+      0.81036037157369,
+      0.8835636596771033
+    ]
+  },
+  "per_fold": [
+    {
+      "accuracy": 0.7710843373493976,
+      "macro_f1": 0.7709513435003631,
+      "balanced_accuracy": 0.771486643437863,
+      "macro_auroc": 0.815911730545877
+    },
+    {
+      "accuracy": 0.75,
+      "macro_f1": 0.75,
+      "balanced_accuracy": 0.7503875968992249,
+      "macro_auroc": 0.8563307493540051
+    },
+    {
+      "accuracy": 0.8375,
+      "macro_f1": 0.8374746054070948,
+      "balanced_accuracy": 0.8377110694183865,
+      "macro_auroc": 0.9111944965603502
+    },
+    {
+      "accuracy": 0.7647058823529411,
+      "macro_f1": 0.7646733111849391,
+      "balanced_accuracy": 0.7649501661129567,
+      "macro_auroc": 0.85437430786268
+    },
+    {
+      "accuracy": 0.75,
+      "macro_f1": 0.7499645641389086,
+      "balanced_accuracy": 0.7501418037436188,
+      "macro_auroc": 0.8026091888825866
+    }
+  ],
+  "fold_mean": {
+    "accuracy": 0.7746580439404678,
+    "macro_f1": 0.7746127648462611,
+    "balanced_accuracy": 0.7749354559224101,
+    "macro_auroc": 0.8480840946410998
+  },
+  "fold_std": {
+    "accuracy": 0.032486817641595986,
+    "macro_f1": 0.03248732594579224,
+    "balanced_accuracy": 0.03246444375286171,
+    "macro_auroc": 0.03793026493964258
+  }
+}
