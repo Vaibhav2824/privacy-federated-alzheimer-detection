@@ -77,6 +77,16 @@ def test_rate_limit_returns_429(client, monkeypatch):
     assert codes == [200, 200, 429]
 
 
+def test_rate_limit_ignores_a_spoofed_forwarded_for(client, monkeypatch):
+    """Rotating a fake first X-Forwarded-For entry must not reset the limit."""
+    monkeypatch.setattr(api, "RATE_LIMIT", 2)
+    body = {"volumes_csv": VOLUMES, "tiv_cm3": TIV}
+    codes = [client.post("/predict", json=body,
+                         headers={"X-Forwarded-For": f"10.0.0.{i}, 203.0.113.7"}).status_code
+             for i in range(3)]
+    assert codes == [200, 200, 429]
+
+
 def test_rate_limit_window_expires():
     api._hits.clear()
     assert not api._rate_limited("a", 0.0)
