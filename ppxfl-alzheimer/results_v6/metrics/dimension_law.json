@@ -1,0 +1,113 @@
+{
+  "participants": 639,
+  "rows": [
+    {
+      "model": "roi_logreg",
+      "target_epsilon": 1.0,
+      "noise_multiplier": 11.340695571899413,
+      "dimension": 405,
+      "expected_noise_norm": 228.2270958980815,
+      "max_signal_norm": 639.0,
+      "worst_case_ratio": 0.3571629043788443
+    },
+    {
+      "model": "resnet50_full",
+      "target_epsilon": 1.0,
+      "noise_multiplier": 11.340695571899413,
+      "dimension": 23508035,
+      "expected_noise_norm": 54985.45925685557,
+      "max_signal_norm": 639.0,
+      "worst_case_ratio": 86.04923201385847
+    },
+    {
+      "model": "resnet50_head",
+      "target_epsilon": 1.0,
+      "noise_multiplier": 11.340695571899413,
+      "dimension": 6147,
+      "expected_noise_norm": 889.1423556478486,
+      "max_signal_norm": 639.0,
+      "worst_case_ratio": 1.39145908552089
+    },
+    {
+      "model": "roi_logreg",
+      "target_epsilon": 2.0,
+      "noise_multiplier": 6.340272903442384,
+      "dimension": 405,
+      "expected_noise_norm": 127.59553087197418,
+      "max_signal_norm": 639.0,
+      "worst_case_ratio": 0.1996800170140441
+    },
+    {
+      "model": "resnet50_full",
+      "target_epsilon": 2.0,
+      "noise_multiplier": 6.340272903442384,
+      "dimension": 23508035,
+      "expected_noise_norm": 30740.86727743693,
+      "max_signal_norm": 639.0,
+      "worst_case_ratio": 48.107773517115696
+    },
+    {
+      "model": "resnet50_head",
+      "target_epsilon": 2.0,
+      "noise_multiplier": 6.340272903442384,
+      "dimension": 6147,
+      "expected_noise_norm": 497.09518689361977,
+      "max_signal_norm": 639.0,
+      "worst_case_ratio": 0.7779267400526131
+    },
+    {
+      "model": "roi_logreg",
+      "target_epsilon": 5.0,
+      "noise_multiplier": 3.044747543334961,
+      "dimension": 405,
+      "expected_noise_norm": 61.27436233100214,
+      "max_signal_norm": 639.0,
+      "worst_case_ratio": 0.09589102086228816
+    },
+    {
+      "model": "resnet50_full",
+      "target_epsilon": 5.0,
+      "noise_multiplier": 3.044747543334961,
+      "dimension": 23508035,
+      "expected_noise_norm": 14762.484446394104,
+      "max_signal_norm": 639.0,
+      "worst_case_ratio": 23.10247957182176
+    },
+    {
+      "model": "resnet50_head",
+      "target_epsilon": 5.0,
+      "noise_multiplier": 3.044747543334961,
+      "dimension": 6147,
+      "expected_noise_norm": 238.7167511789954,
+      "max_signal_norm": 639.0,
+      "worst_case_ratio": 0.3735786403427158
+    },
+    {
+      "model": "roi_logreg",
+      "target_epsilon": 10.0,
+      "noise_multiplier": 1.8266372680664062,
+      "dimension": 405,
+      "expected_noise_norm": 36.760365914678914,
+      "max_signal_norm": 639.0,
+      "worst_case_ratio": 0.057527959177901274
+    },
+    {
+      "model": "resnet50_full",
+      "target_epsilon": 10.0,
+      "noise_multiplier": 1.8266372680664062,
+      "dimension": 23508035,
+      "expected_noise_norm": 8856.466381937917,
+      "max_signal_norm": 639.0,
+      "worst_case_ratio": 13.859884791765127
+    },
+    {
+      "model": "resnet50_head",
+      "target_epsilon": 10.0,
+      "noise_multiplier": 1.8266372680664062,
+      "dimension": 6147,
+      "expected_noise_norm": 143.2134874925219,
+      "max_signal_norm": 639.0,
+      "worst_case_ratio": 0.2241212636815679
+    }
+  ]
+}
