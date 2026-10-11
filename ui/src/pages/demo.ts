@@ -1,12 +1,16 @@
-import { API_URL, parseTiv, predictRegions, wake, type RegionPrediction } from '../lib/api';
+import { API_URL, parseTiv, predictRegions, wake, type ClassName, type RegionPrediction } from '../lib/api';
 import { loadClassifier } from '../lib/inference';
 import { pct, type SiteData } from '../lib/site';
 import { mountChat } from '../ui/chat';
 import { href, icon, mountPage, pageHead } from '../ui/layout';
+import { animate, ring } from '../ui/motion';
 
 const EXAMPLE = `${import.meta.env.BASE_URL}examples/`;
-const CLASS_BAR: Record<string, string> = { CN: 'bg-cn', MCI: 'bg-mci', AD: 'bg-ad' };
-const CLASS_NAME: Record<string, string> = {
+const CLASSES: ClassName[] = ['CN', 'MCI', 'AD'];
+const CLASS_BAR: Record<ClassName, string> = { CN: 'bg-cn', MCI: 'bg-mci', AD: 'bg-ad' };
+const CLASS_HEX: Record<ClassName, string> = { CN: '#0072b2', MCI: '#e69f00', AD: '#d55e00' };
+const CLASS_TEXT: Record<ClassName, string> = { CN: 'text-cn', MCI: 'text-[#9a6a00]', AD: 'text-ad' };
+const CLASS_NAME: Record<ClassName, string> = {
   CN: 'Cognitively normal', MCI: 'Mild cognitive impairment', AD: "Alzheimer's disease",
 };
 
@@ -17,73 +21,139 @@ python -c "from deepmriprep import run_preprocess; run_preprocess(input_paths=['
 const esc = (text: string): string =>
   text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
-function regionSection(data: SiteData): string {
-  return `
-  <section class="shell mt-8 grid gap-6 lg:grid-cols-[1fr_1.3fr]">
-    <div class="flex flex-col gap-6">
-      <div class="card">
-        <p class="eyebrow">The paper's model · server API</p>
-        <h2 class="mt-2 font-serif text-2xl">Classify region volumes</h2>
-        <p class="mt-2 text-sm text-slate">The v6 region model trained with subject-level DP-FedAvg at ε = 10. It reads the
-          region volumes deepmriprep measures from a T1 scan, so the scan itself never leaves your machine; only
-          134 numbers and the intracranial volume are sent.</p>
-        <div class="mt-5 flex flex-col gap-3 text-sm">
-          <label class="flex flex-col gap-1">Region volumes CSV <span class="font-mono text-xs text-slate">neuromorphometrics_volumes….csv</span>
-            <input id="vol-file" type="file" accept=".csv,text/csv" class="rounded border border-hairline bg-surface p-2"></label>
-          <label class="flex flex-col gap-1">Intracranial volume <span class="font-mono text-xs text-slate">tiv….csv, or type cm³</span>
-            <span class="flex gap-2"><input id="tiv-file" type="file" accept=".csv,text/csv" class="min-w-0 flex-1 rounded border border-hairline bg-surface p-2">
-            <input id="tiv-value" type="number" min="700" max="2600" step="any" placeholder="cm³" class="w-28 rounded border border-hairline bg-surface p-2"></span></label>
-        </div>
-        <div class="mt-5 flex flex-wrap gap-2">
-          <button id="run-api" type="button" class="btn btn-primary">${icon('play_arrow')} Classify</button>
-          <button id="run-example" type="button" class="btn">${icon('neurology')} Try the MNI152 template</button>
-        </div>
-        <p id="api-status" class="mt-3 min-h-6 font-mono text-xs text-slate" role="status"></p>
+const FILE_INPUT = 'w-full rounded-xl border border-hairline bg-paper p-1.5 text-sm text-slate file:mr-3 file:rounded-lg file:border-0 file:bg-ink file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-ink/85';
+
+function steps(): string {
+  const step = (n: number, i: string, title: string, body: string): string => `<li class="card spotlight flex items-start gap-4 !p-5">
+      <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-mint text-teal">${icon(i, '!text-[20px]')}</span>
+      <div><p class="font-mono text-xs text-slate">Step ${n}</p><p class="font-display font-semibold">${title}</p>
+        <p class="mt-0.5 text-sm text-slate">${body}</p></div></li>`;
+  return `<ol class="shell mt-10 grid gap-4 md:grid-cols-3" data-stagger>
+    ${step(1, 'neurology', 'Measure the brain locally', '134 region volumes from a T1 scan, on your own machine.')}
+    ${step(2, 'shield_lock', 'Send numbers, not scans', 'Only the volumes and intracranial volume reach the private model.')}
+    ${step(3, 'insights', 'See the answer and the why', 'Class probabilities plus the regions that drove them.')}
+  </ol>`;
+}
+
+function emptyState(data: SiteData): string {
+  const acc = data.conditions.find((c) => c.family === 'privacy' && c.label_set === 'cn-mci-ad' && c.target_epsilon === 10)?.accuracy;
+  return `<div class="flex h-full flex-col items-center justify-center gap-5 py-10 text-center">
+      <div class="relative grid h-40 w-40 place-items-center">
+        <div class="absolute inset-0 rounded-full border-2 border-dashed border-hairline"></div>
+        <div class="absolute inset-5 rounded-full bg-linear-to-br from-mint/80 to-sky/10 blur-xl"></div>
+        <span class="relative text-teal">${icon('neurology', '!text-[56px]')}</span>
       </div>
-      <div class="card bg-muted text-sm">
-        <p class="font-medium">Getting the inputs from your own T1 scan</p>
-        <pre class="mt-3 overflow-x-auto rounded bg-paper p-3 font-mono text-[11px] leading-5">${DEEPMRIPREP}</pre>
-        <p class="mt-3 text-slate">About a minute per scan on a GPU. The example is deepmriprep's output for the public
-          MNI152 template, an average healthy adult brain, so it contains no ADNI data.</p>
+      <div><p class="font-display text-2xl font-semibold">Ready when you are</p>
+        <p class="mx-auto mt-2 max-w-sm text-sm text-slate">Press <b class="text-ink">Run on a sample brain</b> for a one-click result, or upload your own
+          deepmriprep output. This model scores <span class="num text-ink">${pct(acc)}</span> three-class accuracy under
+          subject-disjoint cross-validation.</p></div>
+    </div>`;
+}
+
+function loadingState(): string {
+  return `<div class="flex h-full flex-col items-center justify-center gap-6 py-10 text-center">
+      <div class="relative grid h-40 w-40 place-items-center">
+        <span class="absolute inset-0 animate-ping rounded-full bg-teal-bright/20 [animation-duration:2s]"></span>
+        <span class="absolute inset-4 animate-spin rounded-full border-4 border-mint border-t-teal-bright [animation-duration:1.2s]"></span>
+        <span class="relative text-teal">${icon('neurology', '!text-[48px]')}</span>
       </div>
-    </div>
-    <div class="card" id="api-result" aria-live="polite">
-      <p class="font-serif text-2xl">Result</p>
-      <p class="mt-2 text-sm text-slate">Choose a file or try the template. The model is evaluated at
-        ${pct(data.conditions.find((c) => c.family === 'privacy' && c.label_set === 'cn-mci-ad' && c.target_epsilon === 10)?.accuracy)}
-        three-class accuracy under subject-disjoint cross-validation.</p>
-    </div>
-  </section>`;
+      <div><p class="font-display text-xl font-semibold">Running the private model…</p>
+        <p class="mt-1 text-sm text-slate">The free server can take up to a minute to wake on the first request.</p></div>
+      <div class="w-full max-w-sm space-y-2"><div class="skeleton"></div><div class="skeleton w-4/5"></div><div class="skeleton w-3/5"></div></div>
+    </div>`;
 }
 
 function result(out: RegionPrediction): string {
-  const bars = (['CN', 'MCI', 'AD'] as const).map((c) => `<div class="flex flex-col gap-1">
-      <div class="flex justify-between text-sm"><span class="flex items-center gap-2"><span class="h-2 w-2 rounded-full ${CLASS_BAR[c]}"></span>${CLASS_NAME[c]} (${c})</span>
-        <span class="num font-semibold">${pct(out.probabilities[c])}</span></div>
-      <div class="track"><span class="fill ${CLASS_BAR[c]}" style="width:${out.probabilities[c] * 100}%"></span></div></div>`).join('');
-  const rows = out.top_regions.map((r) => `<tr class="border-t border-hairline">
-      <td class="p-2">${esc(r.region)} <span class="font-mono text-[11px] text-slate">${esc(r.tissue)}</span></td>
-      <td class="num p-2 text-right">${r.z_score.toFixed(2)}</td>
-      <td class="num p-2 text-right ${r.contribution >= 0 ? 'text-teal' : 'text-ad'}">${r.contribution >= 0 ? '+' : '−'}${Math.abs(r.contribution).toFixed(3)}</td></tr>`).join('');
+  const top = out.predicted;
+  const p = out.probabilities[top];
   const m = out.model;
-  return `<div class="flex items-center justify-between"><p class="font-serif text-2xl">Predicted class probabilities</p>
-      <span class="badge">${out.predicted}</span></div>
-    <div class="mt-5 flex flex-col gap-4">${bars}</div>
-    <p class="mt-8 font-serif text-xl">Regions that drove the prediction</p>
-    <p class="mt-1 text-sm text-slate">z-score: how far each region's volume sits from the training cohort's mean.
-      Contribution: its push towards the predicted class, relative to an average cohort member.</p>
-    <div class="mt-3 overflow-x-auto"><table class="w-full text-sm"><thead class="text-left font-mono text-xs uppercase tracking-wider text-slate">
-      <tr><th class="p-2">Region</th><th class="p-2 text-right">z-score</th><th class="p-2 text-right">Contribution</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p class="mt-6 rounded bg-muted p-3 text-xs text-slate">${esc(m.name)}: accounted ε = ${m.privacy.accounted_epsilon.toFixed(2)},
-      δ = ${m.privacy.delta}; trained on ${m.training.n_subjects} ADNI subjects across ${m.training.n_clients} site clients;
-      cross-validated accuracy ${pct(m.evaluation.accuracy)} (chance ${pct(m.evaluation.chance_accuracy)}). ${esc(m.disclaimer)}</p>`;
+  const segments = CLASSES.map((c) => `<span data-bar="0.3" class="${CLASS_BAR[c]} h-full" style="width:${out.probabilities[c] * 100}%" title="${c} ${pct(out.probabilities[c])}"></span>`).join('');
+  const legend = CLASSES.map((c) => `<div class="rounded-xl border p-3 ${c === top ? 'border-transparent bg-paper ring-2' : 'border-hairline'}" style="--tw-ring-color:${CLASS_HEX[c]}">
+      <p class="flex items-center gap-1.5 text-xs text-slate"><span class="h-2 w-2 rounded-full ${CLASS_BAR[c]}"></span>${c}</p>
+      <p class="num mt-1 text-xl font-semibold ${c === top ? CLASS_TEXT[c] : ''}" data-count="0.3">${pct(out.probabilities[c])}</p>
+      <p class="truncate text-[11px] text-slate">${CLASS_NAME[c]}</p></div>`).join('');
+  const maxAbs = Math.max(...out.top_regions.map((r) => Math.abs(r.contribution)), 1e-9);
+  const regions = out.top_regions.map((r, i) => {
+    const w = (Math.abs(r.contribution) / maxAbs) * 50;
+    const pos = r.contribution >= 0;
+    return `<div class="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_3.5rem] items-center gap-3 text-sm">
+        <p class="min-w-0"><span class="block truncate" title="${esc(r.region)}">${esc(r.region)}</span>
+          <span class="font-mono text-[11px] text-slate">${esc(r.tissue)} · z ${r.z_score.toFixed(2)}</span></p>
+        <div class="relative h-6 rounded-md bg-muted">
+          <span class="absolute inset-y-0 left-1/2 w-px bg-ink/30"></span>
+          <span data-bar="${0.4 + i * 0.05}" class="absolute inset-y-1 rounded ${pos ? 'left-1/2 bg-linear-to-r from-teal to-teal-bright' : 'right-1/2 bg-linear-to-l from-ad/70 to-ad'}" style="width:${w}%"></span>
+        </div>
+        <span class="num text-right text-xs font-semibold ${pos ? 'text-teal' : 'text-ad'}">${pos ? '+' : '−'}${Math.abs(r.contribution).toFixed(3)}</span></div>`;
+  }).join('');
+  const fact = (label: string, value: string): string => `<div class="rounded-xl bg-paper p-3"><p class="font-mono text-[10px] uppercase tracking-wider text-slate">${label}</p>
+      <p class="num mt-0.5 text-sm font-semibold">${value}</p></div>`;
+  return `<div class="flex flex-col gap-6">
+    <div class="flex flex-col items-center gap-6 sm:flex-row" data-stagger>
+      <div class="relative h-40 w-40 shrink-0">${ring(p, 200, 16, CLASS_HEX[top])}
+        <div class="absolute inset-0 grid place-items-center text-center"><div>
+          <p class="num text-3xl font-semibold" data-count>${pct(p)}</p><p class="font-mono text-[10px] uppercase tracking-wider text-slate">confidence</p></div></div>
+      </div>
+      <div class="text-center sm:text-left">
+        <p class="eyebrow"><span class="live-dot"></span>Model output</p>
+        <p class="mt-2 font-display text-4xl font-extrabold tracking-tight md:text-5xl ${CLASS_TEXT[top]}">${top}</p>
+        <p class="mt-1 text-lg font-medium">${CLASS_NAME[top]}</p>
+        <p class="mt-1 text-xs text-slate">Most probable of three classes · research output, not a diagnosis</p>
+      </div>
+    </div>
+    <div><div class="flex h-3 overflow-hidden rounded-full bg-muted">${segments}</div>
+      <div class="mt-3 grid grid-cols-3 gap-2">${legend}</div></div>
+    <div class="border-t border-hairline pt-5">
+      <div class="flex items-baseline justify-between gap-3"><p class="font-display text-lg font-semibold">Why: regions that drove it</p>
+        <p class="hidden font-mono text-[11px] text-slate sm:block"><span class="text-ad">◀ against</span> · <span class="text-teal">towards ▶</span></p></div>
+      <p class="mt-1 text-xs text-slate">z: how far a region's volume sits from the training cohort's mean. Bar: its push towards the predicted class, relative to an average cohort member.</p>
+      <div class="mt-4 flex flex-col gap-2">${regions}</div>
+    </div>
+    <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      ${fact('Privacy', `ε = ${m.privacy.accounted_epsilon.toFixed(2)}`)}${fact('δ', String(m.privacy.delta))}
+      ${fact('Trained on', `${m.training.n_subjects} · ${m.training.n_clients} sites`)}${fact('CV accuracy', `${pct(m.evaluation.accuracy)} / ${pct(m.evaluation.chance_accuracy)}`)}
+    </div>
+    <p class="text-xs text-slate">${esc(m.name)}. ${esc(m.disclaimer)}</p>
+  </div>`;
+}
+
+function regionSection(data: SiteData): string {
+  return `
+  <section class="shell mt-8 grid gap-6 lg:grid-cols-[1fr_1.35fr]">
+    <div class="flex flex-col gap-6" data-reveal>
+      <div class="card">
+        <p class="eyebrow">The paper's model · server API</p>
+        <h2 class="mt-2 text-2xl">Classify region volumes</h2>
+        <p class="mt-2 text-sm text-slate">The v6 region model trained with subject-level DP-FedAvg at ε = 10. It reads the
+          region volumes deepmriprep measures from a T1 scan, so the scan itself never leaves your machine.</p>
+        <button id="run-example" type="button" class="btn btn-primary mt-5 h-12 w-full justify-center text-base">${icon('bolt')} Run on a sample brain (MNI152)</button>
+        <div class="my-5 flex items-center gap-3 font-mono text-[11px] uppercase tracking-wider text-slate"><span class="h-px flex-1 bg-hairline"></span>or use your own<span class="h-px flex-1 bg-hairline"></span></div>
+        <div class="flex flex-col gap-4 text-sm">
+          <label class="flex flex-col gap-1.5 font-medium">Region volumes CSV <span class="font-mono text-xs font-normal text-slate">neuromorphometrics_volumes….csv</span>
+            <input id="vol-file" type="file" accept=".csv,text/csv" class="${FILE_INPUT}"></label>
+          <label class="flex flex-col gap-1.5 font-medium">Intracranial volume <span class="font-mono text-xs font-normal text-slate">tiv….csv, or type cm³</span>
+            <span class="flex gap-2"><input id="tiv-file" type="file" accept=".csv,text/csv" class="${FILE_INPUT} min-w-0 flex-1">
+            <input id="tiv-value" type="number" min="700" max="2600" step="any" placeholder="cm³" class="w-28 rounded-xl border border-hairline bg-paper px-3 text-sm"></span></label>
+        </div>
+        <button id="run-api" type="button" class="btn mt-5 w-full justify-center">${icon('play_arrow')} Classify my files</button>
+        <p id="api-status" class="mt-3 min-h-6 font-mono text-xs text-slate" role="status"></p>
+      </div>
+      <details class="card group !p-5 text-sm">
+        <summary class="flex cursor-pointer list-none items-center justify-between font-medium">Getting the inputs from your own T1 scan
+          <span class="transition-transform group-open:rotate-180">${icon('expand_more')}</span></summary>
+        <pre class="mt-3 overflow-x-auto rounded-xl bg-ink p-4 font-mono text-[11px] leading-5 text-mint">${DEEPMRIPREP}</pre>
+        <p class="mt-3 text-slate">About a minute per scan on a GPU. The sample is deepmriprep's output for the public
+          MNI152 template, an average healthy adult brain, so it contains no ADNI data.</p>
+      </details>
+    </div>
+    <div class="card beam min-h-[34rem] !p-7" id="api-result" aria-live="polite" data-reveal>${emptyState(data)}</div>
+  </section>`;
 }
 
 function legacySection(data: SiteData): string {
   return `
-  <section class="shell mt-16">
+  <section class="shell mt-20" data-reveal>
     <p class="eyebrow">In-browser inference · ONNX Runtime Web</p>
-    <h2 class="mt-2 text-2xl md:text-3xl">The legacy slice classifier</h2>
+    <h2 class="mt-2 text-2xl md:text-4xl">The legacy slice classifier</h2>
     <div class="notice mt-4 flex gap-4">
       <span class="mt-0.5">${icon('warning')}</span>
       <p class="text-ink">This is the earlier v2 ResNet50 slice model, not the paper's model. On held-out subjects it scored
@@ -91,7 +161,7 @@ function legacySection(data: SiteData): string {
         <a class="text-teal underline" href="${href('integrity')}">Integrity</a> page. It is kept to show fully private inference:
         the image is classified inside this tab and never sent anywhere.</p>
     </div>
-    <div class="card mt-6"><p class="font-serif text-2xl">Classify a slice</p>
+    <div class="card mt-6"><p class="font-display text-xl font-semibold">Classify a slice</p>
       <p class="mt-1 text-sm text-slate">PNG or JPEG of a single axial slice.</p>
       <div id="chat-root" class="mt-4"></div></div>
   </section>`;
@@ -99,9 +169,10 @@ function legacySection(data: SiteData): string {
 
 function render(data: SiteData): string {
   return `
-  ${pageHead('Live demo · region model on Render, slice model in your browser', 'Try the models',
+  ${pageHead('Live demo · region model on Render, slice model in your browser', 'Try the model, live',
     'Run the paper\'s privacy-preserving region model on deepmriprep region volumes, or the legacy slice model entirely inside this tab.',
-    `<span class="badge shrink-0">${icon('shield', '!text-sm')} No scan is ever uploaded</span>`)}
+    `<span class="badge shrink-0 !px-3 !py-1">${icon('shield', '!text-sm')} No scan is ever uploaded</span>`)}
+  ${steps()}
   ${regionSection(data)}
   ${legacySection(data)}
   <section class="shell mt-8"><div class="card bg-muted text-sm">
@@ -115,7 +186,7 @@ async function readText(input: HTMLInputElement): Promise<string | null> {
   return file ? file.text() : null;
 }
 
-function wireRegionModel(): void {
+function wireRegionModel(data: SiteData): void {
   const status = document.getElementById('api-status');
   const panel = document.getElementById('api-result');
   const buttons = [...document.querySelectorAll<HTMLButtonElement>('#run-api, #run-example')];
@@ -127,13 +198,19 @@ function wireRegionModel(): void {
 
   async function run(load: () => Promise<[string, number]>): Promise<void> {
     buttons.forEach((b) => (b.disabled = true));
-    set(`Contacting ${API_URL.replace('https://', '')}… the free server can take up to a minute to wake.`);
+    set(`Contacting ${API_URL.replace('https://', '')}…`);
     try {
       const [csv, tiv] = await load();
+      if (panel) panel.innerHTML = loadingState();
       const out = await predictRegions(csv, tiv);
-      if (panel) panel.innerHTML = result(out);
+      if (panel) {
+        panel.innerHTML = result(out);
+        animate(panel, true);
+        if (window.innerWidth < 1024) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
       set('Done.');
     } catch (error) {
+      if (panel) panel.innerHTML = emptyState(data);
       set(error instanceof Error ? error.message : String(error), true);
     } finally {
       buttons.forEach((b) => (b.disabled = false));
@@ -160,7 +237,7 @@ function wireRegionModel(): void {
 void mountPage('demo', render).then((data) => {
   if (!data) return;
   wake();
-  wireRegionModel();
+  wireRegionModel(data);
   const root = document.getElementById('chat-root');
   // The reference quoted back is the slice model's own held-out accuracy.
   if (root) mountChat(root, { classifier: loadClassifier(), referenceAccuracy: data.history.v2.accuracy });

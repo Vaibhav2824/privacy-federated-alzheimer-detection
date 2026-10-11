@@ -12,9 +12,9 @@ function stages(features: number): string {
   ];
   return `<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">${STAGES.map(([title, tag, body, out], i) => `
     <div class="card flex flex-col !p-4 ${i === STAGES.length - 1 ? 'border-teal bg-teal/[0.04]' : ''}">
-      <div class="flex items-center justify-between gap-2"><span class="num rounded bg-muted px-1.5 text-xs">0${i + 1}</span>
+      <div class="flex items-center justify-between gap-2"><span class="num rounded-xl bg-muted px-1.5 text-xs">0${i + 1}</span>
         <span class="badge !text-[10px]">${tag}</span></div>
-      <h3 class="mt-3 font-serif text-lg leading-6">${title}</h3>
+      <h3 class="mt-3 font-display text-lg leading-6">${title}</h3>
       <p class="mt-2 flex-1 text-xs leading-5 text-slate">${body}</p>
       <p class="mt-3 border-t border-hairline pt-2 font-mono text-[11px] text-slate">${out}</p></div>`).join('')}</div>`;
 }
@@ -65,7 +65,7 @@ function render(data: SiteData): string {
   return `
   ${pageHead('Experimental specification · pipeline architecture', 'End-to-end methodology and reproduction',
     'From raw ADNI scans to a federated, privacy-preserving region model: every stage, the guarantees each one enforces, and the commands that rerun it.',
-    `<div class="flex shrink-0 flex-wrap gap-2"><span class="badge">${icon('code', '!text-sm')} Open source</span>
+    `<div class="flex flex-wrap gap-2 md:max-w-xs md:justify-end"><span class="badge">${icon('code', '!text-sm')} Open source</span>
       <span class="badge">${icon('verified_user', '!text-sm')} Subject-level DP</span></div>`)}
   ${section('Stages 01 → 06', 'From scanner volume to private federated model', stages(features))}
   <section class="shell mt-14 grid gap-6 lg:grid-cols-[1.5fr_1fr]">
@@ -76,7 +76,7 @@ function render(data: SiteData): string {
     <div class="card"><h2 class="font-sans text-lg font-semibold">Hyperparameters</h2>
       <div class="mt-3">${hyperparameters(data, dimension)}</div></div>
   </section>
-  ${section('Reproduction', 'Rerun the pipeline', `<div class="overflow-hidden rounded-lg bg-[#14213D]">
+  ${section('Reproduction', 'Rerun the pipeline', `<div class="overflow-hidden rounded-lg bg-[#0f172a]">
       <div class="flex items-center justify-between border-b border-white/10 px-4 py-2 font-mono text-xs text-white/60">
         <span>bash</span><a class="hover:text-white" href="${REPO}">${REPO.replace('https://', '')}</a></div>
       <pre class="overflow-x-auto p-4 font-mono text-xs leading-6 text-[#e2e8f0]">${REPRODUCE}</pre></div>`,

@@ -16,7 +16,7 @@ function milestone(status: Status, title: string, metric: string, metricNote: st
     <div class="card">
       <span class="${STATUS_STYLE[status]}">${status}</span>
       <h3 class="mt-2 text-xl">${title}</h3>
-      <div class="mt-4 grid gap-4 rounded bg-muted p-4 md:grid-cols-2">
+      <div class="mt-4 grid gap-4 rounded-xl bg-muted p-4 md:grid-cols-2">
         <div><p class="font-mono text-xs uppercase tracking-wider text-slate">Three-class accuracy</p>
           <p class="num mt-1 text-2xl font-semibold ${status === 'Retracted' ? 'text-amber' : 'text-ink'}">${metric}</p>
           <p class="text-xs text-slate">${metricNote}</p></div>
@@ -50,7 +50,7 @@ function timeline(data: SiteData): string {
   </ol>`;
 }
 
-const DEFECT = `<div class="overflow-hidden rounded-lg border border-hairline bg-[#14213D] text-[#e2e8f0]">
+const DEFECT = `<div class="overflow-hidden rounded-lg border border-hairline bg-[#0f172a] text-[#e2e8f0]">
   <div class="flex justify-between border-b border-white/10 px-4 py-2 font-mono text-xs text-white/60"><span>preprocessing · slice selection</span><span>v2 → v3</span></div>
   <pre class="overflow-x-auto p-4 font-mono text-xs leading-6"><span class="text-[#fca5a5]"># the defect (v2)</span>
 <span class="bg-[#ba1a1a]/30">axial_axis = np.argmax(data.shape)   # longest array axis, not an anatomical axis</span>
@@ -72,7 +72,7 @@ function downgraded(data: SiteData): string {
     <span class="badge badge-amber w-fit">Downgraded claim ${n}</span>
     <h3 class="mt-3 text-xl">${title}</h3>
     <p class="mt-4 font-mono text-xs uppercase tracking-wider text-slate">Original claim</p>
-    <p class="mt-1 border-l-2 border-hairline pl-3 font-serif italic">${original}</p>
+    <p class="mt-1 border-l-2 border-hairline pl-3 font-display italic">${original}</p>
     <p class="mt-4 font-mono text-xs uppercase tracking-wider text-slate">Audited finding</p>
     <p class="mt-1 flex-1">${audited}</p>
     <p class="mt-4 border-t border-hairline pt-3 text-sm text-slate">${resolution}</p></div>`;
@@ -104,7 +104,7 @@ function render(data: SiteData): string {
   ${section('03 · Negative results', 'Findings we downgraded', downgraded(data),
     'Two findings from the first cohort did not survive the larger one. Both are reported at their revised strength.')}
   <section class="shell mt-14"><div class="card flex flex-col items-start justify-between gap-4 bg-muted md:flex-row md:items-center">
-    <div class="flex gap-4"><span class="text-teal">${icon('folder_open')}</span><div><p class="font-serif text-xl">Audit artefacts</p>
+    <div class="flex gap-4"><span class="text-teal">${icon('folder_open')}</span><div><p class="font-display text-xl">Audit artefacts</p>
       <p class="text-sm text-slate">Results from every cohort, including the retracted ones, stay in the repository for the audit trail.</p></div></div>
     <a class="btn btn-primary" href="${REPO}">${icon('code')} Browse the results</a></div></section>`;
 }
