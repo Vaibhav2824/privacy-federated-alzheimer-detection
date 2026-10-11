@@ -162,6 +162,12 @@ class TestRunChecks:
         results = checker.run_checks(*self._project(tmp_path, text))
         assert all(problems == [] for _, problems in results)
 
+    def test_without_a_splits_file_the_cohort_check_is_skipped(self, tmp_path):
+        paper, results_dir, _ = self._project(tmp_path, 'Accuracy was 36.1\\%.\n')
+        results = dict(checker.run_checks(paper, results_dir, None))
+        assert 'cohort facts' not in results
+        assert results['unexplained prose percentages'] == []
+
     def test_a_stale_number_fails_the_check(self, tmp_path):
         text = GOOD_COHORT_PROSE + '\nAccuracy was 62.5\\%.\n'
         results = dict(checker.run_checks(*self._project(tmp_path, text)))

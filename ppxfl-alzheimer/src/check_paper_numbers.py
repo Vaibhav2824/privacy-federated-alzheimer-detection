@@ -47,6 +47,7 @@ ALLOWED_LITERALS = {
     '95.5': 'membership-inference true-positive rate, from the MIA results JSON',
     '72.7': 'membership-inference true-positive rate, from the MIA results JSON',
     '50.0': 'chance for a two-class attack',
+    '63.0': 'best blinded three-class accuracy in the CADDementia challenge, cited',
     '0.2': "the accountant's observed epsilon overshoot, checked in test_verification.py",
     # Subset means over the 32-subject cohort's 5 folds at seed 42, restated in
     # prose from the hand-written Tables ref{tab:dp_results} and
@@ -174,12 +175,14 @@ def run_checks(paper_path, results_dir, splits_path, extra_results_dirs=()):
         os.path.join(directory, 'metrics', 'results_summary.json')
         for directory in (results_dir, *extra_results_dirs)
     ])
-    with open(splits_path) as handle:
-        splits = json.load(handle)
-
-    return [
-        ('empty generated blocks', check_blocks_populated(text)),
-        ('cohort facts', check_cohort_facts(text, splits)),
+    checks = [('empty generated blocks', check_blocks_populated(text))]
+    # The cohort-facts check describes a splits file the paper reports; a paper
+    # whose cohort has no shipped splits file (folds are built at run time)
+    # passes None and skips it.
+    if splits_path:
+        with open(splits_path) as handle:
+            checks.append(('cohort facts', check_cohort_facts(text, json.load(handle))))
+    return checks + [
         ('unexplained prose percentages',
          check_prose_percentages(text, summary,
                                  raw_run_percentages([results_dir, *extra_results_dirs]))),
@@ -189,9 +192,10 @@ def run_checks(paper_path, results_dir, splits_path, extra_results_dirs=()):
 def main():  # pragma: no cover - CLI wiring over the tested functions above
     parser = argparse.ArgumentParser(description='Check paper numbers against the results')
     parser.add_argument('--paper', default=os.path.join('..', 'paper.tex'))
-    parser.add_argument('--results-dir', default='results_v2')
-    parser.add_argument('--splits', default=os.path.join('data', 'splits', 'splits_v2.json'))
-    parser.add_argument('--also-results-dir', action='append', default=['results'],
+    parser.add_argument('--results-dir', default='results_v6')
+    parser.add_argument('--splits', default=None,
+                        help='splits file whose cohort facts the paper states, if any')
+    parser.add_argument('--also-results-dir', action='append', default=[],
                         help='additional cohort whose results the paper also reports')
     args = parser.parse_args()
 
