@@ -6,7 +6,7 @@
 Adit Srivastava, Aditya Raj, Vaibhav Gupta, Hardik Gupta, Agha Alfi Mirza
 · PES University, Bangalore
 
-**[Paper (PDF)](paper.pdf)** · **[Live demo and results dashboard](https://vaibhav2824.github.io/privacy-federated-alzheimer-detection/)**
+**[Paper (PDF)](paper.pdf)** · **[Live site and demo](https://privacy-federated-alzheimer-detection.vercel.app)** · **[Region-model API](https://ppxfl-api.onrender.com/model)**
 
 CN / MCI / AD classification from ADNI structural MRI, trained without pooling
 scans across sites and evaluated so that no subject — and, under the stricter
@@ -20,10 +20,8 @@ The headline result is that the cost of subject-level privacy is set by the
 model over named anatomical regions stays usable at ε = 1, where the
 23.5M-parameter network it replaces collapses onto the majority class.
 
-> The numbers below and on the site come from the current **v6** features
-> (deepmriprep segmentation; same subjects, folds and seeds as v5). The paper
-> still describes the earlier Harvard-Oxford features and has not yet been
-> updated to them.
+> The numbers below, in the paper and on the site all come from the current
+> **v6** features (deepmriprep segmentation; same subjects, folds and seeds as v5).
 
 ---
 
@@ -274,13 +272,37 @@ at their revised strength rather than at the one first measured:
   subset and not on the whole is not evidence that site-disjoint evaluation is
   free, so the full-cohort ordering is the one reported.
 
+## Live demo and API
+
+The site's Demo page runs the paper's region model through a small API on
+Render. It serves only the **subject-level DP-FedAvg model at ε = 10**, trained
+on all 799 subjects with the same configuration as the privacy arm, so releasing
+it carries a formal privacy guarantee for every training subject. Its
+cross-validated three-class accuracy is the 57.6% reported above.
+
+The API takes what [deepmriprep](https://pypi.org/project/deepmriprep/) writes
+for one T1 scan, so the scan itself never leaves the user's machine:
+
+```bash
+pip install deepmriprep
+python -c "from deepmriprep import run_preprocess; run_preprocess(input_paths=['t1.nii.gz'], output_dir='out', outputs=['neuromorphometrics_volumes', 'tiv'], dir_format='flat')"
+```
+
+`POST /predict` with `{"volumes_csv": "<the CSV text>", "tiv_cm3": <TIV>}`
+returns CN/MCI/AD probabilities and the regions that drove the prediction;
+`GET /model` returns the model card. Inputs are validated, requests are rate
+limited per client, and only the Vercel site and localhost may call it from a
+browser. The example on the Demo page is deepmriprep's output for the public
+MNI152 template, so no ADNI-derived subject data is published.
+
 ## Repository layout
 
 ```
-paper.tex, paper.pdf     the write-up (still on the earlier features); tables are generated
+paper.tex, paper.pdf     the write-up; tables and prose numbers are generated
 figures/v4/              figures for the 760-subject cohort
 figures/v3/              figures for the first, 297-subject cohort
-ui/                      seven-page site and in-browser demo; reads ui/public/data/site.json
+ui/                      seven-page site (Vercel, vercel.json); reads ui/public/data/site.json
+backend/                 region-model API (FastAPI on Render, render.yaml); model.json is the ε = 10 DP model
 ppxfl-alzheimer/
   src/preprocess_v3.py     scan selection, orientation, stripping, registration
   src/orientation*.py      the 48-candidate orientation search
@@ -295,6 +317,8 @@ ppxfl-alzheimer/
   src/mia_v3.py            subject-level membership inference
   src/paper_tables*.py     results JSON to the paper's generated table blocks
   src/export_site.py       results JSON to the site's data file
+  src/export_api_model.py  trains and exports the API's ε = 10 model
+  src/paper_facts.py       results JSON to the paper's prose macros
   results_v6/              the current runs (deepmriprep features, 799 subjects)
   results_v4/              the 760-subject cohort's runs
   results_v3/              the first, 297-subject cohort's runs
@@ -347,6 +371,15 @@ python -m src.export_site
 `--covariates` appends age and sex to the centralised models, and
 `--adnimerge ADNIMERGE.csv` adds APOE4 and education. Diagnostic scores (MMSE,
 CDR, ADAS, FAQ) are never used as inputs: ADNI assigns the diagnosis from them.
+
+Rebuild the paper's generated tables and prose macros from the results, and
+export the API model:
+
+```bash
+python -m src.paper_tables_v3 --summary results_v6/results_summary_v6.json --centralised-summary results_v6/results_summary_v6_imaging_only.json --law results_v6/metrics/dimension_law.json --confounds results_v6/metrics/confounds.json
+python -m src.paper_facts
+python -m src.export_api_model
+```
 
 Tests and the coverage gate:
 

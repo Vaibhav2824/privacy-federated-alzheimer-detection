@@ -125,9 +125,10 @@ function render(data: SiteData): string {
 
   <section class="shell mt-14">
     <div class="card flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-      <div><p class="eyebrow">In-browser demo</p>
-        <h2 class="mt-1 text-2xl">Run a classifier without uploading anything</h2>
-        <p class="mt-1 text-slate">The demo model runs locally through WebAssembly. It is the earlier slice model and is labelled as such.</p></div>
+      <div><p class="eyebrow">Live demo</p>
+        <h2 class="mt-1 text-2xl">Run the paper's private model</h2>
+        <p class="mt-1 text-slate">The ε = 10 region model answers from a small API on region volumes, so no scan is uploaded;
+          the earlier slice model also runs entirely in your browser, labelled as such.</p></div>
       <div class="flex gap-2"><a class="btn btn-primary" href="${href('demo')}">${icon('play_arrow')} Open the demo</a>
         <a class="btn" href="${href('results')}">Results tables</a></div>
     </div>

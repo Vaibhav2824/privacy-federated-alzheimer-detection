@@ -1,8 +1,10 @@
 name: CI
 
-# Five sequential stages: build, test, lint, package, deploy. Each waits on the
-# one before it, so a failure stops the pipeline at the stage that broke rather
-# than reporting five separate red checks for one root cause.
+# Four sequential stages: build, test, lint, package. Each waits on the one
+# before it, so a failure stops the pipeline at the stage that broke rather than
+# reporting four separate red checks for one root cause. Deployment is not done
+# here: Vercel (the site, vercel.json) and Render (the API, render.yaml) both
+# deploy from main themselves.
 
 on:
   push:
@@ -62,12 +64,8 @@ jobs:
         working-directory: ui
         run: npm ci
 
-      # GITHUB_PAGES=true switches vite's base to the repository sub-path, which
-      # is what a project page is served from.
       - name: Build the web app
         working-directory: ui
-        env:
-          GITHUB_PAGES: 'true'
         run: npm run build
 
       - name: Confirm the demo model shipped
@@ -117,6 +115,12 @@ jobs:
           MPLBACKEND: Agg
         run: pytest --cov --cov-config=.coveragerc
 
+      - name: API tests
+        working-directory: backend
+        run: |
+          pip install -r requirements-dev.txt
+          pytest -q tests
+
       - name: Install web dependencies
         working-directory: ui
         run: npm ci
@@ -148,7 +152,7 @@ jobs:
 
       - name: Ruff
         working-directory: ppxfl-alzheimer
-        run: ruff check .
+        run: ruff check . ../backend
 
       - name: Install web dependencies
         working-directory: ui
@@ -181,31 +185,3 @@ jobs:
           name: python-distributions
           path: ppxfl-alzheimer/dist/*
           retention-days: 30
-
-      - uses: actions/download-artifact@v5
-        with:
-          name: web-dist
-          path: web-dist
-
-      - name: Upload the site for Pages
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: web-dist
-
-  deploy:
-    name: 5 · Deploy
-    needs: package
-    # Only a push to main publishes. Pull requests run the first four stages so
-    # a contributor sees the same gates without touching the live site.
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Publish to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
