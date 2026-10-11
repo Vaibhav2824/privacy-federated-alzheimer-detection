@@ -28,10 +28,12 @@ LABEL_SET_NAMES = {
 }
 MODEL_NAMES = {
     "logreg": "Logistic regression",
+    "logreg_cv": "Tuned logistic regression",
+    "ensemble_cv": "Tuned ensemble",
     "svm": "RBF SVM",
     "lda": "Shrinkage LDA",
     "rf": "Random forest",
-    "roi_logreg": "MNI region model",
+    "roi_logreg": "Region model",
     "resnet50_head": "ResNet50 head",
     "resnet50_full": "ResNet50, full network",
     "resnet18_full": "ResNet18, 2.5D",
@@ -161,7 +163,7 @@ PREDICTOR_NAMES = {
     "sex": "Sex only",
     "age": "Age only",
     "sex+age": "Sex + age",
-    "imaging": "Imaging (MNI regions)",
+    "imaging": "Imaging (region volumes)",
     "imaging+demographics": "Imaging + demographics",
 }
 
@@ -217,11 +219,20 @@ def main(argv=None) -> int:
                                              "confounds.json"))
     parser.add_argument("--orientation",
                         default=os.path.join("data", "orientation_table.json"))
+    parser.add_argument("--centralised-summary", default=None,
+                        help="take the centralised rows from this summary instead "
+                             "(e.g. an imaging-only run beside a covariate run)")
     parser.add_argument("--paper", default=os.path.join("..", "paper.tex"))
     args = parser.parse_args(argv)
 
     with open(args.summary, encoding="utf-8") as handle:
         summary = json.load(handle)
+    if args.centralised_summary:
+        with open(args.centralised_summary, encoding="utf-8") as handle:
+            centralised = [c for c in json.load(handle)["conditions"]
+                           if c["family"] == "centralised"]
+        summary["conditions"] = centralised + [
+            c for c in summary["conditions"] if c["family"] != "centralised"]
 
     blocks = {
         "v3-centralised": table_centralised(summary),
