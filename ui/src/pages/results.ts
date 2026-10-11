@@ -1,4 +1,4 @@
-import { bestCentralised, fixed, MODEL_NAMES, pct, points, TASKS, type SiteData } from '../lib/site';
+import { bestCentralised, COV, fixed, MODEL_NAMES, pct, points, TASKS, type SiteData } from '../lib/site';
 import { bar, icon, kpi, mountPage, pageHead, REPO, section } from '../ui/layout';
 
 const SPLITS = [
@@ -30,7 +30,7 @@ function table(data: SiteData): string {
         <td class="num p-3 text-right">${fixed(c.macro_f1)}</td>
         <td class="num p-3 text-right">${fixed(c.macro_auroc)}</td>
         <td class="num p-3 text-right text-slate">${pct(c.chance_accuracy)}</td>
-        <td class="num p-3 text-right">${pct(bestCentralised(data, task.key, split.key, 'centralised+cov').accuracy)}</td>
+        <td class="num p-3 text-right">${pct(bestCentralised(data, task.key, split.key, COV).accuracy)}</td>
         <td class="p-3 text-sm text-slate">${MODEL_NAMES[c.model] ?? c.model}</td>
         ${i === 0 ? `<td rowspan="2" class="num p-4 text-right align-middle">${points(bestCentralised(data, task.key, 'site').accuracy, c.accuracy)}</td>` : ''}
       </tr>`;

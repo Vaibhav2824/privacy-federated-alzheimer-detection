@@ -81,6 +81,9 @@ export const TASKS = [
   { key: 'cn-mci-ad', name: 'CN / MCI / AD', classes: ['CN', 'MCI', 'AD'] },
 ] as const;
 
+/** The centralised family with age and sex appended to the imaging features. */
+export const COV: Condition['family'] = 'centralised+cov';
+
 /** Privacy budgets in the order the explorer walks them: none, then tightening. */
 export const BUDGETS: (number | null)[] = [null, 10, 5, 2, 1];
 

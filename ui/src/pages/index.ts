@@ -1,4 +1,4 @@
-import { bestCentralised, fixed, pct, pick, points, privacyAt, type Condition, type SiteData } from '../lib/site';
+import { bestCentralised, COV, fixed, pct, pick, points, privacyAt, type Condition, type SiteData } from '../lib/site';
 import { BIBTEX, href, icon, kpi, mountPage, PAPER, section } from '../ui/layout';
 
 
@@ -103,7 +103,7 @@ function render(data: SiteData): string {
   <section class="shell mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
     ${kpi('Cohort', String(three.n_subjects), 'ADNI subjects with T1 MRI, one scan each')}
     ${kpi('Sites → clients', `${data.partition.n_sites} → ${data.partition.n_clients}`, 'Real acquisition sites, small ones pooled into federated clients')}
-    ${kpi('CN vs AD', pct(cnad.accuracy), `Imaging only, subject-disjoint (AUROC ${fixed(cnad.macro_auroc)}); ${pct(bestCentralised(data, 'cn-ad', 'subject', 'centralised+cov').accuracy)} with age and sex`, 'text-teal')}
+    ${kpi('CN vs AD', pct(cnad.accuracy), `Imaging only, subject-disjoint (AUROC ${fixed(cnad.macro_auroc)}); ${pct(bestCentralised(data, 'cn-ad', 'subject', COV).accuracy)} with age and sex`, 'text-teal')}
     ${kpi('Private CN vs AD', pct(privacyAt(data, 'cn-ad', 1)?.accuracy), `Subject-level DP at ε = 1, δ = ${data.dp_config.delta}`)}
   </section>
 
