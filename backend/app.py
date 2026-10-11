@@ -125,7 +125,9 @@ def model() -> dict:
 
 @app.post("/predict")
 def predict_endpoint(body: PredictRequest, request: Request) -> dict:
-    client = request.headers.get("x-forwarded-for", "").split(",")[0].strip() or \
+    # Render's proxy appends the real client address last; earlier entries are
+    # whatever the caller sent, so keying on them would let anyone dodge the limit.
+    client = request.headers.get("x-forwarded-for", "").split(",")[-1].strip() or \
         (request.client.host if request.client else "unknown")
     if _rate_limited(client, time.monotonic()):
         raise HTTPException(429, "Too many requests; try again in a minute.")
