@@ -359,3 +359,46 @@ def test_tables_cli_takes_centralised_rows_from_a_separate_summary(results_dir, 
                         "--orientation", str(tmp_path / "absent.json")]) == 0
     text = paper.read_text(encoding="utf-8")
     assert "Tuned logistic regression" in text and "& Logistic regression &" not in text
+
+
+def test_best_centralised_only_keeps_one_model_per_task_and_split():
+    from src.paper_tables_v3 import best_centralised_only
+
+    def central(model, acc, split="subject"):
+        return {"family": "centralised", "model": model, "label_set": "cn-ad",
+                "split_scheme": split, "accuracy": {"mean": acc}}
+    summary = {"conditions": [central("logreg", 0.7), central("ensemble", 0.8), central("lda", 0.75),
+                              central("rf", 0.6, "site"), {"family": "federated"}]}
+    kept = best_centralised_only(summary)["conditions"]
+    assert [c.get("model") for c in kept] == ["ensemble", "rf", None]
+
+
+def test_tables_cli_best_centralised_flag(results_dir, tmp_path):
+    summary_path = tmp_path / "summary.json"
+    summary_path.write_text(json.dumps(aggregate(str(results_dir))), encoding="utf-8")
+    paper = tmp_path / "paper.tex"
+    paper.write_text("% BEGIN AUTO:v3-centralised\n% END AUTO:v3-centralised\n", encoding="utf-8")
+    assert tables_main(["--summary", str(summary_path), "--best-centralised", "--paper", str(paper),
+                        "--law", str(tmp_path / "absent.json"),
+                        "--orientation", str(tmp_path / "absent.json")]) == 0
+    rows = [line for line in paper.read_text(encoding="utf-8").splitlines() if line.endswith("\\\\")]
+    keys = {tuple(r.split(" & ")[:2]) for r in rows}
+    assert len(rows) == len(keys)      # one row per task and split
+
+
+def test_tables_cli_compact_tables_fit_one_column(results_dir, tmp_path):
+    summary_path = tmp_path / "summary.json"
+    summary_path.write_text(json.dumps(aggregate(str(results_dir))), encoding="utf-8")
+    law = tmp_path / "law.json"
+    law.write_text(json.dumps({"rows": [{
+        "model": "roi_logreg", "target_epsilon": 1.0, "dimension": 405, "noise_multiplier": 11.34,
+        "expected_noise_norm": 228.2, "max_signal_norm": 639.0, "worst_case_ratio": 0.36}]}),
+        encoding="utf-8")
+    paper = tmp_path / "paper.tex"
+    paper.write_text("% BEGIN AUTO:v3-federated\n% END AUTO:v3-federated\n"
+                     "% BEGIN AUTO:v3-dimension-law\n% END AUTO:v3-dimension-law\n", encoding="utf-8")
+    assert tables_main(["--summary", str(summary_path), "--compact", "--paper", str(paper),
+                        "--law", str(law), "--orientation", str(tmp_path / "absent.json")]) == 0
+    rows = [line for line in paper.read_text(encoding="utf-8").splitlines() if line.endswith("\\\\")]
+    assert rows and all(line.count(" & ") == 4 for line in rows)   # five columns each
+    assert "1 & Region model & 405 & 11.34 & 0.36 \\\\" in rows
