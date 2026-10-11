@@ -6,6 +6,7 @@
 import '../styles.css';
 
 import type { SiteData } from '../lib/site';
+import { animate } from './motion';
 
 export const REPO = 'https://github.com/Vaibhav2824/privacy-federated-alzheimer-detection';
 export const PAPER = `${REPO}/blob/main/paper.pdf`;
@@ -44,33 +45,34 @@ export const icon = (name: string, cls = ''): string =>
 function header(active: PageId): string {
   const links = PAGES.map(
     (p) =>
-      `<a href="${p.href}" class="py-1 text-sm ${
-        p.id === active ? 'border-b-2 border-teal font-semibold text-teal' : 'text-slate hover:text-ink'
+      `<a href="${p.href}" class="shrink-0 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+        p.id === active ? 'bg-ink text-white shadow-sm' : 'text-slate hover:bg-muted hover:text-ink'
       }"${p.id === active ? ' aria-current="page"' : ''}>${p.label}</a>`,
   ).join('');
   return `
   <a href="#main" class="sr-only focus:not-sr-only">Skip to content</a>
-  <header class="sticky top-0 z-50 border-b border-hairline bg-surface/95 backdrop-blur">
-    <div class="shell flex h-14 items-center justify-between gap-4">
-      <a href="${BASE}" class="flex items-center gap-2">
-        <span class="font-serif text-2xl tracking-tight">PPXFL</span>
-        <span class="badge hidden sm:inline-flex">PES University · ADNI cohort</span>
+  <header class="sticky top-0 z-50 border-b border-hairline/80 bg-surface/80 backdrop-blur-xl">
+    <div class="shell flex h-16 items-center justify-between gap-4">
+      <a href="${BASE}" class="flex items-center gap-2.5">
+        <span class="grid h-8 w-8 place-items-center rounded-lg bg-linear-to-br from-teal-bright to-teal text-white shadow-(--shadow-lift)">${icon('neurology', '!text-[20px]')}</span>
+        <span class="font-display text-xl font-bold tracking-tight">PPXFL</span>
+        <span class="badge hidden xl:inline-flex">PES University · ADNI</span>
       </a>
-      <nav aria-label="Pages" class="hidden items-center gap-5 lg:flex">${links}</nav>
+      <nav aria-label="Pages" class="hidden items-center gap-1 rounded-full border border-hairline bg-paper/80 p-1 lg:flex">${links}</nav>
       <div class="flex items-center gap-2">
         <a class="btn !px-3 !py-1.5" href="${PAPER}">${icon('description')}<span class="hidden sm:inline">Paper (PDF)</span></a>
         <a class="btn !px-3 !py-1.5" href="${REPO}">${icon('code')}<span class="hidden sm:inline">GitHub</span></a>
       </div>
     </div>
-    <nav aria-label="Pages" class="shell flex gap-4 overflow-x-auto pb-2 lg:hidden">${links}</nav>
-    <p class="flex items-center justify-center gap-1.5 border-t border-hairline bg-amber-tint py-1 font-mono text-xs text-amber" role="note">
+    <nav aria-label="Pages" class="shell flex gap-1 overflow-x-auto pb-2 lg:hidden">${links}</nav>
+    <p class="flex items-center justify-center gap-1.5 border-t border-amber-bg/50 bg-amber-tint/90 py-1 text-center font-mono text-[11px] text-amber" role="note">
       ${icon('info', '!text-sm')} Research demonstration. Not a medical device. Nothing here is a diagnosis.
     </p>
   </header>`;
 }
 
 const FOOTER = `
-  <footer class="mt-16 border-t border-hairline py-8">
+  <footer class="mt-24 border-t border-hairline bg-surface py-10">
     <div class="shell flex flex-col justify-between gap-3 text-sm text-slate md:flex-row">
       <p>PES University, Bangalore. Data from the Alzheimer's Disease Neuroimaging Initiative (ADNI);
         scans are not redistributed and require an ADNI data use agreement. MIT licence.</p>
@@ -97,6 +99,7 @@ export async function mountPage(
   try {
     const data = await loadSite();
     app.innerHTML = `${header(active)}<main id="main">${render(data)}</main>${FOOTER}`;
+    animate(app);
     return data;
   } catch (error) {
     app.innerHTML = `${header(active)}<main id="main" class="shell py-16"><p class="notice">
@@ -110,13 +113,16 @@ export async function mountPage(
 
 export function pageHead(eyebrow: string, title: string, lede: string, aside = ''): string {
   return `
-  <section class="border-b border-hairline bg-[#fbf9f5] py-12">
-    <div class="shell flex flex-col gap-4">
-      <p class="eyebrow">${eyebrow}</p>
+  <section class="relative overflow-hidden border-b border-hairline bg-surface py-14 md:py-16">
+    <div class="bg-grid absolute inset-0"></div>
+    <div class="aurora -top-32 right-[-10%] h-80 w-80 bg-teal-bright/20"></div>
+    <div class="aurora -bottom-40 left-[-5%] h-72 w-72 bg-sky/15 [animation-delay:-6s]"></div>
+    <div class="shell relative flex flex-col gap-4" data-reveal>
+      <p class="eyebrow"><span class="live-dot"></span>${eyebrow}</p>
       <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
         <div class="max-w-3xl">
-          <h1 class="text-3xl leading-tight md:text-5xl">${title}</h1>
-          <p class="mt-4 font-serif text-lg leading-8 text-slate">${lede}</p>
+          <h1 class="text-4xl leading-[1.1] md:text-[56px]">${title}</h1>
+          <p class="mt-4 text-lg leading-8 text-slate">${lede}</p>
         </div>
         ${aside}
       </div>
@@ -125,9 +131,9 @@ export function pageHead(eyebrow: string, title: string, lede: string, aside = '
 }
 
 export function kpi(label: string, value: string, sub: string, tone = 'text-ink'): string {
-  return `<div class="card !p-5">
+  return `<div class="card spotlight !p-5">
     <p class="font-mono text-xs uppercase tracking-wider text-slate">${label}</p>
-    <p class="num mt-2 text-2xl font-semibold ${tone}">${value}</p>
+    <p class="num mt-2 text-3xl font-semibold tracking-tight ${tone}" data-count>${value}</p>
     <p class="mt-1 text-sm text-slate">${sub}</p>
   </div>`;
 }
@@ -140,14 +146,14 @@ export function bar(label: string, value: number | undefined, text: string, colo
       : `<span class="absolute inset-y-0 border-l-2 border-dashed border-slate" style="left:${chance * 100}%" title="chance"></span>`;
   return `<div class="flex flex-col gap-1">
     <div class="flex justify-between text-sm"><span>${label}</span><span class="num">${text}</span></div>
-    <div class="track"><span class="fill ${color}" style="width:${Math.max(0, Math.min(1, value ?? 0)) * 100}%"></span>${tick}</div>
+    <div class="track"><span data-bar class="fill ${color}" style="width:${Math.max(0, Math.min(1, value ?? 0)) * 100}%"></span>${tick}</div>
   </div>`;
 }
 
 export function section(eyebrow: string, title: string, body: string, intro = ''): string {
-  return `<section class="shell mt-14">
+  return `<section class="shell mt-20" data-reveal>
     <p class="eyebrow">${eyebrow}</p>
-    <h2 class="mt-2 text-2xl md:text-3xl">${title}</h2>
+    <h2 class="mt-2 text-2xl md:text-4xl">${title}</h2>
     ${intro ? `<p class="mt-2 max-w-3xl text-slate">${intro}</p>` : ''}
     <div class="mt-6">${body}</div>
   </section>`;

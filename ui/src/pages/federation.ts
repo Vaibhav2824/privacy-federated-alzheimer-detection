@@ -23,10 +23,10 @@ function topology(data: SiteData): string {
       <title>Client: ${c.n_subjects} subjects (CN ${c.class_counts[0]} / MCI ${c.class_counts[1]} / AD ${c.class_counts[2]})</title></circle>`;
   }).join('');
   return `<svg viewBox="0 0 420 420" class="mx-auto w-full max-w-md" role="img" aria-label="${clients.length} federated clients around a central server">
-    <circle cx="${C}" cy="${C}" r="120" fill="none" stroke="#E6E2DA" stroke-dasharray="4 4"/>
+    <circle cx="${C}" cy="${C}" r="120" fill="none" stroke="#e2e8f0" stroke-dasharray="4 4"/>
     ${nodes}
     <circle cx="${C}" cy="${C}" r="42" fill="#fff" stroke="#0F766E" stroke-width="2"/>
-    <text x="${C}" y="${C - 2}" text-anchor="middle" class="fill-ink font-serif text-[13px]">Server</text>
+    <text x="${C}" y="${C - 2}" text-anchor="middle" class="fill-ink font-display text-[13px]">Server</text>
     <text x="${C}" y="${C + 14}" text-anchor="middle" class="fill-slate font-mono text-[9px]">DP-FedAvg</text>
   </svg>`;
 }
@@ -69,7 +69,7 @@ function clientTable(data: SiteData): string {
 
 function algorithm(data: SiteData): string {
   const d = data.dp_config;
-  return `<pre class="overflow-x-auto rounded bg-paper p-4 font-mono text-xs leading-6"><span class="text-slate">// server round t = 1..${d.rounds}</span>
+  return `<pre class="overflow-x-auto rounded-xl bg-paper p-4 font-mono text-xs leading-6"><span class="text-slate">// server round t = 1..${d.rounds}</span>
 <b>for</b> each client k, each subject i of k
     sampled with probability q = ${d.subject_sample_rate}:
   Δ_i ← LocalTrain(w_t, subject i, E = ${d.local_epochs}) − w_t
@@ -77,7 +77,7 @@ function algorithm(data: SiteData): string {
 <b>end</b>
 Δ ← Σ Δ_i + N(0, σ²C²I)        <span class="text-slate">// noise added once, at the server</span>
 w_t+1 ← w_t + Δ / participants</pre>
-    <p class="mt-3 rounded bg-muted p-3 text-xs text-slate">${icon('info', '!text-sm')} Federation is simulated in one process: clients
+    <p class="mt-3 rounded-xl bg-muted p-3 text-xs text-slate">${icon('info', '!text-sm')} Federation is simulated in one process: clients
       exchange only clipped, noised updates, and a Rényi DP accountant tracks (ε, δ = ${d.delta}) across all ${d.rounds} rounds.</p>`;
 }
 
@@ -88,23 +88,23 @@ function render(data: SiteData): string {
   return `
   ${pageHead('Federated topology · real sites vs simulated partitions', 'Hospital topology vs simulated benchmarks',
     'Federated training over the cohort\'s real ADNI acquisition sites, compared with the IID and Dirichlet partitions the literature usually simulates.',
-    `<div class="flex shrink-0 flex-wrap gap-2"><span class="badge">${data.partition.n_clients} federated clients</span>
+    `<div class="flex flex-wrap gap-2 md:max-w-xs md:justify-end"><span class="badge">${data.partition.n_clients} federated clients</span>
       <span class="badge">${data.partition.n_sites} acquisition sites</span><span class="badge">Subject-level DP-FedAvg</span></div>`)}
   <section class="shell mt-10 grid gap-6 lg:grid-cols-2">
     <div class="card">
       <p class="font-mono text-xs uppercase tracking-wider text-slate">Figure · physical topology</p>
-      <h2 class="mt-1 font-serif text-xl">One client per real site</h2>
+      <h2 class="mt-1 font-display text-xl">One client per real site</h2>
       <p class="mt-1 text-sm text-slate">Sites with fewer than eight subjects are pooled so none is discarded. Node area ∝ subjects.</p>
       ${topology(data)}
     </div>
     <div class="flex flex-col gap-6">
       <div class="card">
         <p class="font-mono text-xs uppercase tracking-wider text-slate">Empirical evaluation</p>
-        <h2 class="mt-1 font-serif text-xl">Accuracy across partition realism</h2>
+        <h2 class="mt-1 font-display text-xl">Accuracy across partition realism</h2>
         <p class="mt-1 text-sm text-slate">Subject-disjoint folds, three seeds. Dashed ticks: chance.</p>
         <div class="mt-4 flex flex-col gap-3">${realism(data)}</div>
       </div>
-      <blockquote class="card font-serif text-lg leading-8">
+      <blockquote class="card font-display text-lg leading-8">
         <p class="italic">Real hospital partitions are at least as hard as the standard simulated benchmark.</p>
         <p class="mt-3 font-sans text-sm text-slate">Three-class accuracy on real sites is ${pct(fed('natural')?.accuracy)}, against
           ${pct(fed('dirichlet')?.accuracy)} for the Dirichlet draw and ${pct(fed('iid')?.accuracy)} for IID: federating over real sites costs
