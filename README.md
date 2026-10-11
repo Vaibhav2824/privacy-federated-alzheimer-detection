@@ -6,7 +6,7 @@
 Adit Srivastava, Aditya Raj, Vaibhav Gupta, Hardik Gupta, Agha Alfi Mirza
 · PES University, Bangalore
 
-**[Paper (PDF)](paper.pdf)** · **[Live site and demo](https://privacy-federated-alzheimer-detection.vercel.app)** · **[Region-model API](https://ppxfl-api.onrender.com/model)**
+**[Paper (PDF)](paper.pdf)** · **[Live site and demo](https://privacy-federated-alzheimer-detecti.vercel.app)** · **[Region-model API](https://ppxfl-api.onrender.com/model)**
 
 CN / MCI / AD classification from ADNI structural MRI, trained without pooling
 scans across sites and evaluated so that no subject — and, under the stricter
