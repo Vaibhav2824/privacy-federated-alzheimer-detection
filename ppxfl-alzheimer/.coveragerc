@@ -48,6 +48,10 @@ omit =
     # real scans or parses its per-subject output, which needs both deepmriprep
     # and the ADNI volumes. The classifiers it feeds are covered via evaluate_v3.
     src/vbm_features.py
+    # Trains the API's model on the ADNI feature matrix and reads deepmriprep's
+    # atlas table for the region order; its training and accounting calls are
+    # the covered federated_v3 functions.
+    src/export_api_model.py
 
 [report]
 fail_under = 100

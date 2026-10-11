@@ -1,0 +1,13 @@
+# Render Blueprint: the region-model API (backend/). New > Blueprint in the
+# Render dashboard picks this file up and redeploys on every push to main.
+services:
+  - type: web
+    name: ppxfl-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    # Python is pinned by backend/.python-version.

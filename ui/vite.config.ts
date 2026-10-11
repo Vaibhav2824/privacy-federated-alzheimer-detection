@@ -6,13 +6,9 @@ import { defineConfig } from 'vitest/config';
 // One HTML entry per page; the shared header, nav and footer come from src/ui/layout.ts.
 const PAGES = ['index', 'demo', 'privacy', 'federation', 'results', 'integrity', 'method'];
 
-// The site is served from a project page (https://<user>.github.io/<repo>/),
-// so every asset URL has to be namespaced under the repository name. Vite's
-// BASE_URL is read back in src/lib/inference.ts to locate the model.
-const repositoryBase = '/privacy-federated-alzheimer-detection/';
-
 export default defineConfig({
-  base: process.env.GITHUB_PAGES === 'true' ? repositoryBase : '/',
+  // Vercel serves the site from the domain root.
+  base: '/',
   plugins: [tailwindcss()],
   build: {
     target: 'es2022',

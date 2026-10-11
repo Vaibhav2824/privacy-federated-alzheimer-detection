@@ -1,0 +1,1785 @@
+{
+ "name": "PPXFL region model (v6, subject-level DP-FedAvg)",
+ "classes": [
+  "CN",
+  "MCI",
+  "AD"
+ ],
+ "regions": [
+  {
+   "roi_id": 4,
+   "name": "3rd Ventricle",
+   "column": "csfv_mm3",
+   "feature": "csf::3rd Ventricle"
+  },
+  {
+   "roi_id": 11,
+   "name": "4th Ventricle",
+   "column": "csfv_mm3",
+   "feature": "csf::4th Ventricle"
+  },
+  {
+   "roi_id": 23,
+   "name": "Right Accumbens Area",
+   "column": "gmv_mm3",
+   "feature": "gm::Right Accumbens Area"
+  },
+  {
+   "roi_id": 30,
+   "name": "Left Accumbens Area",
+   "column": "gmv_mm3",
+   "feature": "gm::Left Accumbens Area"
+  },
+  {
+   "roi_id": 31,
+   "name": "Right Amygdala",
+   "column": "gmv_mm3",
+   "feature": "gm::Right Amygdala"
+  },
+  {
+   "roi_id": 32,
+   "name": "Left Amygdala",
+   "column": "gmv_mm3",
+   "feature": "gm::Left Amygdala"
+  },
+  {
+   "roi_id": 35,
+   "name": "Brain Stem",
+   "column": "wmv_mm3",
+   "feature": "wm::Brain Stem"
+  },
+  {
+   "roi_id": 36,
+   "name": "Right Caudate",
+   "column": "gmv_mm3",
+   "feature": "gm::Right Caudate"
+  },
+  {
+   "roi_id": 37,
+   "name": "Left Caudate",
+   "column": "gmv_mm3",
+   "feature": "gm::Left Caudate"
+  },
+  {
+   "roi_id": 38,
+   "name": "Right Cerebellum Exterior",
+   "column": "gmv_mm3",
+   "feature": "gm::Right Cerebellum Exterior"
+  },
+  {
+   "roi_id": 39,
+   "name": "Left Cerebellum Exterior",
+   "column": "gmv_mm3",
+   "feature": "gm::Left Cerebellum Exterior"
+  },
+  {
+   "roi_id": 40,
+   "name": "Right Cerebellum White Matter",
+   "column": "wmv_mm3",
+   "feature": "wm::Right Cerebellum White Matter"
+  },
+  {
+   "roi_id": 41,
+   "name": "Left Cerebellum White Matter",
+   "column": "wmv_mm3",
+   "feature": "wm::Left Cerebellum White Matter"
+  },
+  {
+   "roi_id": 44,
+   "name": "Right Cerebral White Matter",
+   "column": "wmv_mm3",
+   "feature": "wm::Right Cerebral White Matter"
+  },
+  {
+   "roi_id": 45,
+   "name": "Left Cerebral White Matter",
+   "column": "wmv_mm3",
+   "feature": "wm::Left Cerebral White Matter"
+  },
+  {
+   "roi_id": 46,
+   "name": "CSF",
+   "column": "csfv_mm3",
+   "feature": "csf::CSF"
+  },
+  {
+   "roi_id": 47,
+   "name": "Right Hippocampus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right Hippocampus"
+  },
+  {
+   "roi_id": 48,
+   "name": "Left Hippocampus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left Hippocampus"
+  },
+  {
+   "roi_id": 49,
+   "name": "Right Inf Lat Vent",
+   "column": "csfv_mm3",
+   "feature": "csf::Right Inf Lat Vent"
+  },
+  {
+   "roi_id": 50,
+   "name": "Left Inf Lat Vent",
+   "column": "csfv_mm3",
+   "feature": "csf::Left Inf Lat Vent"
+  },
+  {
+   "roi_id": 51,
+   "name": "Right Lateral Ventricle",
+   "column": "csfv_mm3",
+   "feature": "csf::Right Lateral Ventricle"
+  },
+  {
+   "roi_id": 52,
+   "name": "Left Lateral Ventricle",
+   "column": "csfv_mm3",
+   "feature": "csf::Left Lateral Ventricle"
+  },
+  {
+   "roi_id": 55,
+   "name": "Right Pallidum",
+   "column": "gmv_mm3",
+   "feature": "gm::Right Pallidum"
+  },
+  {
+   "roi_id": 56,
+   "name": "Left Pallidum",
+   "column": "gmv_mm3",
+   "feature": "gm::Left Pallidum"
+  },
+  {
+   "roi_id": 57,
+   "name": "Right Putamen",
+   "column": "gmv_mm3",
+   "feature": "gm::Right Putamen"
+  },
+  {
+   "roi_id": 58,
+   "name": "Left Putamen",
+   "column": "gmv_mm3",
+   "feature": "gm::Left Putamen"
+  },
+  {
+   "roi_id": 59,
+   "name": "Right Thalamus Proper",
+   "column": "gmv_mm3",
+   "feature": "gm::Right Thalamus Proper"
+  },
+  {
+   "roi_id": 60,
+   "name": "Left Thalamus Proper",
+   "column": "gmv_mm3",
+   "feature": "gm::Left Thalamus Proper"
+  },
+  {
+   "roi_id": 61,
+   "name": "Right Ventral DC",
+   "column": "gmv_mm3",
+   "feature": "gm::Right Ventral DC"
+  },
+  {
+   "roi_id": 62,
+   "name": "Left Ventral DC",
+   "column": "gmv_mm3",
+   "feature": "gm::Left Ventral DC"
+  },
+  {
+   "roi_id": 69,
+   "name": "Optic Chiasm",
+   "column": "gmv_mm3",
+   "feature": "gm::Optic Chiasm"
+  },
+  {
+   "roi_id": 71,
+   "name": "Cerebellar Vermal Lobules I-V",
+   "column": "gmv_mm3",
+   "feature": "gm::Cerebellar Vermal Lobules I-V"
+  },
+  {
+   "roi_id": 72,
+   "name": "Cerebellar Vermal Lobules VI-VII",
+   "column": "gmv_mm3",
+   "feature": "gm::Cerebellar Vermal Lobules VI-VII"
+  },
+  {
+   "roi_id": 73,
+   "name": "Cerebellar Vermal Lobules VIII-X",
+   "column": "gmv_mm3",
+   "feature": "gm::Cerebellar Vermal Lobules VIII-X"
+  },
+  {
+   "roi_id": 75,
+   "name": "Left Basal Forebrain",
+   "column": "gmv_mm3",
+   "feature": "gm::Left Basal Forebrain"
+  },
+  {
+   "roi_id": 76,
+   "name": "Right Basal Forebrain",
+   "column": "gmv_mm3",
+   "feature": "gm::Right Basal Forebrain"
+  },
+  {
+   "roi_id": 100,
+   "name": "Right ACgG anterior cingulate gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right ACgG anterior cingulate gyrus"
+  },
+  {
+   "roi_id": 101,
+   "name": "Left ACgG anterior cingulate gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left ACgG anterior cingulate gyrus"
+  },
+  {
+   "roi_id": 102,
+   "name": "Right AIns anterior insula",
+   "column": "gmv_mm3",
+   "feature": "gm::Right AIns anterior insula"
+  },
+  {
+   "roi_id": 103,
+   "name": "Left AIns anterior insula",
+   "column": "gmv_mm3",
+   "feature": "gm::Left AIns anterior insula"
+  },
+  {
+   "roi_id": 104,
+   "name": "Right AOrG anterior orbital gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right AOrG anterior orbital gyrus"
+  },
+  {
+   "roi_id": 105,
+   "name": "Left AOrG anterior orbital gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left AOrG anterior orbital gyrus"
+  },
+  {
+   "roi_id": 106,
+   "name": "Right AnG angular gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right AnG angular gyrus"
+  },
+  {
+   "roi_id": 107,
+   "name": "Left AnG angular gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left AnG angular gyrus"
+  },
+  {
+   "roi_id": 108,
+   "name": "Right Calc calcarine cortex",
+   "column": "gmv_mm3",
+   "feature": "gm::Right Calc calcarine cortex"
+  },
+  {
+   "roi_id": 109,
+   "name": "Left Calc calcarine cortex",
+   "column": "gmv_mm3",
+   "feature": "gm::Left Calc calcarine cortex"
+  },
+  {
+   "roi_id": 112,
+   "name": "Right CO central operculum",
+   "column": "gmv_mm3",
+   "feature": "gm::Right CO central operculum"
+  },
+  {
+   "roi_id": 113,
+   "name": "Left CO central operculum",
+   "column": "gmv_mm3",
+   "feature": "gm::Left CO central operculum"
+  },
+  {
+   "roi_id": 114,
+   "name": "Right Cun cuneus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right Cun cuneus"
+  },
+  {
+   "roi_id": 115,
+   "name": "Left Cun cuneus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left Cun cuneus"
+  },
+  {
+   "roi_id": 116,
+   "name": "Right Ent entorhinal area",
+   "column": "gmv_mm3",
+   "feature": "gm::Right Ent entorhinal area"
+  },
+  {
+   "roi_id": 117,
+   "name": "Left Ent entorhinal area",
+   "column": "gmv_mm3",
+   "feature": "gm::Left Ent entorhinal area"
+  },
+  {
+   "roi_id": 118,
+   "name": "Right FO frontal operculum",
+   "column": "gmv_mm3",
+   "feature": "gm::Right FO frontal operculum"
+  },
+  {
+   "roi_id": 119,
+   "name": "Left FO frontal operculum",
+   "column": "gmv_mm3",
+   "feature": "gm::Left FO frontal operculum"
+  },
+  {
+   "roi_id": 120,
+   "name": "Right FRP frontal pole",
+   "column": "gmv_mm3",
+   "feature": "gm::Right FRP frontal pole"
+  },
+  {
+   "roi_id": 121,
+   "name": "Left FRP frontal pole",
+   "column": "gmv_mm3",
+   "feature": "gm::Left FRP frontal pole"
+  },
+  {
+   "roi_id": 122,
+   "name": "Right FuG fusiform gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right FuG fusiform gyrus"
+  },
+  {
+   "roi_id": 123,
+   "name": "Left FuG fusiform gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left FuG fusiform gyrus"
+  },
+  {
+   "roi_id": 124,
+   "name": "Right GRe gyrus rectus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right GRe gyrus rectus"
+  },
+  {
+   "roi_id": 125,
+   "name": "Left GRe gyrus rectus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left GRe gyrus rectus"
+  },
+  {
+   "roi_id": 128,
+   "name": "Right IOG inferior occipital gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right IOG inferior occipital gyrus"
+  },
+  {
+   "roi_id": 129,
+   "name": "Left IOG inferior occipital gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left IOG inferior occipital gyrus"
+  },
+  {
+   "roi_id": 132,
+   "name": "Right ITG inferior temporal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right ITG inferior temporal gyrus"
+  },
+  {
+   "roi_id": 133,
+   "name": "Left ITG inferior temporal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left ITG inferior temporal gyrus"
+  },
+  {
+   "roi_id": 134,
+   "name": "Right LiG lingual gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right LiG lingual gyrus"
+  },
+  {
+   "roi_id": 135,
+   "name": "Left LiG lingual gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left LiG lingual gyrus"
+  },
+  {
+   "roi_id": 136,
+   "name": "Right LOrG lateral orbital gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right LOrG lateral orbital gyrus"
+  },
+  {
+   "roi_id": 137,
+   "name": "Left LOrG lateral orbital gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left LOrG lateral orbital gyrus"
+  },
+  {
+   "roi_id": 138,
+   "name": "Right MCgG middle cingulate gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right MCgG middle cingulate gyrus"
+  },
+  {
+   "roi_id": 139,
+   "name": "Left MCgG middle cingulate gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left MCgG middle cingulate gyrus"
+  },
+  {
+   "roi_id": 140,
+   "name": "Right MFC medial frontal cortex",
+   "column": "gmv_mm3",
+   "feature": "gm::Right MFC medial frontal cortex"
+  },
+  {
+   "roi_id": 141,
+   "name": "Left MFC medial frontal cortex",
+   "column": "gmv_mm3",
+   "feature": "gm::Left MFC medial frontal cortex"
+  },
+  {
+   "roi_id": 142,
+   "name": "Right MFG middle frontal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right MFG middle frontal gyrus"
+  },
+  {
+   "roi_id": 143,
+   "name": "Left MFG middle frontal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left MFG middle frontal gyrus"
+  },
+  {
+   "roi_id": 144,
+   "name": "Right MOG middle occipital gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right MOG middle occipital gyrus"
+  },
+  {
+   "roi_id": 145,
+   "name": "Left MOG middle occipital gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left MOG middle occipital gyrus"
+  },
+  {
+   "roi_id": 146,
+   "name": "Right MOrG medial orbital gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right MOrG medial orbital gyrus"
+  },
+  {
+   "roi_id": 147,
+   "name": "Left MOrG medial orbital gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left MOrG medial orbital gyrus"
+  },
+  {
+   "roi_id": 148,
+   "name": "Right MPoG postcentral gyrus medial segment",
+   "column": "gmv_mm3",
+   "feature": "gm::Right MPoG postcentral gyrus medial segment"
+  },
+  {
+   "roi_id": 149,
+   "name": "Left MPoG postcentral gyrus medial segment",
+   "column": "gmv_mm3",
+   "feature": "gm::Left MPoG postcentral gyrus medial segment"
+  },
+  {
+   "roi_id": 150,
+   "name": "Right MPrG precentral gyrus medial segment",
+   "column": "gmv_mm3",
+   "feature": "gm::Right MPrG precentral gyrus medial segment"
+  },
+  {
+   "roi_id": 151,
+   "name": "Left MPrG precentral gyrus medial segment",
+   "column": "gmv_mm3",
+   "feature": "gm::Left MPrG precentral gyrus medial segment"
+  },
+  {
+   "roi_id": 152,
+   "name": "Right MSFG superior frontal gyrus medial segment",
+   "column": "gmv_mm3",
+   "feature": "gm::Right MSFG superior frontal gyrus medial segment"
+  },
+  {
+   "roi_id": 153,
+   "name": "Left MSFG superior frontal gyrus medial segment",
+   "column": "gmv_mm3",
+   "feature": "gm::Left MSFG superior frontal gyrus medial segment"
+  },
+  {
+   "roi_id": 154,
+   "name": "Right MTG middle temporal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right MTG middle temporal gyrus"
+  },
+  {
+   "roi_id": 155,
+   "name": "Left MTG middle temporal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left MTG middle temporal gyrus"
+  },
+  {
+   "roi_id": 156,
+   "name": "Right OCP occipital pole",
+   "column": "gmv_mm3",
+   "feature": "gm::Right OCP occipital pole"
+  },
+  {
+   "roi_id": 157,
+   "name": "Left OCP occipital pole",
+   "column": "gmv_mm3",
+   "feature": "gm::Left OCP occipital pole"
+  },
+  {
+   "roi_id": 160,
+   "name": "Right OFuG occipital fusiform gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right OFuG occipital fusiform gyrus"
+  },
+  {
+   "roi_id": 161,
+   "name": "Left OFuG occipital fusiform gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left OFuG occipital fusiform gyrus"
+  },
+  {
+   "roi_id": 162,
+   "name": "Right OpIFG opercular part of the inferior frontal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right OpIFG opercular part of the inferior frontal gyrus"
+  },
+  {
+   "roi_id": 163,
+   "name": "Left OpIFG opercular part of the inferior frontal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left OpIFG opercular part of the inferior frontal gyrus"
+  },
+  {
+   "roi_id": 164,
+   "name": "Right OrIFG orbital part of the inferior frontal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right OrIFG orbital part of the inferior frontal gyrus"
+  },
+  {
+   "roi_id": 165,
+   "name": "Left OrIFG orbital part of the inferior frontal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left OrIFG orbital part of the inferior frontal gyrus"
+  },
+  {
+   "roi_id": 166,
+   "name": "Right PCgG posterior cingulate gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right PCgG posterior cingulate gyrus"
+  },
+  {
+   "roi_id": 167,
+   "name": "Left PCgG posterior cingulate gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left PCgG posterior cingulate gyrus"
+  },
+  {
+   "roi_id": 168,
+   "name": "Right PCu precuneus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right PCu precuneus"
+  },
+  {
+   "roi_id": 169,
+   "name": "Left PCu precuneus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left PCu precuneus"
+  },
+  {
+   "roi_id": 170,
+   "name": "Right PHG parahippocampal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right PHG parahippocampal gyrus"
+  },
+  {
+   "roi_id": 171,
+   "name": "Left PHG parahippocampal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left PHG parahippocampal gyrus"
+  },
+  {
+   "roi_id": 172,
+   "name": "Right PIns posterior insula",
+   "column": "gmv_mm3",
+   "feature": "gm::Right PIns posterior insula"
+  },
+  {
+   "roi_id": 173,
+   "name": "Left PIns posterior insula",
+   "column": "gmv_mm3",
+   "feature": "gm::Left PIns posterior insula"
+  },
+  {
+   "roi_id": 174,
+   "name": "Right PO parietal operculum",
+   "column": "gmv_mm3",
+   "feature": "gm::Right PO parietal operculum"
+  },
+  {
+   "roi_id": 175,
+   "name": "Left PO parietal operculum",
+   "column": "gmv_mm3",
+   "feature": "gm::Left PO parietal operculum"
+  },
+  {
+   "roi_id": 176,
+   "name": "Right PoG postcentral gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right PoG postcentral gyrus"
+  },
+  {
+   "roi_id": 177,
+   "name": "Left PoG postcentral gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left PoG postcentral gyrus"
+  },
+  {
+   "roi_id": 178,
+   "name": "Right POrG posterior orbital gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right POrG posterior orbital gyrus"
+  },
+  {
+   "roi_id": 179,
+   "name": "Left POrG posterior orbital gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left POrG posterior orbital gyrus"
+  },
+  {
+   "roi_id": 180,
+   "name": "Right PP planum polare",
+   "column": "gmv_mm3",
+   "feature": "gm::Right PP planum polare"
+  },
+  {
+   "roi_id": 181,
+   "name": "Left PP planum polare",
+   "column": "gmv_mm3",
+   "feature": "gm::Left PP planum polare"
+  },
+  {
+   "roi_id": 182,
+   "name": "Right PrG precentral gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right PrG precentral gyrus"
+  },
+  {
+   "roi_id": 183,
+   "name": "Left PrG precentral gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left PrG precentral gyrus"
+  },
+  {
+   "roi_id": 184,
+   "name": "Right PT planum temporale",
+   "column": "gmv_mm3",
+   "feature": "gm::Right PT planum temporale"
+  },
+  {
+   "roi_id": 185,
+   "name": "Left PT planum temporale",
+   "column": "gmv_mm3",
+   "feature": "gm::Left PT planum temporale"
+  },
+  {
+   "roi_id": 186,
+   "name": "Right SCA subcallosal area",
+   "column": "gmv_mm3",
+   "feature": "gm::Right SCA subcallosal area"
+  },
+  {
+   "roi_id": 187,
+   "name": "Left SCA subcallosal area",
+   "column": "gmv_mm3",
+   "feature": "gm::Left SCA subcallosal area"
+  },
+  {
+   "roi_id": 190,
+   "name": "Right SFG superior frontal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right SFG superior frontal gyrus"
+  },
+  {
+   "roi_id": 191,
+   "name": "Left SFG superior frontal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left SFG superior frontal gyrus"
+  },
+  {
+   "roi_id": 192,
+   "name": "Right SMC supplementary motor cortex",
+   "column": "gmv_mm3",
+   "feature": "gm::Right SMC supplementary motor cortex"
+  },
+  {
+   "roi_id": 193,
+   "name": "Left SMC supplementary motor cortex",
+   "column": "gmv_mm3",
+   "feature": "gm::Left SMC supplementary motor cortex"
+  },
+  {
+   "roi_id": 194,
+   "name": "Right SMG supramarginal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right SMG supramarginal gyrus"
+  },
+  {
+   "roi_id": 195,
+   "name": "Left SMG supramarginal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left SMG supramarginal gyrus"
+  },
+  {
+   "roi_id": 196,
+   "name": "Right SOG superior occipital gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right SOG superior occipital gyrus"
+  },
+  {
+   "roi_id": 197,
+   "name": "Left SOG superior occipital gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left SOG superior occipital gyrus"
+  },
+  {
+   "roi_id": 198,
+   "name": "Right SPL superior parietal lobule",
+   "column": "gmv_mm3",
+   "feature": "gm::Right SPL superior parietal lobule"
+  },
+  {
+   "roi_id": 199,
+   "name": "Left SPL superior parietal lobule",
+   "column": "gmv_mm3",
+   "feature": "gm::Left SPL superior parietal lobule"
+  },
+  {
+   "roi_id": 200,
+   "name": "Right STG superior temporal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right STG superior temporal gyrus"
+  },
+  {
+   "roi_id": 201,
+   "name": "Left STG superior temporal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left STG superior temporal gyrus"
+  },
+  {
+   "roi_id": 202,
+   "name": "Right TMP temporal pole",
+   "column": "gmv_mm3",
+   "feature": "gm::Right TMP temporal pole"
+  },
+  {
+   "roi_id": 203,
+   "name": "Left TMP temporal pole",
+   "column": "gmv_mm3",
+   "feature": "gm::Left TMP temporal pole"
+  },
+  {
+   "roi_id": 204,
+   "name": "Right TrIFG triangular part of the inferior frontal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right TrIFG triangular part of the inferior frontal gyrus"
+  },
+  {
+   "roi_id": 205,
+   "name": "Left TrIFG triangular part of the inferior frontal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left TrIFG triangular part of the inferior frontal gyrus"
+  },
+  {
+   "roi_id": 206,
+   "name": "Right TTG transverse temporal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Right TTG transverse temporal gyrus"
+  },
+  {
+   "roi_id": 207,
+   "name": "Left TTG transverse temporal gyrus",
+   "column": "gmv_mm3",
+   "feature": "gm::Left TTG transverse temporal gyrus"
+  }
+ ],
+ "mean": [
+  0.0006657222857234303,
+  0.000995760203370631,
+  0.0002193261456152177,
+  0.0002408716216778385,
+  0.0005037802437662604,
+  0.0005201183049531609,
+  0.01257941109922077,
+  0.001854857376389653,
+  0.0017251157511733192,
+  0.02624982129432755,
+  0.026168414347284057,
+  0.007295741514303956,
+  0.007530902017278594,
+  0.10986798966259174,
+  0.10858597382623353,
+  0.0008997244830913515,
+  0.0018026421518410056,
+  0.0016949914410525004,
+  8.13038762889425e-05,
+  4.027120255668205e-05,
+  0.009763528030186201,
+  0.011059294806184884,
+  0.00019226089151947262,
+  0.00017039904770890405,
+  0.0022099629938847226,
+  0.0022283095444782224,
+  0.00259787576009073,
+  0.002506679553612577,
+  0.0005327529148696962,
+  0.0005318865579091367,
+  7.609084495561092e-05,
+  0.002204158345851651,
+  0.0010670814534954644,
+  0.0013205792876694804,
+  0.00023298246695445,
+  0.00024985888053430535,
+  0.0019040180337283113,
+  0.002251997065831801,
+  0.0022928533049589384,
+  0.002403058146781641,
+  0.0009616572460572285,
+  0.0008787590451859106,
+  0.004845202801101031,
+  0.004304604691969643,
+  0.0013680801408811798,
+  0.0013770274882052135,
+  0.002026047684498206,
+  0.001956814038800367,
+  0.002127164731196155,
+  0.0019212853789559155,
+  0.0011559764258181782,
+  0.0010552829696003636,
+  0.0009750920539903682,
+  0.0009208588487350934,
+  0.001957012792537513,
+  0.0018214627956733742,
+  0.0040196478334797526,
+  0.003785208744452672,
+  0.00112481117458345,
+  0.0010622400192057805,
+  0.003137390802990883,
+  0.003100856528291071,
+  0.006392127599390002,
+  0.006241486720782757,
+  0.004110394696121073,
+  0.0037297820995849684,
+  0.0011273308259928051,
+  0.0011759918531751463,
+  0.0021698092776601284,
+  0.002042551562528083,
+  0.000877908268427355,
+  0.0008598104078067381,
+  0.008894902479733447,
+  0.009205357833661708,
+  0.0024446072434255845,
+  0.002891346439252956,
+  0.0022336567977317453,
+  0.002292027179727585,
+  0.00048502494432574116,
+  0.0004603785673725781,
+  0.0012608284014641413,
+  0.0011979951419796473,
+  0.003930840888369516,
+  0.0031729738935548464,
+  0.007152224683409116,
+  0.007068929848178419,
+  0.0016699668095920361,
+  0.0017845845870581574,
+  0.0018175341433977175,
+  0.001898902524405454,
+  0.001576881792127634,
+  0.0015344054188150377,
+  0.0007199517733377238,
+  0.0008105067514743917,
+  0.0019269416648404992,
+  0.0020793938286047665,
+  0.005470661139605247,
+  0.00517832874046529,
+  0.0017379606311653598,
+  0.0017566738387357645,
+  0.001192917904813071,
+  0.0012057575230948272,
+  0.0009667321710537848,
+  0.001143986335489316,
+  0.004318976628527661,
+  0.004925568555440935,
+  0.0014746719022783847,
+  0.001545245246174926,
+  0.0008026934269633848,
+  0.0008376905914904254,
+  0.005581173870668226,
+  0.005874831376315208,
+  0.0008536237903572828,
+  0.0009004365168270004,
+  0.0006847183461369799,
+  0.0006830037402622028,
+  0.007029329552472533,
+  0.007391177659250507,
+  0.002704196336366777,
+  0.002684981753648689,
+  0.003732259187425425,
+  0.004216974942673357,
+  0.0018778715219444249,
+  0.0016122781157986645,
+  0.004732997353084955,
+  0.0051743933999181275,
+  0.0035701775291027767,
+  0.0035782575564172227,
+  0.004747546223447995,
+  0.00473017341446234,
+  0.0017043952404688088,
+  0.0018112427457113364,
+  0.0005499078280663116,
+  0.0006054263552566303
+ ],
+ "std": [
+  0.00016232258545924695,
+  0.00024150009394883877,
+  2.5191594868725235e-05,
+  2.8207072659246505e-05,
+  9.4041262217236e-05,
+  8.881516811237857e-05,
+  0.000986743389141984,
+  0.00028370480647220474,
+  0.00028057314499815053,
+  0.002444876612917386,
+  0.0025348400514142535,
+  0.0006926495820142855,
+  0.0007070105733529467,
+  0.007399239185311664,
+  0.007275346531014087,
+  0.00021110121281029732,
+  0.0003456940828911278,
+  0.00031171176655552977,
+  3.907433587458944e-05,
+  2.3483096138425375e-05,
+  0.003827796642382874,
+  0.004403017569868794,
+  8.700818452441874e-05,
+  9.158960849065206e-05,
+  0.0003082154689154819,
+  0.00031248594647097504,
+  0.000513481544480033,
+  0.0005180504276766065,
+  7.167915209616956e-05,
+  7.355523367079179e-05,
+  1.3153071173861178e-05,
+  0.00025752304913117933,
+  0.00012488951024079972,
+  0.00017675030957099488,
+  3.682092398309979e-05,
+  3.387318478274929e-05,
+  0.0002996934258327244,
+  0.0002956370550488325,
+  0.00025597650852123997,
+  0.0002464529441728142,
+  0.0001093780266233872,
+  9.972372870088732e-05,
+  0.0006605135685631515,
+  0.0005781213389240719,
+  0.00024309758368014518,
+  0.00025536855467792253,
+  0.00024604743838461057,
+  0.00023452906599889632,
+  0.0003159084761582201,
+  0.0003153263041971883,
+  0.00019181206177899614,
+  0.0001908561384206682,
+  0.00012947720410927686,
+  0.00011619552629476841,
+  0.00022059764142928973,
+  0.0001987168747137577,
+  0.0004715002868053486,
+  0.0004229165955827982,
+  0.00012736117811731616,
+  0.00012568871452253271,
+  0.0003603718853683873,
+  0.00037660930451426046,
+  0.0007004810386168073,
+  0.0006925464230640661,
+  0.0004843983373378008,
+  0.00045039258509943215,
+  0.00012774686505865574,
+  0.00012508241131962202,
+  0.00026320137492109056,
+  0.00026401360711983694,
+  0.00012277483292274217,
+  0.00013010569711078616,
+  0.0009576742556477506,
+  0.0009999571998712414,
+  0.00030966057321154454,
+  0.00035671283648811935,
+  0.00020917043604650354,
+  0.00022402604239476538,
+  9.252867627932221e-05,
+  9.057266820989947e-05,
+  0.0002010946593752917,
+  0.0001957732703951214,
+  0.0004474336446785133,
+  0.00035157297336758323,
+  0.0008797067305709135,
+  0.0008953465287701871,
+  0.00025188379951497425,
+  0.0002843175617668244,
+  0.00022160075645631913,
+  0.00023739961957386127,
+  0.00022369548164391143,
+  0.0002067982898964477,
+  9.884127987305783e-05,
+  0.00011163700493121793,
+  0.00020222398267199666,
+  0.00023665201546956555,
+  0.0006130235735448564,
+  0.0006506805602086409,
+  0.0002278193806646891,
+  0.0002317082130345235,
+  0.00013131703655823603,
+  0.0001230688835975373,
+  0.0001573646040356354,
+  0.0001634409134667555,
+  0.000715623967699084,
+  0.0007669740480208438,
+  0.00017582070755421304,
+  0.00018417080879434993,
+  0.0001233992932374761,
+  0.00013795353179855375,
+  0.0008462985485387344,
+  0.0008397565473275902,
+  0.00015951754848668277,
+  0.0001718898594182319,
+  7.521219496341521e-05,
+  8.251368929929557e-05,
+  0.0007301527207018808,
+  0.0007697244005062378,
+  0.00031797491194789003,
+  0.00031393628326324756,
+  0.0005504648104039785,
+  0.0005780517257786242,
+  0.0002639333140798709,
+  0.00023485627743263015,
+  0.0006266878198189178,
+  0.0006430117281873043,
+  0.00043552881647117124,
+  0.00044385891539384036,
+  0.000702479842491405,
+  0.000708020061249775,
+  0.00021401535628015863,
+  0.00023006364933711128,
+  0.00012681443148362321,
+  0.00014300398203859077
+ ],
+ "weights": [
+  [
+   -0.038694186141155267,
+   -0.06371393455774663,
+   0.03064032727904957
+  ],
+  [
+   0.017236832134121152,
+   0.10480140852619504,
+   -0.17742220548850016
+  ],
+  [
+   -0.07948163139285606,
+   -0.02712418807119925,
+   0.047288984812496285
+  ],
+  [
+   0.027018800797240193,
+   0.0516275438714724,
+   -0.0366909570249963
+  ],
+  [
+   0.1113198057317292,
+   -0.012330273951938968,
+   -0.19462649958787762
+  ],
+  [
+   0.19719984151431535,
+   -0.10669461479070912,
+   -0.18810465878722493
+  ],
+  [
+   0.08891397659450477,
+   -0.09881011876380259,
+   0.0014046432124649572
+  ],
+  [
+   -0.0776534157649313,
+   0.06494055758115301,
+   -0.029633700063443392
+  ],
+  [
+   0.07859095609562111,
+   -0.05505099050638667,
+   -0.05033043661019197
+  ],
+  [
+   -0.056189851653290004,
+   0.073225441238194,
+   0.029852899692743365
+  ],
+  [
+   -0.13465043757111791,
+   0.07981507509166146,
+   0.054422173838823786
+  ],
+  [
+   -0.0926517875137888,
+   0.07336644530536658,
+   0.04145894845948609
+  ],
+  [
+   -0.007762963567722761,
+   5.4803146784817994e-05,
+   0.03541033471341279
+  ],
+  [
+   0.027352178454188157,
+   0.05257010135505523,
+   -0.008080345302376422
+  ],
+  [
+   0.029477614990579527,
+   0.04231895152270074,
+   -0.08881759679147078
+  ],
+  [
+   0.04393103017374926,
+   -0.09057746426371527,
+   0.05157787422697
+  ],
+  [
+   0.3016183038913178,
+   -0.022875196443646616,
+   -0.21056169330872057
+  ],
+  [
+   0.34004488492172696,
+   -0.09912364500281996,
+   -0.2593140141522584
+  ],
+  [
+   -0.12200943333940178,
+   0.0816389059729985,
+   0.11522043679916416
+  ],
+  [
+   -0.1439516626208557,
+   0.02564874636728018,
+   0.12670454973282527
+  ],
+  [
+   0.0032802696206022178,
+   -0.04704427071828901,
+   0.014140808880347789
+  ],
+  [
+   0.06852358288405731,
+   0.05574149204539376,
+   -0.07212444402249885
+  ],
+  [
+   -0.07046833524935461,
+   0.03395309090069349,
+   0.05900130919528797
+  ],
+  [
+   -0.004610183867983648,
+   0.05469141498923032,
+   0.0919254754075551
+  ],
+  [
+   -0.05317107987101073,
+   0.0005975157577451729,
+   0.11337367895079926
+  ],
+  [
+   0.0353345376479167,
+   -0.004119856761213116,
+   0.0813058692266495
+  ],
+  [
+   -0.05436980653845937,
+   0.03030213732971352,
+   0.0492149377234665
+  ],
+  [
+   -0.07099723240396569,
+   0.05834602221108391,
+   0.017002247252303832
+  ],
+  [
+   0.03717683419038841,
+   0.05600875165002329,
+   0.03171541049510596
+  ],
+  [
+   -0.05983579108992291,
+   0.018097898168030823,
+   -0.02222669312683759
+  ],
+  [
+   -0.00449017382320321,
+   0.05840983214209876,
+   -0.01962160661314548
+  ],
+  [
+   -0.07543273279134376,
+   -0.03359784108350053,
+   0.016496035067436143
+  ],
+  [
+   -0.08226307414205211,
+   0.011094178445320754,
+   0.0944885206893365
+  ],
+  [
+   -0.03994784377673138,
+   -0.04418675773675329,
+   0.12049188302694568
+  ],
+  [
+   0.019093809298181923,
+   -0.08594314974608096,
+   -0.0469107683934198
+  ],
+  [
+   0.08054181410646548,
+   -0.08342809157810521,
+   0.023937622165570598
+  ],
+  [
+   -0.007462313788641784,
+   -0.17076554650295517,
+   0.1427999414736014
+  ],
+  [
+   0.04864620363234153,
+   -0.07920008564518999,
+   -0.04880059936032892
+  ],
+  [
+   0.004710368252938238,
+   -0.029703621577992556,
+   0.07610724655327043
+  ],
+  [
+   -0.09364911942716207,
+   -0.026395958414932037,
+   0.03180441151092518
+  ],
+  [
+   -0.09125724598189053,
+   0.038621128836425184,
+   -0.04562738981490056
+  ],
+  [
+   0.08385745367460186,
+   0.11164564841643618,
+   -0.13583615689240983
+  ],
+  [
+   0.0900876446766341,
+   0.02487092875566743,
+   -0.10220490702927074
+  ],
+  [
+   0.05900652847392767,
+   -0.006188524685342327,
+   -0.0721855803733148
+  ],
+  [
+   -0.14209549699141016,
+   0.033004568459481416,
+   0.12006084004924518
+  ],
+  [
+   -0.06218985685627797,
+   -0.0422170739901529,
+   0.08182286593202724
+  ],
+  [
+   -0.022938488600267665,
+   -0.012167620875112053,
+   0.16704869278632248
+  ],
+  [
+   -0.02983084174608174,
+   0.024767075455341358,
+   0.045582307419066485
+  ],
+  [
+   -0.024831703328020413,
+   -0.0524543009127145,
+   0.07069358717738417
+  ],
+  [
+   -0.09005957306113699,
+   0.06684292122579066,
+   0.10110465730877427
+  ],
+  [
+   0.17296363215351243,
+   -0.007420695441702231,
+   -0.20410642223547487
+  ],
+  [
+   0.11701020130027047,
+   -0.04808402916312811,
+   -0.13499953245553625
+  ],
+  [
+   -0.02604124897320444,
+   -0.04461468233930919,
+   -0.019034263394955276
+  ],
+  [
+   0.1011450594179659,
+   -0.04233498462041078,
+   -0.02378206693235904
+  ],
+  [
+   -0.0029736015726391004,
+   0.04719533073410418,
+   -0.005562829638850387
+  ],
+  [
+   0.16029796406614444,
+   -0.12029219706894129,
+   0.05762644294560633
+  ],
+  [
+   0.125814903829667,
+   0.033068017291641875,
+   -0.16870736009003157
+  ],
+  [
+   0.12653442375910184,
+   0.011246293007610455,
+   -0.08089827425145041
+  ],
+  [
+   -0.1553388591050037,
+   0.15972806574531476,
+   0.11212703961792314
+  ],
+  [
+   0.06065518126788302,
+   -0.06439841769317235,
+   0.0950877617537693
+  ],
+  [
+   0.06828075667362676,
+   -0.014483685449747631,
+   -0.12448729808762199
+  ],
+  [
+   0.021655704430235772,
+   0.08179591911909648,
+   -0.12185504556564238
+  ],
+  [
+   0.13339115321419673,
+   0.05481701917668401,
+   -0.22787311589956247
+  ],
+  [
+   0.13059238432684786,
+   0.23746314876731128,
+   -0.28192305105794363
+  ],
+  [
+   -0.14338657439997224,
+   0.04560418612236017,
+   0.07470777304240708
+  ],
+  [
+   -0.0641075599330579,
+   0.05914055958098079,
+   0.0020553749447956206
+  ],
+  [
+   0.09591162528256753,
+   -0.016891062789703648,
+   -0.005299236669262664
+  ],
+  [
+   -0.0024557364866555735,
+   0.019843387942823715,
+   0.08353567002824536
+  ],
+  [
+   0.05974047944153634,
+   -0.0883279586811439,
+   -0.02286745542900115
+  ],
+  [
+   -0.0010426325718233343,
+   -0.04302643951555862,
+   0.010510070639639263
+  ],
+  [
+   -0.0801083190274652,
+   0.1605917072105085,
+   -0.05828379347996234
+  ],
+  [
+   0.044348799065690336,
+   0.014614045317954663,
+   -0.061180594631327787
+  ],
+  [
+   0.19412927686327058,
+   0.0038479429199390095,
+   -0.2031420583913797
+  ],
+  [
+   0.1703941935833726,
+   -0.020902152162688356,
+   -0.1393439435388442
+  ],
+  [
+   0.009339262776958209,
+   0.06189338102497825,
+   -0.02178228602137956
+  ],
+  [
+   -0.10186396787864643,
+   0.07555654038374221,
+   0.04788472931221723
+  ],
+  [
+   -0.0716294872763892,
+   0.08137910068705544,
+   -0.04830942938820612
+  ],
+  [
+   -0.02841438887444752,
+   0.04066821611291874,
+   -0.035177292887437955
+  ],
+  [
+   0.014804338842627579,
+   -0.030664766236540734,
+   -0.09250540668159839
+  ],
+  [
+   -0.11079301908673633,
+   -0.09186200070131925,
+   0.08033787900414163
+  ],
+  [
+   0.04697158987203105,
+   -0.04214242049855433,
+   0.017205608800507165
+  ],
+  [
+   -0.0863424861621816,
+   -0.017980594659004177,
+   0.0720767194211506
+  ],
+  [
+   -0.03702156448794787,
+   0.07525823409154883,
+   -0.04107360208617902
+  ],
+  [
+   0.052865086676084784,
+   -0.08928479671892633,
+   0.03648234712182018
+  ],
+  [
+   0.08220237255408745,
+   -0.08896566632288772,
+   -0.0575293120167839
+  ],
+  [
+   0.13789773193061433,
+   -0.07987226482349138,
+   -0.10494027061713383
+  ],
+  [
+   -0.08133753881481835,
+   0.058361444804761464,
+   0.18388909476789253
+  ],
+  [
+   -0.10229603148968874,
+   0.14238852835988303,
+   -0.07774800642705545
+  ],
+  [
+   0.01315557905003919,
+   0.11214712462267581,
+   -0.07705941528853624
+  ],
+  [
+   -0.05131988019422821,
+   0.11537785721766845,
+   0.00020352886633411785
+  ],
+  [
+   -0.06889518634279243,
+   -0.005535638546229209,
+   0.06549370388663188
+  ],
+  [
+   0.036217067693703316,
+   -0.016982882638394217,
+   0.018507278111461373
+  ],
+  [
+   -0.02644199746940603,
+   0.034821372857354094,
+   -0.0015985877583589818
+  ],
+  [
+   -0.023724791072225724,
+   0.1412804838073274,
+   -0.025321481184085323
+  ],
+  [
+   0.02596273991572291,
+   0.03798861308952183,
+   -0.14651419169099927
+  ],
+  [
+   0.09807620512085942,
+   -0.0031185111793270042,
+   -0.1396711080027438
+  ],
+  [
+   0.18115012286628104,
+   -0.04005641059196373,
+   -0.07255464805691013
+  ],
+  [
+   0.03766411113049775,
+   0.047565809681419366,
+   -0.08794434819312401
+  ],
+  [
+   0.18373789765478854,
+   -0.018631920701550234,
+   -0.08338284528552393
+  ],
+  [
+   0.12300756731835237,
+   -0.05901746722853706,
+   -0.11262042026695182
+  ],
+  [
+   0.0210096155286441,
+   -0.032726702568863605,
+   0.02561542627692776
+  ],
+  [
+   -0.08801223246397427,
+   -0.013688706670200425,
+   0.00830842696973884
+  ],
+  [
+   0.07004496543243811,
+   -0.043046850132834484,
+   -0.0030222109806230767
+  ],
+  [
+   -0.12774216297424942,
+   0.15555921330454964,
+   -0.03868442698239787
+  ],
+  [
+   0.019288172296545114,
+   -0.045765128476605445,
+   0.03243252022037602
+  ],
+  [
+   -0.05566090276260644,
+   -0.1451926947624233,
+   0.15315583734940436
+  ],
+  [
+   -0.14204704686597366,
+   0.08667682468436716,
+   -0.007835274903919696
+  ],
+  [
+   0.029533434315468544,
+   0.019678948358571834,
+   0.041669120691735756
+  ],
+  [
+   -0.0868115081869695,
+   0.05211610975175945,
+   0.07560001310479593
+  ],
+  [
+   0.009232652994377729,
+   -0.010165428648651744,
+   0.05459873991463595
+  ],
+  [
+   -0.03954532317882424,
+   -0.0988130866078926,
+   0.06539872638106001
+  ],
+  [
+   -0.061713467355923,
+   -0.05484018957432845,
+   0.11440636968218036
+  ],
+  [
+   0.021909078306435636,
+   0.04491586762696876,
+   -0.10892001414175417
+  ],
+  [
+   0.05806011217072095,
+   0.016902634186542285,
+   -0.11681761745234304
+  ],
+  [
+   0.04892874821667402,
+   -0.02383088414707036,
+   0.0160583893344158
+  ],
+  [
+   -0.05736924697881891,
+   0.040414810060288145,
+   -0.0664988120667656
+  ],
+  [
+   0.06940803580925133,
+   -0.04912063932559133,
+   0.02025419246351981
+  ],
+  [
+   0.09234586523036674,
+   -0.03761134745590653,
+   0.027398602466990087
+  ],
+  [
+   -0.0357781322059385,
+   -0.054588512545947536,
+   0.0918818564174544
+  ],
+  [
+   -0.012049611880332926,
+   0.02235032771359783,
+   0.0356662556986488
+  ],
+  [
+   0.10667277997791995,
+   0.008170110001156632,
+   -0.147329274138461
+  ],
+  [
+   0.19583730155801826,
+   -0.09289717724781386,
+   0.055741002292873376
+  ],
+  [
+   0.038787860390300063,
+   -0.006131507783494026,
+   0.019052185920097484
+  ],
+  [
+   -0.09797719668432209,
+   0.058202476395432176,
+   0.06392063290770841
+  ],
+  [
+   0.014074049732881767,
+   0.06331073600541735,
+   -0.07167706006353626
+  ],
+  [
+   0.04658894878322182,
+   0.1239029735473353,
+   -0.1047731799401861
+  ],
+  [
+   -0.01954541132238562,
+   0.06801138352910245,
+   -0.13637814055746017
+  ],
+  [
+   0.05116204909587827,
+   -0.08180182822577756,
+   0.08247189402820253
+  ],
+  [
+   0.045418074945927284,
+   -0.05457338990316835,
+   -0.044485405753272984
+  ],
+  [
+   0.11714621416803041,
+   -0.07875500780645724,
+   0.03676018408491834
+  ],
+  [
+   0.011899315554292668,
+   -0.01770660332793812,
+   -0.0006849602953524422
+  ],
+  [
+   0.007320965047581053,
+   -0.014925122108734128,
+   0.09996103281795848
+  ],
+  [
+   -0.03679373935224404,
+   -0.06010834965829427,
+   0.10392453105477913
+  ],
+  [
+   0.10148834934919637,
+   0.0025827156300836174,
+   -0.09575485217022525
+  ]
+ ],
+ "bias": [
+  0.07561896980408486,
+  -0.03215650100213355,
+  -0.0503207983326747
+ ],
+ "privacy": {
+  "target_epsilon": 10.0,
+  "accounted_epsilon": 9.995599216083617,
+  "delta": 0.001,
+  "noise_multiplier": 1.8266372680664062,
+  "clip_norm": 1.0,
+  "rounds": 60,
+  "subject_sample_rate": 0.5,
+  "note": "Weights are DP-trained; feature mean/std are non-private cohort aggregates."
+ },
+ "training": {
+  "n_subjects": 799,
+  "n_clients": 43,
+  "features": "deepmriprep Neuromorphometrics region volume / TIV"
+ },
+ "evaluation": {
+  "protocol": "5-fold subject-disjoint, 3 seeds, same configuration",
+  "accuracy": 0.5757196495619524,
+  "macro_f1": 0.5408814141513911,
+  "macro_auroc": 0.7491917090866814,
+  "chance_accuracy": 0.344180225281602
+ }
+}
