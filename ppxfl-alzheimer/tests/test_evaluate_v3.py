@@ -77,7 +77,8 @@ def test_bootstrap_skips_degenerate_resamples():
     assert "accuracy_ci95" in intervals
 
 
-@pytest.mark.parametrize("name", ["logreg", "svm", "lda", "rf", "ensemble"])
+@pytest.mark.parametrize("name", ["logreg", "svm", "lda", "rf", "ensemble",
+                                  "logreg_cv", "svm_cv", "ensemble_cv"])
 def test_every_model_fits_and_returns_probabilities(name, cohort):
     X, y, _ = cohort
     model = build_model(name, seed=0)
@@ -272,3 +273,53 @@ def test_ordinal_classifier_returns_distributions_and_learns_order():
     assert probs.shape == (180, 3)
     assert np.allclose(probs.sum(axis=1), 1.0)
     assert (model.predict(X) == y).mean() > 0.8
+
+
+def _adnimerge(path, rows):
+    import csv
+
+    with open(path, "w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["PTID", "VISCODE", "APOE4", "PTEDUCAT", "MMSE"])
+        writer.writerows(rows)
+
+
+def test_covariates_append_age_sex_and_adnimerge_baseline_only(tmp_path):
+    from src.evaluate_v3 import add_covariates
+
+    subjects = ["001_S_0001", "001_S_0002", "001_S_0003"]
+    demographics = tmp_path / "export.csv"
+    _demographics_export(demographics, subjects[:2], [0, 2], confounded=False)
+    merge = tmp_path / "ADNIMERGE.csv"
+    _adnimerge(merge, [
+        ["001_S_0001", "bl", "1", "16", "29"],
+        ["001_S_0001", "m06", "2", "99", "20"],   # follow-up rows are ignored
+        ["001_S_0002", "bl", "", "12", "22"],     # missing APOE4 stays NaN
+    ])
+    X = np.zeros((3, 2))
+    out, names = add_covariates(X, ["a", "b"], subjects, str(demographics), str(merge))
+    assert names == ["a", "b", "cov::sex", "cov::age", "cov::apoe4", "cov::pteducat"]
+    assert out[0, 2:].tolist() == [0.0, 65.0, 1.0, 16.0]
+    assert out[1, 2] == 1.0 and np.isnan(out[1, 4]) and out[1, 5] == 12.0
+    assert np.isnan(out[2, 2:]).all()          # subject absent from both sources
+    assert "cov::mmse" not in names            # diagnostic scores never enter
+
+
+def test_evaluate_cli_appends_covariates(tmp_path, cohort, capsys):
+    from src.evaluate_v3 import main
+    from src.features import save_features
+
+    X, y, sites = cohort
+    subjects = [f"{i // 15 + 1:03d}_S_{8000 + i:04d}" for i in range(len(y))]
+    features = tmp_path / "features.npz"
+    save_features(str(features), X.astype(np.float32), y, subjects, sites,
+                  [f"gm::R{i}" for i in range(X.shape[1])])
+    demographics = tmp_path / "export.csv"
+    _demographics_export(demographics, subjects, y, confounded=False)
+    assert main([
+        "--features", str(features), "--out-dir", str(tmp_path / "metrics"),
+        "--models", "lda", "--label-sets", "cn-ad", "--schemes", "subject",
+        "--seeds", "42", "--n-splits", "3", "--covariates",
+        "--demographics", str(demographics),
+    ]) == 0
+    assert f"{X.shape[1] + 2} features" in capsys.readouterr().out

@@ -44,6 +44,10 @@ omit =
     # which series are structural, where a subject is filed, what the cohort is
     # short of -- lives in src/cohort_v4.py and src/ingest_v4.py, both covered.
     src/dicom_to_nifti_v4.py
+    # v6 features: every line drives deepmriprep's GPU segmentation over the
+    # real scans or parses its per-subject output, which needs both deepmriprep
+    # and the ADNI volumes. The classifiers it feeds are covered via evaluate_v3.
+    src/vbm_features.py
 
 [report]
 fail_under = 100
