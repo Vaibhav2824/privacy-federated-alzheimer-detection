@@ -376,7 +376,7 @@ Rebuild the paper's generated tables and prose macros from the results, and
 export the API model:
 
 ```bash
-python -m src.paper_tables_v3 --summary results_v6/results_summary_v6.json --centralised-summary results_v6/results_summary_v6_imaging_only.json --law results_v6/metrics/dimension_law.json --confounds results_v6/metrics/confounds.json
+python -m src.paper_tables_v3 --summary results_v6/results_summary_v6.json --centralised-summary results_v6/results_summary_v6_imaging_only.json --best-centralised --compact --law results_v6/metrics/dimension_law.json --confounds results_v6/metrics/confounds.json
 python -m src.paper_facts
 python -m src.paper_figures
 python -m src.export_api_model

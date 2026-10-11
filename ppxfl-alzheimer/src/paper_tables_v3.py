@@ -63,6 +63,19 @@ def _rows(conditions, predicate, order_key):
     return sorted((c for c in conditions if predicate(c)), key=order_key)
 
 
+def best_centralised_only(summary: dict) -> dict:
+    """Keep only the most accurate centralised model per task and split."""
+    best: dict = {}
+    for c in summary["conditions"]:
+        if c["family"] != "centralised":
+            continue
+        key = (c["label_set"], c["split_scheme"])
+        if key not in best or c["accuracy"]["mean"] > best[key]["accuracy"]["mean"]:
+            best[key] = c
+    others = [c for c in summary["conditions"] if c["family"] != "centralised"]
+    return {**summary, "conditions": list(best.values()) + others}
+
+
 def table_centralised(summary: dict) -> str:
     lines = []
     for condition in _rows(
@@ -123,6 +136,42 @@ def table_privacy(summary: dict) -> str:
             cell(condition.get("explanation_agreement"), 1, 3),
             cell(condition.get("medial_temporal_share"), 100, 1),
             str(condition["n_runs"]),
+        ]) + r" \\")
+    return "\n".join(lines)
+
+
+COMPACT_SCHEMES = {"subject": "subject", "site": "site"}
+COMPACT_CLIENTS = {"natural": "real sites", "iid": "IID", "dirichlet": "Dirichlet"}
+
+
+def table_federated_compact(summary: dict) -> str:
+    """Task, split, partition, accuracy and AUROC: narrow enough for one column."""
+    lines = []
+    for condition in _rows(
+        summary["conditions"],
+        lambda c: c["family"] == "federated",
+        lambda c: (c["label_set"], c["split_scheme"], c["client_scheme"]),
+    ):
+        lines.append(" & ".join([
+            LABEL_SET_NAMES.get(condition["label_set"], condition["label_set"]),
+            COMPACT_SCHEMES.get(condition["split_scheme"], condition["split_scheme"]),
+            COMPACT_CLIENTS.get(condition["client_scheme"], condition["client_scheme"]),
+            cell(condition["accuracy"], 100, 1),
+            cell(condition["macro_auroc"], 1, 3),
+        ]) + r" \\")
+    return "\n".join(lines)
+
+
+def table_dimension_law_compact(law: dict) -> str:
+    """The dimension law without the constant signal bound: one column wide."""
+    lines = []
+    for row in sorted(law["rows"], key=lambda r: (r["target_epsilon"], r["dimension"])):
+        lines.append(" & ".join([
+            f"{row['target_epsilon']:g}",
+            MODEL_NAMES.get(row["model"], row["model"].replace("_", r"\_")),
+            f"{row['dimension']:,}".replace(",", r"\,"),
+            f"{row['noise_multiplier']:.2f}",
+            f"{row['worst_case_ratio']:.2f}",
         ]) + r" \\")
     return "\n".join(lines)
 
@@ -223,6 +272,10 @@ def main(argv=None) -> int:
     parser.add_argument("--centralised-summary", default=None,
                         help="take the centralised rows from this summary instead "
                              "(e.g. an imaging-only run beside a covariate run)")
+    parser.add_argument("--best-centralised", action="store_true",
+                        help="list only the best centralised model per task and split")
+    parser.add_argument("--compact", action="store_true",
+                        help="single-column federated and dimension-law tables")
     parser.add_argument("--paper", default=os.path.join("..", "paper.tex"))
     args = parser.parse_args(argv)
 
@@ -236,13 +289,16 @@ def main(argv=None) -> int:
             c for c in summary["conditions"] if c["family"] != "centralised"]
 
     blocks = {
-        "v3-centralised": table_centralised(summary),
-        "v3-federated": table_federated(summary),
+        "v3-centralised": table_centralised(
+            best_centralised_only(summary) if args.best_centralised else summary),
+        "v3-federated": (table_federated_compact if args.compact else table_federated)(summary),
         "v3-privacy": table_privacy(summary),
     }
     if os.path.exists(args.law):
         with open(args.law, encoding="utf-8") as handle:
-            blocks["v3-dimension-law"] = table_dimension_law(json.load(handle))
+            law = json.load(handle)
+            blocks["v3-dimension-law"] = (
+                table_dimension_law_compact if args.compact else table_dimension_law)(law)
     if os.path.exists(args.confounds):
         with open(args.confounds, encoding="utf-8") as handle:
             blocks["v3-confounds-rows"] = table_confounds(json.load(handle))
