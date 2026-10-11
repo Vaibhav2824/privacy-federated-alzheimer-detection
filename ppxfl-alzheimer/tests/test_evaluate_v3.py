@@ -259,3 +259,16 @@ def test_an_unknown_cohort_name_is_refused(cohort_with_demographics):
     X, y, subjects, sites, export = cohort_with_demographics
     with pytest.raises(ValueError, match="unknown cohort"):
         restrict_to_cohort(X, y, subjects, sites, "everything", "", export)
+
+
+def test_ordinal_classifier_returns_distributions_and_learns_order():
+    from src.evaluate_v3 import build_model
+
+    rng = np.random.default_rng(0)
+    y = np.repeat([0, 1, 2], 60)
+    X = (y[:, None] + rng.normal(0, 0.4, (180, 3))).astype(float)
+    model = build_model("ordinal", seed=0).fit(X, y)
+    probs = model.predict_proba(X)
+    assert probs.shape == (180, 3)
+    assert np.allclose(probs.sum(axis=1), 1.0)
+    assert (model.predict(X) == y).mean() > 0.8

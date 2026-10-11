@@ -76,27 +76,126 @@ def load_features(path: str):
     )
 
 
+def add_covariates(X, feature_names, subjects, demographics_path: str,
+                   adnimerge_path: str | None = None):
+    """Append age and sex, plus APOE4 and education when ADNIMERGE is given.
+
+    Deliberately excludes MMSE, CDR, ADAS and FAQ: ADNI assigns the diagnosis
+    from those scores, so using them as inputs is label leakage.  Missing
+    values stay NaN and are imputed inside each training fold.
+    """
+    from .analysis_cohort import load_demographics
+
+    demo = load_demographics(demographics_path)
+    sex = [{"M": 1.0, "F": 0.0}.get((demo.get(s) or {}).get("sex"), np.nan) for s in subjects]
+    age = [(demo.get(s) or {}).get("age") or np.nan for s in subjects]
+    columns, names = [sex, age], ["cov::sex", "cov::age"]
+    if adnimerge_path:
+        import csv
+
+        baseline = {}
+        with open(adnimerge_path, encoding="utf-8-sig") as handle:
+            for row in csv.DictReader(handle):
+                if row.get("VISCODE") == "bl":
+                    baseline[row["PTID"]] = row
+
+        def number(subject, key):
+            try:
+                return float(baseline[subject][key])
+            except (KeyError, TypeError, ValueError):
+                return np.nan
+
+        for key in ("APOE4", "PTEDUCAT"):
+            columns.append([number(s, key) for s in subjects])
+            names.append(f"cov::{key.lower()}")
+    extra = np.asarray(columns, dtype=np.float64).T
+    return np.hstack([X, extra]), list(feature_names) + names
+
+
+def _pre():
+    from sklearn.impute import SimpleImputer
+    from sklearn.preprocessing import StandardScaler
+
+    return [("impute", SimpleImputer(strategy="median")), ("scale", StandardScaler())]
+
+
+class OrdinalClassifier:
+    """Frank & Hall ordinal decomposition: one binary model per P(y > k).
+
+    Uses the CN < MCI < AD ordering a flat softmax ignores.  For two classes
+    it reduces to the base model.
+    """
+
+    def __init__(self, base):
+        self.base = base
+
+    def fit(self, X, y):
+        from sklearn.base import clone
+
+        self.classes_ = np.unique(y)
+        self.models_ = [clone(self.base).fit(X, (y > k).astype(int))
+                        for k in self.classes_[:-1]]
+        return self
+
+    def predict_proba(self, X):
+        above = np.column_stack([m.predict_proba(X)[:, 1] for m in self.models_])
+        lower = np.hstack([np.ones((len(X), 1)), above])
+        upper = np.hstack([above, np.zeros((len(X), 1))])
+        probs = np.clip(lower - upper, 0.0, None)
+        return probs / probs.sum(axis=1, keepdims=True)
+
+    def predict(self, X):
+        return self.classes_[np.argmax(self.predict_proba(X), axis=1)]
+
+
 def build_model(name: str, seed: int):
-    """Classifiers sized for a few hundred subjects and ~140 features."""
+    """Classifiers sized for a few hundred subjects and ~140 features.
+
+    ``*_cv`` variants tune regularisation in an inner CV on the training fold
+    only, so the outer out-of-fold estimate stays unbiased (nested CV).
+    """
     from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
     from sklearn.ensemble import RandomForestClassifier
-    from sklearn.linear_model import LogisticRegression
+    from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
     from sklearn.pipeline import Pipeline
-    from sklearn.preprocessing import StandardScaler
     from sklearn.svm import SVC
 
     if name == "logreg":
-        return Pipeline([
-            ("scale", StandardScaler()),
+        return Pipeline(_pre() + [
             ("clf", LogisticRegression(
                 C=0.1, max_iter=5000, class_weight="balanced", random_state=seed
             )),
         ])
+    if name == "logreg_cv":
+        return Pipeline(_pre() + [
+            ("clf", LogisticRegressionCV(
+                Cs=np.logspace(-3, 1, 9), cv=5, scoring="balanced_accuracy",
+                max_iter=5000, class_weight="balanced", random_state=seed
+            )),
+        ])
+    if name == "svm_cv":
+        from sklearn.calibration import CalibratedClassifierCV
+        from sklearn.model_selection import GridSearchCV
+
+        search = GridSearchCV(
+            SVC(kernel="rbf", class_weight="balanced", random_state=seed),
+            {"C": [0.1, 0.3, 1, 3, 10], "gamma": ["scale", 1e-3, 3e-3, 1e-2]},
+            cv=5, scoring="balanced_accuracy", n_jobs=-1,
+        )
+        return Pipeline(_pre() + [("clf", CalibratedClassifierCV(search, ensemble=False, cv=3))])
+    if name == "ordinal":
+        return OrdinalClassifier(build_model("logreg_cv", seed))
+    if name == "ensemble_cv":
+        from sklearn.ensemble import VotingClassifier
+
+        return VotingClassifier(
+            estimators=[(n, build_model(n, seed)) for n in ("logreg_cv", "svm_cv", "lda", "rf")],
+            voting="soft",
+        )
     if name == "svm":
         from sklearn.calibration import CalibratedClassifierCV
 
-        return Pipeline([
-            ("scale", StandardScaler()),
+        return Pipeline(_pre() + [
             # ``SVC(probability=True)`` is deprecated from scikit-learn 1.9;
             # calibrating explicitly is the documented replacement and gives the
             # same thing — probabilities that can go into a macro AUROC.
@@ -107,8 +206,7 @@ def build_model(name: str, seed: int):
             )),
         ])
     if name == "lda":
-        return Pipeline([
-            ("scale", StandardScaler()),
+        return Pipeline(_pre() + [
             ("clf", LinearDiscriminantAnalysis(solver="lsqr", shrinkage="auto")),
         ])
     if name == "rf":
@@ -241,9 +339,15 @@ def main(argv=None) -> int:
                         help="balanced removes the sex confound by construction")
     parser.add_argument("--demographics",
                         default=os.path.join("data", "ida_search_v4.csv"))
+    parser.add_argument("--covariates", action="store_true",
+                        help="append age and sex (and APOE4/education with --adnimerge)")
+    parser.add_argument("--adnimerge", default=None, help="ADNIMERGE.csv from ADNI IDA")
     args = parser.parse_args(argv)
 
     X, y, subjects, sites, feature_names = load_features(args.features)
+    if args.covariates:
+        X, feature_names = add_covariates(X, feature_names, subjects,
+                                          args.demographics, args.adnimerge)
     X, y, subjects, sites = restrict_to_cohort(
         X, y, subjects, sites, args.cohort, args.features, args.demographics
     )
