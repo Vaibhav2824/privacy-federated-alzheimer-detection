@@ -63,15 +63,75 @@ function loadingState(): string {
     </div>`;
 }
 
-function result(out: RegionPrediction): string {
+type Mode = 'three' | 'two';
+
+/** Which question the visitor asked: chosen before classifying, switchable after. */
+let mode: Mode = 'three';
+let last: RegionPrediction | null = null;
+
+const MODES: Record<Mode, { title: string; sub: string; icon: string }> = {
+  three: { title: 'Three classes', sub: 'CN / MCI / AD', icon: 'stacked_bar_chart' },
+  two: { title: 'Two classes', sub: 'CN vs AD', icon: 'compare_arrows' },
+};
+
+function modePicker(): string {
+  const option = (m: Mode): string => `<button type="button" data-mode="${m}" aria-pressed="${m === mode}"
+      class="flex items-center gap-3 rounded-xl border-2 p-3 text-left transition-colors ${m === mode ? 'border-teal-bright bg-mint/40' : 'border-hairline bg-paper hover:border-teal-bright/50'}">
+      <span class="grid h-9 w-9 shrink-0 place-items-center rounded-lg ${m === mode ? 'bg-teal text-white' : 'bg-muted text-slate'}">${icon(MODES[m].icon, '!text-[20px]')}</span>
+      <span><span class="block text-sm font-semibold">${MODES[m].title}</span><span class="block font-mono text-xs text-slate">${MODES[m].sub}</span></span></button>`;
+  return `<p class="text-sm font-medium">1. Choose what to classify</p>
+    <div class="mt-2 grid grid-cols-2 gap-2">${option('three')}${option('two')}</div>`;
+}
+
+/** The headline block both modes share: confidence ring, verdict and caption. */
+function verdict(cls: ClassName, conf: number, caption: string): string {
+  return `<div class="flex flex-col items-center gap-6 sm:flex-row" data-stagger>
+      <div class="relative h-40 w-40 shrink-0">${ring(conf, 200, 16, CLASS_HEX[cls])}
+        <div class="absolute inset-0 grid place-items-center text-center"><div>
+          <p class="num text-3xl font-semibold" data-count>${pct(conf)}</p><p class="font-mono text-[10px] uppercase tracking-wider text-slate">confidence</p></div></div>
+      </div>
+      <div class="text-center sm:text-left">
+        <p class="eyebrow"><span class="live-dot"></span>Model output</p>
+        <p class="mt-2 font-display text-4xl font-extrabold tracking-tight md:text-5xl ${CLASS_TEXT[cls]}">${cls}</p>
+        <p class="mt-1 text-lg font-medium">${CLASS_NAME[cls]}</p>
+        <p class="mt-1 text-xs text-slate">${caption} · research output, not a diagnosis</p>
+      </div>
+    </div>`;
+}
+
+function threeClass(out: RegionPrediction): string {
   const top = out.predicted;
-  const p = out.probabilities[top];
-  const m = out.model;
   const segments = CLASSES.map((c) => `<span data-bar="0.3" class="${CLASS_BAR[c]} h-full" style="width:${out.probabilities[c] * 100}%" title="${c} ${pct(out.probabilities[c])}"></span>`).join('');
   const legend = CLASSES.map((c) => `<div class="rounded-xl border p-3 ${c === top ? 'border-transparent bg-paper ring-2' : 'border-hairline'}" style="--tw-ring-color:${CLASS_HEX[c]}">
       <p class="flex items-center gap-1.5 text-xs text-slate"><span class="h-2 w-2 rounded-full ${CLASS_BAR[c]}"></span>${c}</p>
       <p class="num mt-1 text-xl font-semibold ${c === top ? CLASS_TEXT[c] : ''}" data-count="0.3">${pct(out.probabilities[c])}</p>
       <p class="truncate text-[11px] text-slate">${CLASS_NAME[c]}</p></div>`).join('');
+  return `${verdict(top, out.probabilities[top], 'Most probable of three classes')}
+    <div><div class="flex h-3 overflow-hidden rounded-full bg-muted">${segments}</div>
+      <div class="mt-3 grid grid-cols-3 gap-2">${legend}</div></div>`;
+}
+
+/**
+ * CN vs AD, read off the three-class model: P(AD | CN or AD) = AD / (CN + AD).
+ * Only meaningful for a scan already known to be CN or AD; it is not the
+ * separately trained binary model the Results page reports.
+ */
+function twoClass(out: RegionPrediction): string {
+  const { CN: cn, AD: ad } = out.probabilities;
+  const pAd = ad / (cn + ad);
+  const top: ClassName = pAd >= 0.5 ? 'AD' : 'CN';
+  const other = top === 'AD' ? 'cognitively normal' : "Alzheimer's disease";
+  const seg = (c: ClassName, v: number, delay: number): string =>
+    `<span data-bar="${delay}" class="${CLASS_BAR[c]} flex h-full items-center ${c === 'CN' ? 'justify-start pl-3' : 'justify-end pr-3'} overflow-hidden whitespace-nowrap font-mono text-xs font-semibold text-white" style="width:${v * 100}%">${v >= 0.25 ? `${c} ${pct(v)}` : ''}</span>`;
+  return `${verdict(top, top === 'AD' ? pAd : 1 - pAd, `Rather than ${other}`)}
+    <div><div class="flex h-9 overflow-hidden rounded-full bg-muted">${seg('CN', 1 - pAd, 0.3)}${seg('AD', pAd, 0.4)}</div>
+      <div class="mt-2 flex justify-between font-mono text-xs"><span class="text-cn">CN · normal ${pct(1 - pAd)}</span><span class="text-ad">AD · Alzheimer's ${pct(pAd)}</span></div>
+      <p class="mt-3 rounded-xl bg-paper p-3 text-xs text-slate">For a scan known to be either cognitively normal or Alzheimer's; MCI is left out.
+        Computed from the three-class model as AD ÷ (CN + AD), so it is not the separately trained CN vs AD model on the Results page.</p></div>`;
+}
+
+function result(out: RegionPrediction): string {
+  const m = out.model;
   const maxAbs = Math.max(...out.top_regions.map((r) => Math.abs(r.contribution)), 1e-9);
   const regions = out.top_regions.map((r, i) => {
     const w = (Math.abs(r.contribution) / maxAbs) * 50;
@@ -88,24 +148,17 @@ function result(out: RegionPrediction): string {
   const fact = (label: string, value: string): string => `<div class="rounded-xl bg-paper p-3"><p class="font-mono text-[10px] uppercase tracking-wider text-slate">${label}</p>
       <p class="num mt-0.5 text-sm font-semibold">${value}</p></div>`;
   return `<div class="flex flex-col gap-6">
-    <div class="flex flex-col items-center gap-6 sm:flex-row" data-stagger>
-      <div class="relative h-40 w-40 shrink-0">${ring(p, 200, 16, CLASS_HEX[top])}
-        <div class="absolute inset-0 grid place-items-center text-center"><div>
-          <p class="num text-3xl font-semibold" data-count>${pct(p)}</p><p class="font-mono text-[10px] uppercase tracking-wider text-slate">confidence</p></div></div>
-      </div>
-      <div class="text-center sm:text-left">
-        <p class="eyebrow"><span class="live-dot"></span>Model output</p>
-        <p class="mt-2 font-display text-4xl font-extrabold tracking-tight md:text-5xl ${CLASS_TEXT[top]}">${top}</p>
-        <p class="mt-1 text-lg font-medium">${CLASS_NAME[top]}</p>
-        <p class="mt-1 text-xs text-slate">Most probable of three classes · research output, not a diagnosis</p>
-      </div>
-    </div>
-    <div><div class="flex h-3 overflow-hidden rounded-full bg-muted">${segments}</div>
-      <div class="mt-3 grid grid-cols-3 gap-2">${legend}</div></div>
+    <div class="flex flex-wrap items-baseline justify-between gap-2">
+      <p class="font-display text-lg font-semibold">${MODES[mode].title} <span class="text-slate">${MODES[mode].sub}</span></p>
+      ${mode === 'three'
+        ? `<span class="badge !bg-muted !text-slate !border-hairline">CV accuracy ${pct(m.evaluation.accuracy)} · chance ${pct(m.evaluation.chance_accuracy)}</span>`
+        : '<span class="badge">MCI left out</span>'}</div>
+    ${mode === 'three' ? threeClass(out) : twoClass(out)}
     <div class="border-t border-hairline pt-5">
       <div class="flex items-baseline justify-between gap-3"><p class="font-display text-lg font-semibold">Why: regions that drove it</p>
         <p class="hidden font-mono text-[11px] text-slate sm:block"><span class="text-ad">◀ against</span> · <span class="text-teal">towards ▶</span></p></div>
-      <p class="mt-1 text-xs text-slate">z: how far a region's volume sits from the training cohort's mean. Bar: its push towards the predicted class, relative to an average cohort member.</p>
+      <p class="mt-1 text-xs text-slate">z: how far a region's volume sits from the training cohort's mean. Bar: its push towards the
+        three-class prediction (${out.predicted}), relative to an average cohort member.</p>
       <div class="mt-4 flex flex-col gap-2">${regions}</div>
     </div>
     <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -125,7 +178,9 @@ function regionSection(data: SiteData): string {
         <h2 class="mt-2 text-2xl">Classify region volumes</h2>
         <p class="mt-2 text-sm text-slate">The v6 region model trained with subject-level DP-FedAvg at ε = 10. It reads the
           region volumes deepmriprep measures from a T1 scan, so the scan itself never leaves your machine.</p>
-        <button id="run-example" type="button" class="btn btn-primary mt-5 h-12 w-full justify-center text-base">${icon('bolt')} Run on a sample brain (MNI152)</button>
+        <div id="mode-slot" class="mt-5">${modePicker()}</div>
+        <p class="mt-5 text-sm font-medium">2. Run it</p>
+        <button id="run-example" type="button" class="btn btn-primary mt-2 h-12 w-full justify-center text-base">${icon('bolt')} Run on a sample brain (MNI152)</button>
         <div class="my-5 flex items-center gap-3 font-mono text-[11px] uppercase tracking-wider text-slate"><span class="h-px flex-1 bg-hairline"></span>or use your own<span class="h-px flex-1 bg-hairline"></span></div>
         <div class="flex flex-col gap-4 text-sm">
           <label class="flex flex-col gap-1.5 font-medium">Region volumes CSV <span class="font-mono text-xs font-normal text-slate">neuromorphometrics_volumes….csv</span>
@@ -204,6 +259,7 @@ function wireRegionModel(data: SiteData): void {
       if (panel) panel.innerHTML = loadingState();
       const out = await predictRegions(csv, tiv);
       if (panel) {
+        last = out;
         panel.innerHTML = result(out);
         animate(panel, true);
         if (window.innerWidth < 1024) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -216,6 +272,18 @@ function wireRegionModel(data: SiteData): void {
       buttons.forEach((b) => (b.disabled = false));
     }
   }
+
+  document.getElementById('mode-slot')?.addEventListener('click', (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-mode]');
+    if (!button) return;
+    mode = button.dataset.mode as Mode;
+    const slot = document.getElementById('mode-slot');
+    if (slot) slot.innerHTML = modePicker();
+    if (panel && last) {
+      panel.innerHTML = result(last);
+      animate(panel, true);
+    }
+  });
 
   document.getElementById('run-example')?.addEventListener('click', () => void run(async () => {
     const [csv, tiv] = await Promise.all(
