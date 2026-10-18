@@ -76,9 +76,32 @@ def load_features(path: str):
     )
 
 
+def baseline_from_tables(apoe_path: str, demog_path: str) -> dict:
+    """APOE4 allele count (APOERES) and years of education (PTDEMOG) by PTID.
+
+    The same two fields ADNIMERGE derives, read from the source tables, which
+    are small CSVs where ADNIMERGE now ships only as an R package.  ADNI codes
+    a missing value as a negative number.
+    """
+    import csv
+
+    out: dict = {}
+    with open(apoe_path, encoding="utf-8-sig") as handle:
+        for row in csv.DictReader(handle):
+            genotype = row["GENOTYPE"]
+            out.setdefault(row["PTID"], {})["APOE4"] =                 str(genotype.count("4")) if "/" in genotype else ""
+    with open(demog_path, encoding="utf-8-sig") as handle:
+        for row in csv.DictReader(handle):
+            years = row["PTEDUCAT"]
+            if years and float(years) >= 0:
+                out.setdefault(row["PTID"], {}).setdefault("PTEDUCAT", years)
+    return out
+
+
 def add_covariates(X, feature_names, subjects, demographics_path: str,
-                   adnimerge_path: str | None = None):
-    """Append age and sex, plus APOE4 and education when ADNIMERGE is given.
+                   adnimerge_path: str | None = None, tables: tuple | None = None):
+    """Append age and sex, plus APOE4 and education from ADNIMERGE or from the
+    APOERES and PTDEMOG ``tables``.
 
     Deliberately excludes MMSE, CDR, ADAS and FAQ: ADNI assigns the diagnosis
     from those scores, so using them as inputs is label leakage.  Missing
@@ -90,6 +113,7 @@ def add_covariates(X, feature_names, subjects, demographics_path: str,
     sex = [{"M": 1.0, "F": 0.0}.get((demo.get(s) or {}).get("sex"), np.nan) for s in subjects]
     age = [(demo.get(s) or {}).get("age") or np.nan for s in subjects]
     columns, names = [sex, age], ["cov::sex", "cov::age"]
+    baseline = None
     if adnimerge_path:
         import csv
 
@@ -98,7 +122,9 @@ def add_covariates(X, feature_names, subjects, demographics_path: str,
             for row in csv.DictReader(handle):
                 if row.get("VISCODE") == "bl":
                     baseline[row["PTID"]] = row
-
+    elif tables:
+        baseline = baseline_from_tables(*tables)
+    if baseline is not None:
         def number(subject, key):
             try:
                 return float(baseline[subject][key])
@@ -340,14 +366,18 @@ def main(argv=None) -> int:
     parser.add_argument("--demographics",
                         default=os.path.join("data", "ida_search_v4.csv"))
     parser.add_argument("--covariates", action="store_true",
-                        help="append age and sex (and APOE4/education with --adnimerge)")
+                        help="append age and sex (and APOE4/education with --adnimerge "
+                             "or --apoe-tables)")
     parser.add_argument("--adnimerge", default=None, help="ADNIMERGE.csv from ADNI IDA")
+    parser.add_argument("--apoe-tables", nargs=2, default=None, metavar=("APOERES", "PTDEMOG"),
+                        help="APOERES and PTDEMOG CSVs from ADNI IDA, in place of ADNIMERGE")
     args = parser.parse_args(argv)
 
     X, y, subjects, sites, feature_names = load_features(args.features)
     if args.covariates:
         X, feature_names = add_covariates(X, feature_names, subjects,
-                                          args.demographics, args.adnimerge)
+                                          args.demographics, args.adnimerge,
+                                          args.apoe_tables)
     X, y, subjects, sites = restrict_to_cohort(
         X, y, subjects, sites, args.cohort, args.features, args.demographics
     )
