@@ -38,13 +38,20 @@ def _conditions(offset: float):
 
 @pytest.fixture
 def root(tmp_path):
-    v6 = tmp_path / "results_v6"
+    v6 = tmp_path / "results_v7"
     v6.mkdir()
-    (v6 / "results_summary_v6.json").write_text(json.dumps({"conditions": _conditions(0.08)}), encoding="utf-8")
-    (v6 / "results_summary_v6_imaging_only.json").write_text(
+    (v6 / "results_summary_v7.json").write_text(json.dumps({"conditions": _conditions(0.08)}), encoding="utf-8")
+    (v6 / "results_summary_v7_imaging_only.json").write_text(
         json.dumps({"conditions": _conditions(0.07)}), encoding="utf-8")
+    (v6 / "feature_ablation.json").write_text(json.dumps({"rows": [
+        {"features": name, "label_set": ls, "n_features": n, "perturbed_dimension": n * 3 + 3,
+         "centralised": {"mean": c}, "private": {"1": {"mean": c - 0.05}, "10": {"mean": c}}}
+        for name, n, c in (("base", 134, 0.57), ("extended", 964, 0.59))
+        for ls in ("cn-ad", "cn-mci-ad")]}), encoding="utf-8")
     metrics = v6 / "metrics"
     metrics.mkdir()
+    (metrics / "fed_natural_cn-ad_subject_s42.json").write_text(json.dumps({"prox_mu": 1.0}),
+                                                                encoding="utf-8")
     (metrics / "confounds.json").write_text(json.dumps({
         "n_subjects": 677,
         "cohort_composition": {"CN-F": 117, "CN-M": 109, "MCI-F": 105, "MCI-M": 120,
@@ -84,6 +91,9 @@ def test_facts_are_computed_from_the_results(root):
     assert f["CohBinCov"] == r"90.0\%"                     # covariate run, best model
     assert f["CohFedIidBin"] == r"86.0\%" and f["CohFedDirBin"] == r"85.0\%"
     assert f["CohSigmaOne"] == "12.00" and f["CohSigmaTen"] == "1.20"
+    assert f["CohSigmaOneRdp"] == "11.34" and f["CohProxMu"] == "1"
+    assert f["AblExtFeatures"] == "964" and f["AblExtDim"] == "2895"
+    assert f["AblBaseTri"] == r"57.0\%" and f["AblExtBinOne"] == r"54.0\%"
     assert (f["CohRounds"], f["CohClip"], f["CohSampleRate"], f["CohDelta"]) == ("60", "1", "0.5", "0.001")
     assert f["CohAttackNone"] == "0.590" and f["CohAttackOne"] == "0.530"
     assert f["ConfChanceTri"] == r"33.4\%"

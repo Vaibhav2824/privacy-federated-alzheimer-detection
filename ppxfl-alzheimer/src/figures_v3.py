@@ -260,20 +260,19 @@ def figure_dimension_law(law: dict, out_path: str) -> None:
     seen = {}
     for row in rows:
         seen.setdefault(row["model"], row["dimension"])
-    top = max(r["worst_case_ratio"] for r in rows)
-    for model, dimension in seen.items():
+    for dimension in seen.values():
         axis.axvline(dimension, color=PALETTE["grey"], alpha=0.15, linewidth=1)
-        axis.annotate(labels.get(model, model), xy=(dimension, top),
-                      xytext=(0, 4), textcoords="offset points",
-                      rotation=90, ha="center", va="bottom", fontsize=7,
-                      color=PALETTE["grey"])
 
     axis.set_xscale("log")
     axis.set_yscale("log")
+    # Model names along the top edge, where they cannot collide with the data.
+    named = axis.secondary_xaxis("top")
+    named.set_xticks(list(seen.values()), [labels.get(m, m) for m in seen], fontsize=7)
+    named.tick_params(length=0, colors=PALETTE["grey"])
+    named.set_xticks([], minor=True)
     axis.set_xlabel("perturbed parameters $d$")
     axis.set_ylabel("worst-case noise / signal norm")
-    axis.set_title("Subject-level DP cost is set by model dimension")
-    axis.legend(frameon=False, fontsize=8)
+    axis.legend(frameon=False, fontsize=8, loc="lower right")
     figure.tight_layout()
     figure.savefig(out_path, dpi=DPI, bbox_inches="tight")
     plt.close(figure)
