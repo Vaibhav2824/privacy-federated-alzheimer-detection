@@ -48,6 +48,13 @@ def root(tmp_path):
          "centralised": {"mean": c}, "private": {"1": {"mean": c - 0.05}, "10": {"mean": c}}}
         for name, n, c in (("base", 134, 0.57), ("extended", 964, 0.59))
         for ls in ("cn-ad", "cn-mci-ad")]}), encoding="utf-8")
+    (v6 / "results_summary_v7_apoe.json").write_text(
+        json.dumps({"conditions": _conditions(0.09)}), encoding="utf-8")
+    (v6 / "mu_selection.json").write_text(json.dumps({"rows": [
+        {"partition": part, "chosen_mu": mu, "held_out_chosen": chosen, "held_out_fedavg": avg}
+        for part, mu, chosen, avg in (("natural", 1.0, 0.85, 0.82), ("natural", 1.0, 0.55, 0.53),
+                                      ("iid", 0.0, 0.85, 0.85), ("dirichlet", 0.1, 0.52, 0.535))]}),
+        encoding="utf-8")
     metrics = v6 / "metrics"
     metrics.mkdir()
     (metrics / "fed_natural_cn-ad_subject_s42.json").write_text(json.dumps({"prox_mu": 1.0}),
@@ -92,6 +99,9 @@ def test_facts_are_computed_from_the_results(root):
     assert f["CohFedIidBin"] == r"86.0\%" and f["CohFedDirBin"] == r"85.0\%"
     assert f["CohSigmaOne"] == "12.00" and f["CohSigmaTen"] == "1.20"
     assert f["CohSigmaOneRdp"] == "11.34" and f["CohProxMu"] == "1"
+    assert (f["MuReal"], f["MuRealGainLow"], f["MuRealGainHigh"]) == ("1", "2.0", "3.0")
+    assert f["MuSimMax"] == "0.1" and f["MuSimShift"] == "1.5"
+    assert f["ApoeAccShift"] == "1.0" and f["ApoeAucShift"] == "0.000"   # +0.01 accuracy everywhere
     assert f["AblExtFeatures"] == "964" and f["AblExtDim"] == "2895"
     assert f["AblBaseTri"] == r"57.0\%" and f["AblExtBinOne"] == r"54.0\%"
     assert (f["CohRounds"], f["CohClip"], f["CohSampleRate"], f["CohDelta"]) == ("60", "1", "0.5", "0.001")
@@ -114,3 +124,10 @@ def test_main_fills_the_block_and_refuses_a_paper_without_it(root, tmp_path, cap
     paper.write_text("no markers\n", encoding="utf-8")
     with pytest.raises(SystemExit, match="current-facts"):
         paper_facts.main(["--root", str(root), "--paper", str(paper)])
+
+
+def test_mu_facts_refuse_a_real_partition_without_one_mu():
+    rows = [{"partition": "natural", "chosen_mu": mu, "held_out_chosen": 0.8, "held_out_fedavg": 0.8}
+            for mu in (0.1, 1.0)]
+    with pytest.raises(ValueError, match="several mu"):
+        paper_facts.mu_facts({"rows": rows})
