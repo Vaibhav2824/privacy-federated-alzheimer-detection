@@ -1,7 +1,7 @@
 """
 PPXFL region-model API.
 
-Serves the paper's v6 region model, trained with subject-level DP-FedAvg at
+Serves the paper's v7 region model, trained with subject-level DP-FedAvg at
 eps = 10. Input is what deepmriprep writes for one T1 scan: the
 Neuromorphometrics region-volume CSV and the total intracranial volume. The
 arithmetic is a 134 x 3 linear model, so the service is pure Python.

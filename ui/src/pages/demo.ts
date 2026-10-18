@@ -176,7 +176,7 @@ function regionSection(data: SiteData): string {
       <div class="card">
         <p class="eyebrow">The paper's model · server API</p>
         <h2 class="mt-2 text-2xl">Classify region volumes</h2>
-        <p class="mt-2 text-sm text-slate">The v6 region model trained with subject-level DP-FedAvg at ε = 10. It reads the
+        <p class="mt-2 text-sm text-slate">The v7 region model trained with subject-level DP-FedAvg at ε = 10. It reads the
           region volumes deepmriprep measures from a T1 scan, so the scan itself never leaves your machine.</p>
         <div id="mode-slot" class="mt-5">${modePicker()}</div>
         <p class="mt-5 text-sm font-medium">2. Run it</p>

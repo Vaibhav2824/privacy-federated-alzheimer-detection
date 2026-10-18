@@ -8,7 +8,7 @@ function stages(features: number): string {
     ['Skull stripping', 'deepbet', 'Run after orientation, because the stripper leaves face and neck behind when a scan lies on its side.', 'Brain mask'],
     ['MNI152 registration and QC', 'Affine', 'Mutual-information affine registration to MNI152; a per-subject correlation score excludes failures by a stated rule.', 'QC-gated cohort'],
     ['Region volumes (deepmriprep)', `${features} regions`, 'Network tissue segmentation and nonlinear warping; the Neuromorphometrics atlas is warped back and each region’s grey-matter (or ventricular CSF) volume is divided by intracranial volume.', 'Named anatomy'],
-    ['DP-FedAvg and audit', 'Subject-level', 'Federated over real sites with per-subject clipping and Gaussian noise, Rényi DP accounting, membership inference and region attribution.', 'ε, δ certified'],
+    ['DP-FedAvg and audit', 'Subject-level', 'Federated over real sites with per-subject clipping and Gaussian noise, PRV privacy accounting, membership inference and region attribution.', 'ε, δ certified'],
   ];
   return `<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">${STAGES.map(([title, tag, body, out], i) => `
     <div class="card flex flex-col !p-4 ${i === STAGES.length - 1 ? 'border-teal bg-teal/[0.04]' : ''}">
@@ -23,7 +23,7 @@ function guarantees(data: SiteData): string {
   const items: [string, string, string][] = [
     ['Subject-disjoint folds', 'No subject leakage', 'Each subject contributes one scan and sits in exactly one of five folds, so no brain is ever on both sides of a split. Three seeds per configuration.'],
     ['Site-disjoint folds', 'Unseen scanners', 'Every task is also evaluated with whole acquisition sites held out, the setting a federated model is deployed into.'],
-    ['Bounded per-subject sensitivity', `Clip C = ${data.dp_config.clip_norm}`, `Each subject's update is clipped before aggregation and Gaussian noise is added once at the server; a Rényi DP accountant certifies (ε, δ = ${data.dp_config.delta}) over all rounds.`],
+    ['Bounded per-subject sensitivity', `Clip C = ${data.dp_config.clip_norm}`, `Each subject's update is clipped before aggregation and Gaussian noise is added once at the server; a PRV accountant certifies (ε, δ = ${data.dp_config.delta}) over all rounds.`],
   ];
   return items.map(([title, tag, body], i) => `<div class="flex gap-4 ${i ? 'border-t border-hairline pt-5' : ''}">
     <span class="num flex h-7 w-7 shrink-0 items-center justify-center rounded border border-hairline text-xs">1.${i + 1}</span>

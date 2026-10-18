@@ -62,6 +62,8 @@ export interface SiteData {
     local_epochs: number;
     subject_sample_rate: number;
     delta: number;
+    accountant: string;
+    prox_mu: number;
   };
   partition: { n_clients: number; n_sites: number; clients: Client[] };
   history: {
@@ -71,6 +73,7 @@ export interface SiteData {
     v4: { accuracy: number; n_subjects: number };
     v5: { accuracy: number; n_subjects: number; agreement_eps10: number };
     v6: { accuracy: number; n_subjects: number };
+    v7: { accuracy: number; n_subjects: number };
   };
 }
 
