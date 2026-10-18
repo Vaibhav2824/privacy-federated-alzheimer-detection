@@ -77,3 +77,4 @@ data/missing_*.txt
 
 # Run logs
 logs/
+data/adni_tables/

@@ -141,12 +141,25 @@ heterogeneity is the cohort's own: one client holds no MCI and another no AD.
 Under plain FedAvg the real partition is the hardest of the three: extreme
 client-size imbalance and genuine scanner variation add a client drift that
 label skew alone does not produce. FedProx adds a proximal term
-(μ/2)‖w − wᵗ‖² to local training (μ = 1, the best of 0.01–10 on the real-site
-partition) and corrects that drift, so the real-site model becomes the most
-accurate of the three, 1.5 and 3.0 points short of a tuned logistic regression
-trained centrally on the same subjects (56.6% and 87.3%). On the IID partition,
-where there is no drift to correct, the same term *lowers* accuracy: a
-simulated benchmark would have pointed to the wrong optimiser.
+(μ/2)‖w − wᵗ‖² to local training and corrects that drift, so with μ = 1 the
+real-site model becomes the most accurate of the three, 1.5 and 3.0 points
+short of a tuned logistic regression trained centrally on the same subjects
+(56.6% and 87.3%). On the IID partition, where there is no drift to correct,
+the same term *lowers* accuracy.
+
+To make sure that is not an artefact of tuning μ on the real sites, each
+partition chooses μ ∈ {0, 0.01, 0.1, 1, 3} on seed 42 and is scored on seeds
+123 and 2024 only:
+
+| Partition | μ chosen (4 task × split cases) | Held-out gain over FedAvg |
+| --- | --- | --- |
+| **Real ADNI sites** | 1, 1, 1, 1 | **+1.4 to +3.6 points** |
+| IID | 0, 0.1, 0.01, 0 | −1.5 to 0 |
+| Dirichlet α = 0.5 | 0.01, 0.1, 0.1, 0.01 | −0.4 to +0.5 |
+
+The simulated partitions select plain FedAvg (μ ≈ 0) where the real sites need
+the drift correction, so a federated optimiser tuned on the usual benchmark
+would be tuned for the wrong deployment.
 
 A **site-disjoint** evaluation is reported next to the subject-disjoint one,
 since a federated model is deployed at hospitals that did not contribute to it.
@@ -277,7 +290,7 @@ were meant to improve.
 | Ordinal (CN < MCI < AD) formulation | rejected | CN / MCI / AD 56.6% → 56.6% |
 | Site harmonisation (ComBat-style, fitted in-fold) | rejected | lowers CN vs AD to 85.5% even in its best form |
 | Adaptive clipping | not applied | every per-subject update already exceeds the clip bound (median norm 3.7 vs C = 1), so it cannot help |
-| APOE4 and education covariates | pending | needs `ADNIMERGE.csv` from ADNI IDA; `--adnimerge` is ready |
+| APOE4 and education covariates (APOERES and PTDEMOG tables) | rejected | against age and sex, accuracy moves by at most 1.0 point and AUROC by at most 0.008, in no consistent direction; APOE4 is recorded for 637 of the 799 subjects (`results_v7/results_summary_v7_apoe.json`) |
 
 ## What the larger cohort changed
 
@@ -335,6 +348,7 @@ ppxfl-alzheimer/
   src/handedness.py        left/right resolution against anchor subjects
   src/vbm_features.py      deepmriprep region volumes (the current features; --extended-out for the multi-atlas set)
   src/feature_ablation.py  richer features vs. the perturbed dimension, centralised and private
+  src/mu_selection.py      FedProx strength chosen per partition on one seed, scored on the others
   src/features.py          the earlier intensity-mixture Harvard-Oxford features
   src/slices_v3.py         2.5D slices at named MNI coordinates
   src/deep_features.py     frozen-backbone embeddings (head dimension 6,147)
@@ -393,11 +407,15 @@ python -m src.vbm_features --extended-out data/mni2mm/features_extended.npz
 python -m src.evaluate_v3 --features data/mni2mm/features_vbm.npz --models ensemble ensemble_cv logreg_cv --out-dir results_v6/metrics_nocov
 bash scripts/run_v7.sh
 python -m src.feature_ablation --features base=data/mni2mm/features_vbm.npz extended=data/mni2mm/features_extended.npz --out results_v7/feature_ablation.json
+bash scripts/run_mu_sweep.sh
+python -m src.mu_selection --run 0=results_v7/metrics_fedavg 0.01=results_v7/metrics_mu_sweep/mu0.01 0.1=results_v7/metrics_mu_sweep/mu0.1 1=results_v7/metrics 3=results_v7/metrics_mu_sweep/mu3
+python -m src.evaluate_v3 --features data/mni2mm/features_vbm.npz --models ensemble ensemble_cv logreg_cv --covariates --apoe-tables data/adni_tables/APOERES.csv data/adni_tables/PTDEMOG.csv --out-dir results_v7/metrics_apoe
 python -m src.export_site
 ```
 
 `--covariates` appends age and sex to the centralised models, and
-`--adnimerge ADNIMERGE.csv` adds APOE4 and education. Diagnostic scores (MMSE,
+`--adnimerge ADNIMERGE.csv` (or `--apoe-tables APOERES.csv PTDEMOG.csv`, the
+two IDA study files it is built from) adds APOE4 and education. Diagnostic scores (MMSE,
 CDR, ADAS, FAQ) are never used as inputs: ADNI assigns the diagnosis from them.
 
 Rebuild the paper's generated tables and prose macros from the results, and

@@ -59,6 +59,39 @@ def balanced_cohort(directory):
     return top, sizes
 
 
+def mu_facts(selection: dict) -> dict[str, str]:
+    """FedProx strength chosen per partition on one seed, scored on the others."""
+    rows = selection["rows"]
+    real = [r for r in rows if r["partition"] == "natural"]
+    simulated = [r for r in rows if r["partition"] != "natural"]
+    real_mu = {r["chosen_mu"] for r in real}
+    if len(real_mu) != 1:
+        raise ValueError(f"real-site partition chose several mu: {sorted(real_mu)}")
+    gains = [100 * (r["held_out_chosen"] - r["held_out_fedavg"]) for r in real]
+    shifts = [abs(100 * (r["held_out_chosen"] - r["held_out_fedavg"])) for r in simulated]
+    return {
+        "MuReal": f"{real_mu.pop():g}",
+        "MuRealGainLow": f"{min(gains):.1f}",
+        "MuRealGainHigh": f"{max(gains):.1f}",
+        "MuSimMax": f"{max(r['chosen_mu'] for r in simulated):g}",
+        "MuSimShift": f"{max(shifts):.1f}",
+    }
+
+
+def covariate_shift(base: list, extended: list) -> dict[str, str]:
+    """Largest change, over every task and split, in best-model accuracy (points)
+    and macro AUROC when APOE4 and education join age and sex."""
+    keys = {(c["label_set"], c["split_scheme"]) for c in base if c["family"] == "centralised"}
+
+    def top(conditions, key, metric):
+        return max(_mean(c[metric]) for c in conditions if c["family"] == "centralised"
+                   and (c["label_set"], c["split_scheme"]) == key)
+
+    accuracy = max(abs(top(extended, k, "accuracy") - top(base, k, "accuracy")) for k in keys)
+    auroc = max(abs(top(extended, k, "macro_auroc") - top(base, k, "macro_auroc")) for k in keys)
+    return {"ApoeAccShift": f"{100 * accuracy:.1f}", "ApoeAucShift": f"{auroc:.3f}"}
+
+
 def facts(root: str) -> dict[str, str]:
     v7 = os.path.join(root, "results_v7")
     imaging = _load(os.path.join(v7, "results_summary_v7_imaging_only.json"))["conditions"]
@@ -66,6 +99,8 @@ def facts(root: str) -> dict[str, str]:
     ablation = {(r["features"], r["label_set"]): r
                 for r in _load(os.path.join(v7, "feature_ablation.json"))["rows"]}
     fed_run = _load(os.path.join(v7, "metrics", "fed_natural_cn-ad_subject_s42.json"))
+    selection = _load(os.path.join(v7, "mu_selection.json"))
+    genetic = _load(os.path.join(v7, "results_summary_v7_apoe.json"))["conditions"]
     confounds = _load(os.path.join(v7, "metrics", "confounds.json"))
     law = _load(os.path.join(v7, "metrics", "dimension_law.json"))["rows"]
     run = _load(os.path.join(v7, "metrics", "dp_cn-mci-ad_eps1.0_s42.json"))
@@ -122,6 +157,8 @@ def facts(root: str) -> dict[str, str]:
         "CohFedIidBin": pct(fed("cn-ad", "iid")),
         "CohFedDirBin": pct(fed("cn-ad", "dirichlet")),
         "CohProxMu": f"{fed_run['prox_mu']:g}",
+        **mu_facts(selection),
+        **covariate_shift(full, genetic),
         # subject-level DP-FedAvg
         "CohDpBinNone": pct(private("cn-ad", None)),
         "CohDpBinOne": pct(private("cn-ad", 1.0)),
