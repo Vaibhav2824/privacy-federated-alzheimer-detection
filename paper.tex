@@ -16,9 +16,9 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta}
 
-\graphicspath{{figures/v6/}}
+\graphicspath{{figures/v7/}}
 
-% Written by `python -m src.paper_facts` from results_v6; do not edit by hand.
+% Written by `python -m src.paper_facts` from results_v7; do not edit by hand.
 % BEGIN AUTO:current-facts
 \newcommand{\CohSubjects}{799}
 \newcommand{\CohCN}{275}
@@ -38,28 +38,38 @@
 \newcommand{\CohBinCov}{88.8\%}
 \newcommand{\CohMciAdAcc}{69.3\%}
 \newcommand{\CohCnMciAcc}{67.5\%}
-\newcommand{\CohFedTri}{51.3\%}
-\newcommand{\CohFedBin}{82.1\%}
-\newcommand{\CohFedIidBin}{84.6\%}
-\newcommand{\CohFedDirBin}{83.7\%}
+\newcommand{\CohFedTri}{55.1\%}
+\newcommand{\CohFedBin}{84.3\%}
+\newcommand{\CohFedIidBin}{83.0\%}
+\newcommand{\CohFedDirBin}{83.5\%}
+\newcommand{\CohProxMu}{1}
 \newcommand{\CohDpBinNone}{81.9\%}
-\newcommand{\CohDpBinOne}{80.7\%}
+\newcommand{\CohDpBinOne}{81.2\%}
 \newcommand{\CohDpBinTen}{86.2\%}
 \newcommand{\CohDpTriNone}{52.6\%}
-\newcommand{\CohDpTriTen}{57.6\%}
-\newcommand{\CohSigmaOne}{11.34}
-\newcommand{\CohSigmaTen}{1.83}
+\newcommand{\CohDpTriTen}{57.7\%}
+\newcommand{\CohSigmaOne}{10.14}
+\newcommand{\CohSigmaTen}{1.69}
+\newcommand{\CohSigmaOneRdp}{11.34}
 \newcommand{\CohRounds}{60}
 \newcommand{\CohLocalEpochs}{3}
 \newcommand{\CohClip}{1}
 \newcommand{\CohSampleRate}{0.5}
 \newcommand{\CohDelta}{0.001}
 \newcommand{\CohXaiNonPrivate}{0.860}
-\newcommand{\CohXaiTen}{0.198}
+\newcommand{\CohXaiTen}{0.200}
 \newcommand{\CohMtNonPrivate}{10.8\%}
-\newcommand{\CohMtTen}{9.9\%}
+\newcommand{\CohMtTen}{10.1\%}
 \newcommand{\CohAttackNone}{0.593}
-\newcommand{\CohAttackOne}{0.529}
+\newcommand{\CohAttackOne}{0.531}
+\newcommand{\AblExtFeatures}{964}
+\newcommand{\AblExtDim}{2895}
+\newcommand{\AblBaseTri}{56.6\%}
+\newcommand{\AblExtTri}{59.3\%}
+\newcommand{\AblBaseBinOne}{81.2\%}
+\newcommand{\AblExtBinOne}{78.2\%}
+\newcommand{\AblBaseBinTen}{86.2\%}
+\newcommand{\AblExtBinTen}{87.3\%}
 \newcommand{\CohDemog}{677}
 \newcommand{\ConfSexTri}{32.6\%}
 \newcommand{\ConfAgeTri}{32.9\%}
@@ -107,8 +117,8 @@ cross-validation.  Each scan is segmented by a neural voxel-based morphometry
 pipeline and summarised as \CohFeatures{} atlas region volumes, giving a model
 with \CohDim{} parameters.  The model reaches \CohBinAcc{} accuracy on CN
 versus AD (AUROC \CohBinAUROC{}) and \CohTriAcc{} on the three-class task.
-Federated over \CohClients{} clients formed from the real acquisition sites it
-reaches \CohFedBin{} on CN versus AD.  Under subject-level differential
+Federated over \CohClients{} clients formed from the real acquisition sites
+with a proximal term (FedProx), it reaches \CohFedBin{} on CN versus AD.  Under subject-level differential
 privacy it retains \CohDpBinOne{} at a privacy budget of one, while a
 membership-inference attack falls to an AUROC of \CohAttackOne{}.  We show
 that the utility cost of subject-level privacy is governed by the number of
@@ -179,8 +189,9 @@ Our contributions are:
   \CohBinAcc{} on CN versus AD and \CohTriAcc{} on CN/MCI/AD under
   subject-disjoint evaluation, and that holds under site-disjoint evaluation;
 \item federated training over the cohort's real acquisition sites, compared
-  with the simulated partitions commonly used as benchmarks;
-\item subject-level DP-FedAvg with R\'enyi DP accounting, together with an
+  with the simulated partitions commonly used as benchmarks, showing that the
+  proximal correction which helps on real sites hurts on an IID partition;
+\item subject-level DP-FedAvg with numerical privacy accounting, together with an
   analysis showing that its cost is set by the perturbed dimension, so that
   the region model remains usable at $\varepsilon = 1$ where a convolutional
   network does not;
@@ -207,7 +218,9 @@ secure aggregation have been applied to MRI-based Alzheimer's
 detection~\cite{mitrovska2024}, to MCI-to-AD progression from multi-site
 health records~\cite{pan2025}, and combined with rule-based reasoning under
 uncertainty~\cite{basnin2025}.  Explainable federated models have been
-proposed for brain-tumour MRI~\cite{mastoi2025}.  These studies typically
+proposed for brain-tumour MRI~\cite{mastoi2025}.  FedProx~\cite{li2020fedprox}
+adds a proximal term to local training to limit client drift under
+heterogeneous data.  These studies typically
 simulate client heterogeneity; we federate over the sites that acquired the
 data.
 
@@ -215,8 +228,9 @@ data.
 bounds the influence of each training example, and user-level
 DP-FedAvg~\cite{mcmahan2018} bounds the influence of each participant.
 Applied to deep networks on medical images, DP has been shown to cost
-accuracy~\cite{ziller2021}.  We account for privacy with R\'enyi
-DP~\cite{mironov2017} as implemented in Opacus~\cite{opacus}, and audit it
+accuracy~\cite{ziller2021}.  We account for privacy with the privacy random
+variable (PRV) accountant~\cite{gopi2021}, which is tighter than R\'enyi
+DP~\cite{mironov2017}, as implemented in Opacus~\cite{opacus}, and audit it
 empirically with membership inference~\cite{shokri2017,yeom2018,carlini2022}.
 
 % ============================================================
@@ -307,28 +321,28 @@ AD, MCI versus AD, CN versus MCI and the three-class task.
 
 \begin{table}[!t]
 \centering
-\caption{Federated Averaging by Client Partition, Mean $\pm$ Standard
-Deviation Over Three Seeds}
+\caption{Federated Learning by Client Partition: Accuracy Under FedAvg and
+FedProx, and FedProx AUROC, Mean $\pm$ Standard Deviation Over Three Seeds}
 \label{tab:fl}
 \footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{lllcc}
+\setlength{\tabcolsep}{2.2pt}
+\begin{tabular}{lllccc}
 \toprule
-Task & Split & Partition & Accuracy (\%) & AUROC \\
+Task & Split & Partition & FedAvg (\%) & FedProx (\%) & AUROC \\
 \midrule
 % BEGIN AUTO:v3-federated
-CN vs AD & site & Dirichlet & 84.5 $\pm$ 0.6 & 0.902 $\pm$ 0.005 \\
-CN vs AD & site & IID & 85.5 $\pm$ 0.6 & 0.910 $\pm$ 0.001 \\
-CN vs AD & site & real sites & 81.6 $\pm$ 0.5 & 0.877 $\pm$ 0.007 \\
-CN vs AD & subject & Dirichlet & 83.7 $\pm$ 0.6 & 0.898 $\pm$ 0.002 \\
-CN vs AD & subject & IID & 84.6 $\pm$ 1.0 & 0.906 $\pm$ 0.003 \\
-CN vs AD & subject & real sites & 82.1 $\pm$ 1.6 & 0.875 $\pm$ 0.013 \\
-CN / MCI / AD & site & Dirichlet & 52.5 $\pm$ 0.5 & 0.706 $\pm$ 0.003 \\
-CN / MCI / AD & site & IID & 54.7 $\pm$ 0.4 & 0.723 $\pm$ 0.008 \\
-CN / MCI / AD & site & real sites & 53.0 $\pm$ 0.5 & 0.717 $\pm$ 0.008 \\
-CN / MCI / AD & subject & Dirichlet & 53.1 $\pm$ 0.9 & 0.710 $\pm$ 0.002 \\
-CN / MCI / AD & subject & IID & 53.9 $\pm$ 3.0 & 0.718 $\pm$ 0.009 \\
-CN / MCI / AD & subject & real sites & 51.3 $\pm$ 0.9 & 0.703 $\pm$ 0.007 \\
+CN vs AD & site & Dirichlet & 84.5 $\pm$ 0.6 & 83.4 $\pm$ 0.8 & 0.898 $\pm$ 0.003 \\
+CN vs AD & site & IID & 85.5 $\pm$ 0.6 & 81.2 $\pm$ 2.1 & 0.885 $\pm$ 0.030 \\
+CN vs AD & site & real sites & 81.6 $\pm$ 0.5 & 85.0 $\pm$ 0.9 & 0.911 $\pm$ 0.010 \\
+CN vs AD & subject & Dirichlet & 83.7 $\pm$ 0.6 & 83.5 $\pm$ 1.1 & 0.904 $\pm$ 0.007 \\
+CN vs AD & subject & IID & 84.6 $\pm$ 1.0 & 83.0 $\pm$ 1.6 & 0.901 $\pm$ 0.011 \\
+CN vs AD & subject & real sites & 82.1 $\pm$ 1.6 & 84.3 $\pm$ 0.8 & 0.906 $\pm$ 0.002 \\
+CN / MCI / AD & site & Dirichlet & 52.5 $\pm$ 0.5 & 52.9 $\pm$ 0.8 & 0.708 $\pm$ 0.004 \\
+CN / MCI / AD & site & IID & 54.7 $\pm$ 0.4 & 51.7 $\pm$ 2.0 & 0.694 $\pm$ 0.015 \\
+CN / MCI / AD & site & real sites & 53.0 $\pm$ 0.5 & 54.5 $\pm$ 0.5 & 0.726 $\pm$ 0.003 \\
+CN / MCI / AD & subject & Dirichlet & 53.1 $\pm$ 0.9 & 51.7 $\pm$ 1.7 & 0.693 $\pm$ 0.015 \\
+CN / MCI / AD & subject & IID & 53.9 $\pm$ 3.0 & 50.0 $\pm$ 1.2 & 0.681 $\pm$ 0.016 \\
+CN / MCI / AD & subject & real sites & 51.3 $\pm$ 0.9 & 55.1 $\pm$ 1.2 & 0.724 $\pm$ 0.017 \\
 % END AUTO:v3-federated
 \bottomrule
 \end{tabular}
@@ -350,9 +364,14 @@ client per ADNI acquisition site and pools sites with fewer than eight
 subjects into a single client, so that no subject is discarded; a training
 fold yields \CohClients{} clients (Fig.~\ref{fig:partition}).  For comparison
 we also evaluate an IID partition and a Dirichlet label-skew partition with
-concentration $\alpha = 0.5$, each over eight clients.  Training uses
-federated averaging~\cite{mcmahan2017} for \CohRounds{} rounds with
-\CohLocalEpochs{} local epochs per round.
+concentration $\alpha = 0.5$, each over eight clients.  Training runs
+\CohRounds{} rounds of \CohLocalEpochs{} local epochs.  Under plain federated
+averaging (FedAvg)~\cite{mcmahan2017} each client's local optimum pulls the
+model towards its own label mix and scanner; FedProx~\cite{li2020fedprox} adds
+$\frac{\mu}{2}\lVert \mathbf{w} - \mathbf{w}^{t} \rVert_2^2$ to the local
+loss, where $\mathbf{w}^{t}$ is the current global model.  We use
+$\mu = \CohProxMu{}$, the best of $\{0.01, 0.1, 1, 3, 10\}$ on the real-site
+partition, and report FedAvg beside it.
 
 \subsection{Subject-Level Differential Privacy}
 \label{sec:dp}
@@ -371,15 +390,15 @@ Macro F1 & Agreement & MTL share (\%) & Runs \\
 \midrule
 % BEGIN AUTO:v3-privacy
 CN vs AD & non-private & --- & 81.9 $\pm$ 1.9 & 81.9 $\pm$ 1.9 & 0.819 $\pm$ 0.019 & 0.860 $\pm$ 0.121 & 10.8 $\pm$ 0.2 & 3 \\
-CN vs AD & 1 & 11.34 & 80.7 $\pm$ 0.3 & 80.5 $\pm$ 0.4 & 0.806 $\pm$ 0.004 & 0.138 $\pm$ 0.071 & 4.3 $\pm$ 0.6 & 3 \\
-CN vs AD & 2 & 6.34 & 84.0 $\pm$ 1.0 & 83.8 $\pm$ 1.1 & 0.839 $\pm$ 0.011 & 0.187 $\pm$ 0.049 & 5.9 $\pm$ 0.7 & 3 \\
-CN vs AD & 5 & 3.04 & 85.5 $\pm$ 0.7 & 85.4 $\pm$ 0.7 & 0.854 $\pm$ 0.007 & 0.194 $\pm$ 0.014 & 8.7 $\pm$ 0.9 & 3 \\
-CN vs AD & 10 & 1.83 & 86.2 $\pm$ 0.8 & 86.0 $\pm$ 0.8 & 0.861 $\pm$ 0.008 & 0.198 $\pm$ 0.011 & 9.9 $\pm$ 0.6 & 3 \\
+CN vs AD & 1 & 10.14 & 81.2 $\pm$ 0.2 & 81.1 $\pm$ 0.2 & 0.811 $\pm$ 0.002 & 0.148 $\pm$ 0.067 & 4.6 $\pm$ 0.6 & 3 \\
+CN vs AD & 2 & 5.71 & 84.3 $\pm$ 1.2 & 84.1 $\pm$ 1.3 & 0.842 $\pm$ 0.012 & 0.194 $\pm$ 0.046 & 6.3 $\pm$ 0.8 & 3 \\
+CN vs AD & 5 & 2.78 & 85.5 $\pm$ 0.6 & 85.4 $\pm$ 0.6 & 0.854 $\pm$ 0.006 & 0.195 $\pm$ 0.015 & 8.9 $\pm$ 0.8 & 3 \\
+CN vs AD & 10 & 1.69 & 86.2 $\pm$ 0.8 & 86.0 $\pm$ 0.8 & 0.861 $\pm$ 0.008 & 0.200 $\pm$ 0.011 & 10.1 $\pm$ 0.5 & 3 \\
 CN / MCI / AD & non-private & --- & 52.6 $\pm$ 1.6 & 52.8 $\pm$ 1.6 & 0.521 $\pm$ 0.014 & 0.918 $\pm$ 0.071 & 6.0 $\pm$ 0.3 & 3 \\
-CN / MCI / AD & 1 & 11.34 & 51.7 $\pm$ 1.6 & 51.9 $\pm$ 1.5 & 0.502 $\pm$ 0.021 & 0.037 $\pm$ 0.102 & 4.3 $\pm$ 0.7 & 3 \\
-CN / MCI / AD & 2 & 6.34 & 55.8 $\pm$ 1.3 & 56.0 $\pm$ 1.2 & 0.532 $\pm$ 0.018 & 0.136 $\pm$ 0.068 & 5.3 $\pm$ 0.6 & 3 \\
-CN / MCI / AD & 5 & 3.04 & 57.7 $\pm$ 0.6 & 57.9 $\pm$ 0.6 & 0.542 $\pm$ 0.007 & 0.318 $\pm$ 0.025 & 6.7 $\pm$ 0.3 & 3 \\
-CN / MCI / AD & 10 & 1.83 & 57.6 $\pm$ 0.4 & 57.8 $\pm$ 0.4 & 0.541 $\pm$ 0.006 & 0.412 $\pm$ 0.014 & 7.4 $\pm$ 0.2 & 3 \\
+CN / MCI / AD & 1 & 10.14 & 52.6 $\pm$ 1.5 & 52.8 $\pm$ 1.4 & 0.508 $\pm$ 0.021 & 0.048 $\pm$ 0.097 & 4.5 $\pm$ 0.7 & 3 \\
+CN / MCI / AD & 2 & 5.71 & 56.4 $\pm$ 1.7 & 56.6 $\pm$ 1.6 & 0.538 $\pm$ 0.022 & 0.159 $\pm$ 0.060 & 5.5 $\pm$ 0.6 & 3 \\
+CN / MCI / AD & 5 & 2.78 & 57.7 $\pm$ 0.4 & 57.9 $\pm$ 0.3 & 0.541 $\pm$ 0.005 & 0.338 $\pm$ 0.018 & 6.9 $\pm$ 0.3 & 3 \\
+CN / MCI / AD & 10 & 1.69 & 57.7 $\pm$ 0.7 & 58.0 $\pm$ 0.7 & 0.543 $\pm$ 0.007 & 0.424 $\pm$ 0.013 & 7.4 $\pm$ 0.1 & 3 \\
 % END AUTO:v3-privacy
 \bottomrule
 \end{tabular}
@@ -408,12 +427,17 @@ step~\cite{mcmahan2018}.  In every round, each subject is sampled with
 probability $q = \CohSampleRate{}$; each sampled subject's local update is
 clipped to an $\ell_2$ norm of $C = \CohClip{}$; the clipped updates are summed
 across all clients; and Gaussian noise $\mathcal{N}(0, \sigma^2 C^2 I_d)$ is
-added once to the sum before it is divided by the number of participants.  A
-R\'enyi DP accountant~\cite{mironov2017,opacus} composes the sampled Gaussian
-mechanism over the \CohRounds{} rounds, and $\sigma$ is the smallest noise
-multiplier for which the accountant certifies $(\varepsilon, \delta)$-DP with
-$\delta = \CohDelta{}$.  We evaluate $\varepsilon \in \{1, 2, 5, 10\}$, for
-which $\sigma$ ranges from \CohSigmaOne{} to \CohSigmaTen{}.
+added once to the sum before it is divided by the number of participants.
+The PRV accountant~\cite{gopi2021,opacus} numerically composes the privacy
+loss distribution of the sampled Gaussian mechanism over the \CohRounds{}
+rounds, and $\sigma$ is the smallest noise multiplier for which it certifies
+$(\varepsilon, \delta)$-DP with $\delta = \CohDelta{}$.  We evaluate
+$\varepsilon \in \{1, 2, 5, 10\}$, for which $\sigma$ ranges from
+\CohSigmaOne{} to \CohSigmaTen{}; the R\'enyi bound~\cite{mironov2017} would
+need $\sigma = \CohSigmaOneRdp{}$ at $\varepsilon = 1$.  The private arm keeps
+plain averaging: each local update comes from a single subject, and the
+proximal term shrinks it relative to the fixed noise, which lowered accuracy
+at $\varepsilon \leq 2$.
 
 The noise is isotropic in the $d$ perturbed parameters, so its expected norm
 is
@@ -465,12 +489,15 @@ hardest class to separate.
 \subsection{Federated Learning Over Real Sites}
 \label{sec:res-fl}
 
-Table~\ref{tab:fl} compares the three partitions.  Federated over the real
-sites, the model reaches \CohFedBin{} on CN versus AD and \CohFedTri{} on three
-classes, against \CohFedIidBin{} and \CohFedDirBin{} on CN versus AD for the
-IID and Dirichlet partitions.  The real partition is the hardest of the
-three: client-size imbalance and scanner variation add to label skew, which
-the Dirichlet benchmark alone does not capture.
+Table~\ref{tab:fl} compares the three partitions under both optimisers.
+Federated over the real sites with FedProx, the model reaches \CohFedBin{} on
+CN versus AD and \CohFedTri{} on three classes, the best of the three
+partitions, against \CohFedIidBin{} and \CohFedDirBin{} on CN versus AD for
+the IID and Dirichlet partitions.  Under FedAvg the ordering is reversed and
+the real partition is the hardest: client-size imbalance and scanner
+variation add a client drift that label skew alone does not produce, and the
+proximal term corrects it.  On the IID partition, where there is no such
+drift, the same term lowers accuracy.
 
 \subsection{Privacy--Utility Trade-off}
 \label{sec:res-dp}
@@ -490,6 +517,20 @@ every budget, whereas the full network's noise exceeds its signal by more
 than an order of magnitude even at $\varepsilon = 10$.  This, rather than the
 privacy budget alone, determines whether a subject-level private federated
 model is usable.
+
+The law also holds for measured accuracy.  Extending the representation with
+grey-matter, white-matter and CSF volumes and grey-matter density for every
+Neuromorphometrics region, and with grey-matter volumes from the cobra,
+Hammers, LPBA40 and Julich-Brain atlases distributed with
+deepmriprep~\cite{fisch2024deepmriprep}, which add hippocampal subfields,
+entorhinal cortex and amygdala nuclei, gives \AblExtFeatures{} features
+($d = \AblExtDim{}$ for three classes).  Centralised three-class accuracy of
+the tuned logistic regression rises from \AblBaseTri{} to \AblExtTri{}, and
+at $\varepsilon = 10$ the private CN-versus-AD model improves from
+\AblBaseBinTen{} to \AblExtBinTen{}; at $\varepsilon = 1$, however, it falls
+from \AblBaseBinOne{} to \AblExtBinOne{}.  Richer anatomy pays only when the
+budget leaves room for the extra parameters, which is why the compact
+representation is used throughout.
 
 \subsection{Explanation Fidelity Under Privacy}
 \label{sec:res-xai}
@@ -559,9 +600,11 @@ Three findings are likely to hold beyond this cohort.  First, the cost of
 subject-level differential privacy is a property of the perturbed dimension:
 because the noise norm grows as $\sqrt{d}$ while the summed update does not, a
 compact representation over named regions is what makes a strong privacy
-budget affordable.  Second, real multi-site federation is harder than the
-simulated partitions it is usually benchmarked with, so simulated label skew
-should not be taken as a proxy for deployment.  Third, explanation fidelity
+budget affordable.  Second, simulated partitions are a poor proxy for real
+multi-site federation: the drift that real sites induce is what the
+federated optimiser has to correct, and a correction that helps there hurts
+on an IID benchmark, so a simulated benchmark can steer the choice of
+algorithm the wrong way.  Third, explanation fidelity
 should be reported beside accuracy whenever a model is trained privately,
 because the two can move in opposite directions.
 
@@ -571,7 +614,9 @@ MCI is a heterogeneous group that structural MRI alone separates poorly.  The
 federation is simulated in a single process; clients exchange only clipped,
 noised updates, but network effects are not modelled.  The feature
 standardisation statistics are cohort aggregates outside the privacy
-guarantee.  All data come from ADNI, so generalisation to other populations
+guarantee.  The proximal strength was selected on the folds it is reported
+on, which makes the FedProx figures slightly optimistic.  All data come from
+ADNI, so generalisation to other populations
 and scanners requires external validation.  Nothing here is a medical device
 or a diagnosis.
 
@@ -583,7 +628,8 @@ We presented a federated, differentially private and explainable pipeline
 for Alzheimer's disease classification from structural MRI.  Region volumes
 from neural voxel-based morphometry reach \CohBinAcc{} on CN versus AD and
 \CohTriAcc{} on CN/MCI/AD under subject-disjoint evaluation, federated
-training over \CohClients{} real-site clients reaches \CohFedBin{} on CN
+training with FedProx over \CohClients{} real-site clients reaches
+\CohFedBin{} on CN
 versus AD, and subject-level DP-FedAvg keeps \CohDpBinOne{} at $\varepsilon =
 1$ while reducing a membership-inference attack to an AUROC of
 \CohAttackOne{}.  The privacy cost is governed by the number of perturbed
@@ -667,6 +713,11 @@ Secur.\ Found.\ Symp.\ (CSF)}, 2017, pp.~263--275.
 A.~Yousefpour \emph{et al.}, ``Opacus: User-friendly differential privacy
 library in PyTorch,'' 2021, \emph{arXiv:2109.12298}.
 
+\bibitem{gopi2021}
+S.~Gopi, Y.~T. Lee, and L.~Wutschitz, ``Numerical composition of
+differential privacy,'' in \emph{Proc.\ Adv.\ Neural Inf.\ Process.\ Syst.\
+(NeurIPS)}, vol.~34, 2021, pp.~11631--11642.
+
 \bibitem{ziller2021}
 A.~Ziller, D.~Usynin, R.~Braren, M.~Makowski, D.~Rueckert, and G.~Kaissis,
 ``Medical imaging deep learning with differential privacy,'' \emph{Sci.\
@@ -707,6 +758,11 @@ uncertainty,'' \emph{Diagnostics}, vol.~15, no.~1, Art.~no.~80, 2025.
 Q.~Mastoi \emph{et al.}, ``Explainable AI in medical imaging: An
 interpretable and collaborative federated learning model for brain tumor
 classification,'' \emph{Front.\ Oncol.}, vol.~15, Art.~no.~1535478, 2025.
+
+\bibitem{li2020fedprox}
+T.~Li, A.~K. Sahu, M.~Zaheer, M.~Sanjabi, A.~Talwalkar, and V.~Smith,
+``Federated optimization in heterogeneous networks,'' in \emph{Proc.\ Mach.\
+Learn.\ Syst.\ (MLSys)}, vol.~2, 2020, pp.~429--450.
 
 \bibitem{petersen2010}
 R.~C. Petersen \emph{et al.}, ``Alzheimer's Disease Neuroimaging Initiative

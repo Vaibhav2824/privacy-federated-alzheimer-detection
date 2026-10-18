@@ -1,5 +1,5 @@
 """
-paper_figures.py — the paper's data figures, from the v6 results.
+paper_figures.py — the paper's data figures, from the v7 results.
 
 Each task is plotted separately; averaging CN-vs-AD and three-class runs into
 one curve would describe neither.
@@ -46,13 +46,13 @@ def figure_privacy(conditions, out_path: str) -> None:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="the paper's data figures")
-    parser.add_argument("--results", default="results_v6")
-    parser.add_argument("--out-dir", default=os.path.join("..", "figures", "v6"))
+    parser.add_argument("--results", default="results_v7")
+    parser.add_argument("--out-dir", default=os.path.join("..", "figures", "v7"))
     args = parser.parse_args(argv)
     os.makedirs(args.out_dir, exist_ok=True)
     _style()
     metrics = os.path.join(args.results, "metrics")
-    with open(os.path.join(args.results, "results_summary_v6.json"), encoding="utf-8") as h:
+    with open(os.path.join(args.results, "results_summary_v7.json"), encoding="utf-8") as h:
         figure_privacy(json.load(h)["conditions"], os.path.join(args.out_dir, "privacy_utility.png"))
     with open(os.path.join(metrics, "dimension_law.json"), encoding="utf-8") as h:
         figure_dimension_law(json.load(h), os.path.join(args.out_dir, "dimension_law.png"))
