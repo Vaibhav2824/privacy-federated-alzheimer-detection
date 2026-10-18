@@ -144,8 +144,14 @@ COMPACT_SCHEMES = {"subject": "subject", "site": "site"}
 COMPACT_CLIENTS = {"natural": "real sites", "iid": "IID", "dirichlet": "Dirichlet"}
 
 
-def table_federated_compact(summary: dict) -> str:
-    """Task, split, partition, accuracy and AUROC: narrow enough for one column."""
+def table_federated_compact(summary: dict, baseline: dict | None = None) -> str:
+    """Task, split, partition, accuracy and AUROC: narrow enough for one column.
+
+    With ``baseline`` (a plain-FedAvg summary) its accuracy for the same row is
+    printed first, so the effect of the federated optimiser reads across a row.
+    """
+    before = {(c["label_set"], c["split_scheme"], c["client_scheme"]): c
+              for c in (baseline or {}).get("conditions", []) if c["family"] == "federated"}
     lines = []
     for condition in _rows(
         summary["conditions"],
@@ -156,6 +162,8 @@ def table_federated_compact(summary: dict) -> str:
             LABEL_SET_NAMES.get(condition["label_set"], condition["label_set"]),
             COMPACT_SCHEMES.get(condition["split_scheme"], condition["split_scheme"]),
             COMPACT_CLIENTS.get(condition["client_scheme"], condition["client_scheme"]),
+            *([cell(before[(condition["label_set"], condition["split_scheme"],
+                            condition["client_scheme"])]["accuracy"], 100, 1)] if before else []),
             cell(condition["accuracy"], 100, 1),
             cell(condition["macro_auroc"], 1, 3),
         ]) + r" \\")
@@ -258,6 +266,13 @@ def replace_block(text: str, name: str, body: str) -> tuple[str, bool]:
     return pattern.sub(lambda m: m.group(1) + body + "\n" + m.group(2), text), True
 
 
+def _maybe_load(path):
+    if not path:
+        return None
+    with open(path, encoding="utf-8") as handle:
+        return json.load(handle)
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="generate v3 paper tables")
     parser.add_argument("--summary",
@@ -276,6 +291,8 @@ def main(argv=None) -> int:
                         help="list only the best centralised model per task and split")
     parser.add_argument("--compact", action="store_true",
                         help="single-column federated and dimension-law tables")
+    parser.add_argument("--fedavg-summary", default=None,
+                        help="plain-FedAvg summary, printed beside the federated rows")
     parser.add_argument("--paper", default=os.path.join("..", "paper.tex"))
     args = parser.parse_args(argv)
 
@@ -291,7 +308,8 @@ def main(argv=None) -> int:
     blocks = {
         "v3-centralised": table_centralised(
             best_centralised_only(summary) if args.best_centralised else summary),
-        "v3-federated": (table_federated_compact if args.compact else table_federated)(summary),
+        "v3-federated": table_federated_compact(summary, _maybe_load(args.fedavg_summary))
+        if args.compact else table_federated(summary),
         "v3-privacy": table_privacy(summary),
     }
     if os.path.exists(args.law):

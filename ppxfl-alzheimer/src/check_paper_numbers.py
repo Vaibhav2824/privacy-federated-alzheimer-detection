@@ -192,7 +192,7 @@ def run_checks(paper_path, results_dir, splits_path, extra_results_dirs=()):
 def main():  # pragma: no cover - CLI wiring over the tested functions above
     parser = argparse.ArgumentParser(description='Check paper numbers against the results')
     parser.add_argument('--paper', default=os.path.join('..', 'paper.tex'))
-    parser.add_argument('--results-dir', default='results_v6')
+    parser.add_argument('--results-dir', default='results_v7')
     parser.add_argument('--splits', default=None,
                         help='splits file whose cohort facts the paper states, if any')
     parser.add_argument('--also-results-dir', action='append', default=[],

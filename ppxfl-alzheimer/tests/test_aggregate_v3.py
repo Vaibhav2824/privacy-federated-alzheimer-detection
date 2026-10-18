@@ -402,3 +402,18 @@ def test_tables_cli_compact_tables_fit_one_column(results_dir, tmp_path):
     rows = [line for line in paper.read_text(encoding="utf-8").splitlines() if line.endswith("\\\\")]
     assert rows and all(line.count(" & ") == 4 for line in rows)   # five columns each
     assert "1 & Region model & 405 & 11.34 & 0.36 \\\\" in rows
+
+
+def test_tables_cli_compact_federated_can_show_the_fedavg_baseline(results_dir, tmp_path):
+    summary_path = tmp_path / "summary.json"
+    summary_path.write_text(json.dumps(aggregate(str(results_dir))), encoding="utf-8")
+    paper = tmp_path / "paper.tex"
+    paper.write_text("% BEGIN AUTO:v3-federated\n% END AUTO:v3-federated\n", encoding="utf-8")
+    assert tables_main(["--summary", str(summary_path), "--compact", "--paper", str(paper),
+                        "--fedavg-summary", str(summary_path),
+                        "--law", str(tmp_path / "absent.json"),
+                        "--orientation", str(tmp_path / "absent.json")]) == 0
+    rows = [line for line in paper.read_text(encoding="utf-8").splitlines() if line.endswith("\\\\")]
+    assert rows and all(line.count(" & ") == 5 for line in rows)   # baseline column added
+    first = rows[0].split(" & ")
+    assert first[3] == first[4]                                    # same summary both sides
