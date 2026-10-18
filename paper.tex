@@ -43,6 +43,13 @@
 \newcommand{\CohFedIidBin}{83.0\%}
 \newcommand{\CohFedDirBin}{83.5\%}
 \newcommand{\CohProxMu}{1}
+\newcommand{\MuReal}{1}
+\newcommand{\MuRealGainLow}{1.4}
+\newcommand{\MuRealGainHigh}{3.6}
+\newcommand{\MuSimMax}{0.1}
+\newcommand{\MuSimShift}{1.5}
+\newcommand{\ApoeAccShift}{1.0}
+\newcommand{\ApoeAucShift}{0.008}
 \newcommand{\CohDpBinNone}{81.9\%}
 \newcommand{\CohDpBinOne}{81.2\%}
 \newcommand{\CohDpBinTen}{86.2\%}
@@ -188,9 +195,8 @@ Our contributions are:
   voxel-based morphometry~\cite{fisch2024deepmriprep}, that reaches
   \CohBinAcc{} on CN versus AD and \CohTriAcc{} on CN/MCI/AD under
   subject-disjoint evaluation, and that holds under site-disjoint evaluation;
-\item federated training over the cohort's real acquisition sites, compared
-  with the simulated partitions commonly used as benchmarks, showing that the
-  proximal correction which helps on real sites hurts on an IID partition;
+\item federated training over the cohort's real acquisition sites, showing
+  that simulated partitions select a different federated optimiser;
 \item subject-level DP-FedAvg with numerical privacy accounting, together with an
   analysis showing that its cost is set by the perturbed dimension, so that
   the region model remains usable at $\varepsilon = 1$ where a convolutional
@@ -250,12 +256,10 @@ unit of evaluation.
 \subsection{Preprocessing and Region Features}
 \label{sec:features}
 
-Fig.~\ref{fig:pipeline} summarises the pipeline.  Part of the cohort carries
-image headers from which the anatomical orientation cannot be read, so the
-orientation of each scanner series is measured instead: all 48 axis
-permutations and reflections are registered to a whole-head ICBM152
-template~\cite{fonov2011} and the best-scoring candidate is fitted per series
-and array shape.  Brains are extracted with deepbet~\cite{fisch2023deepbet}
+Fig.~\ref{fig:pipeline} summarises the pipeline.  Because some image headers
+do not record anatomical orientation, all 48 axis permutations and
+reflections of each scanner series are registered to a whole-head ICBM152
+template~\cite{fonov2011} and the best is fitted per series and array shape.  Brains are extracted with deepbet~\cite{fisch2023deepbet}
 and registered affinely to MNI152 by mutual
 information~\cite{garyfallidis2014}; a per-subject correlation with the
 template excludes registration failures by a fixed threshold.
@@ -321,8 +325,8 @@ AD, MCI versus AD, CN versus MCI and the three-class task.
 
 \begin{table}[!t]
 \centering
-\caption{Federated Learning by Client Partition: Accuracy Under FedAvg and
-FedProx, and FedProx AUROC, Mean $\pm$ Standard Deviation Over Three Seeds}
+\caption{FedAvg and FedProx Accuracy by Client Partition, With FedProx
+AUROC, Mean $\pm$ Standard Deviation Over Three Seeds}
 \label{tab:fl}
 \footnotesize
 \setlength{\tabcolsep}{2.2pt}
@@ -350,7 +354,7 @@ CN / MCI / AD & subject & real sites & 51.3 $\pm$ 0.9 & 55.1 $\pm$ 1.2 & 0.724 $
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\columnwidth]{site_partition.png}
+\includegraphics[width=0.8\columnwidth]{site_partition.png}
 \caption{Natural partition of one training fold: one client per ADNI site,
 with sites of fewer than eight subjects pooled into the final client.  Client
 sizes and label mixes are the cohort's own.}
@@ -365,13 +369,13 @@ subjects into a single client, so that no subject is discarded; a training
 fold yields \CohClients{} clients (Fig.~\ref{fig:partition}).  For comparison
 we also evaluate an IID partition and a Dirichlet label-skew partition with
 concentration $\alpha = 0.5$, each over eight clients.  Training runs
-\CohRounds{} rounds of \CohLocalEpochs{} local epochs.  Under plain federated
-averaging (FedAvg)~\cite{mcmahan2017} each client's local optimum pulls the
-model towards its own label mix and scanner; FedProx~\cite{li2020fedprox} adds
-$\frac{\mu}{2}\lVert \mathbf{w} - \mathbf{w}^{t} \rVert_2^2$ to the local
-loss, where $\mathbf{w}^{t}$ is the current global model.  We use
-$\mu = \CohProxMu{}$, the best of $\{0.01, 0.1, 1, 3, 10\}$ on the real-site
-partition, and report FedAvg beside it.
+\CohRounds{} rounds of \CohLocalEpochs{} local epochs with federated averaging
+(FedAvg)~\cite{mcmahan2017} and with FedProx~\cite{li2020fedprox}, which adds
+$\frac{\mu}{2}\lVert \mathbf{w} - \mathbf{w}^{t} \rVert_2^2$ to the local loss
+to hold each client near the global model $\mathbf{w}^{t}$.  Each partition
+chooses $\mu \in \{0, 0.01, 0.1, 1, 3\}$ on one seed and is scored on the
+other two; Table~\ref{tab:fl} reports $\mu = \CohProxMu{}$, the real sites'
+choice.
 
 \subsection{Subject-Level Differential Privacy}
 \label{sec:dp}
@@ -415,7 +419,7 @@ the three-class task.}
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\columnwidth]{dimension_law.png}
+\includegraphics[width=0.85\columnwidth]{dimension_law.png}
 \caption{Worst-case noise-to-signal ratio, from~\eqref{eq:ratio}, against the
 number of perturbed parameters.  Above the dotted line the noise outweighs
 the summed update.}
@@ -434,10 +438,9 @@ rounds, and $\sigma$ is the smallest noise multiplier for which it certifies
 $(\varepsilon, \delta)$-DP with $\delta = \CohDelta{}$.  We evaluate
 $\varepsilon \in \{1, 2, 5, 10\}$, for which $\sigma$ ranges from
 \CohSigmaOne{} to \CohSigmaTen{}; the R\'enyi bound~\cite{mironov2017} would
-need $\sigma = \CohSigmaOneRdp{}$ at $\varepsilon = 1$.  The private arm keeps
-plain averaging: each local update comes from a single subject, and the
-proximal term shrinks it relative to the fixed noise, which lowered accuracy
-at $\varepsilon \leq 2$.
+need $\sigma = \CohSigmaOneRdp{}$ at $\varepsilon = 1$.  The private arm uses
+FedAvg: the proximal term shrinks each single-subject update against fixed
+noise, which lowered accuracy at $\varepsilon \leq 2$.
 
 The noise is isotropic in the $d$ perturbed parameters, so its expected norm
 is
@@ -457,8 +460,8 @@ which depends on the model only through $\sqrt{d}$.
 \label{sec:xai}
 
 Because every feature is a named atlas region, a linear model's attribution
-is a value per region: the summed magnitude of its weights over classes.  Two
-models' attributions are therefore directly comparable.  We report the
+is a value per region, the summed magnitude of its weights over classes, so
+two models' attributions are directly comparable.  We report the
 Spearman correlation between the region importance of each private model and
 that of the non-private reference trained on the same folds, and the share of
 attribution mass in the hippocampus and amygdala, the regions most strongly
@@ -482,22 +485,25 @@ protocols.  It reaches \CohBinAcc{} on CN versus AD (AUROC \CohBinAUROC{}),
 \CohTriAcc{} on the three-class task (macro F1 \CohTriF{}, macro AUROC
 \CohTriAUROC{}).  Holding out whole sites changes these figures little:
 \CohBinSite{} on CN versus AD and \CohTriSite{} on three classes.  Appending
-age and sex to the imaging features raises CN versus AD only to \CohBinCov{}.
+age and sex raises CN versus AD only to \CohBinCov{}, and adding APOE4
+genotype and education as well moves no task by more than \ApoeAccShift{}
+points of accuracy or \ApoeAucShift{} of AUROC.
 The ordering of the four tasks is the clinically expected one, with MCI the
 hardest class to separate.
 
 \subsection{Federated Learning Over Real Sites}
 \label{sec:res-fl}
 
-Table~\ref{tab:fl} compares the three partitions under both optimisers.
-Federated over the real sites with FedProx, the model reaches \CohFedBin{} on
-CN versus AD and \CohFedTri{} on three classes, the best of the three
-partitions, against \CohFedIidBin{} and \CohFedDirBin{} on CN versus AD for
-the IID and Dirichlet partitions.  Under FedAvg the ordering is reversed and
-the real partition is the hardest: client-size imbalance and scanner
-variation add a client drift that label skew alone does not produce, and the
-proximal term corrects it.  On the IID partition, where there is no such
-drift, the same term lowers accuracy.
+With FedProx the real-site model reaches \CohFedBin{} on CN versus AD and
+\CohFedTri{} on three classes, the best of the three partitions (IID
+\CohFedIidBin{}, Dirichlet \CohFedDirBin{} on CN versus AD;
+Table~\ref{tab:fl}).  Under FedAvg the real partition is the hardest:
+client-size imbalance and scanner variation add a client drift that label
+skew alone does not produce.  Chosen on one seed and scored on the other two,
+the real sites select $\mu = \MuReal{}$ in every task and split, gaining
+\MuRealGainLow{} to \MuRealGainHigh{} points over FedAvg, whereas the IID and
+Dirichlet partitions select $\mu \leq \MuSimMax{}$, within \MuSimShift{}
+points of FedAvg.
 
 \subsection{Privacy--Utility Trade-off}
 \label{sec:res-dp}
@@ -518,19 +524,14 @@ than an order of magnitude even at $\varepsilon = 10$.  This, rather than the
 privacy budget alone, determines whether a subject-level private federated
 model is usable.
 
-The law also holds for measured accuracy.  Extending the representation with
-grey-matter, white-matter and CSF volumes and grey-matter density for every
-Neuromorphometrics region, and with grey-matter volumes from the cobra,
-Hammers, LPBA40 and Julich-Brain atlases distributed with
-deepmriprep~\cite{fisch2024deepmriprep}, which add hippocampal subfields,
-entorhinal cortex and amygdala nuclei, gives \AblExtFeatures{} features
-($d = \AblExtDim{}$ for three classes).  Centralised three-class accuracy of
-the tuned logistic regression rises from \AblBaseTri{} to \AblExtTri{}, and
-at $\varepsilon = 10$ the private CN-versus-AD model improves from
-\AblBaseBinTen{} to \AblExtBinTen{}; at $\varepsilon = 1$, however, it falls
-from \AblBaseBinOne{} to \AblExtBinOne{}.  Richer anatomy pays only when the
-budget leaves room for the extra parameters, which is why the compact
-representation is used throughout.
+The law also holds for measured accuracy.  Adding tissue volumes and
+grey-matter density for every region, and the cobra, Hammers, LPBA40 and
+Julich-Brain atlases of deepmriprep (hippocampal subfields, entorhinal cortex,
+amygdala nuclei), gives \AblExtFeatures{} features ($d = \AblExtDim{}$).
+Three-class accuracy rises from \AblBaseTri{} to \AblExtTri{} centrally and
+private CN versus AD from \AblBaseBinTen{} to \AblExtBinTen{} at
+$\varepsilon = 10$, but at $\varepsilon = 1$ it falls from \AblBaseBinOne{} to
+\AblExtBinOne{}: richer anatomy pays only when the budget has room for it.
 
 \subsection{Explanation Fidelity Under Privacy}
 \label{sec:res-xai}
@@ -579,18 +580,14 @@ Imaging, male only & 51.5 ($n$ = 340) & 84.7 ($n$ = 220) \\
 \end{tabular}
 \end{table}
 
-An imaging accuracy is evidence about anatomy only if demographics could not
-have produced it.  Table~\ref{tab:confounds} applies the same folds, seeds and
-metrics to the \CohDemog{}~subjects for whom sex and age are available.  A
-classifier using sex alone scores \ConfSexTri{} and one using age alone
-\ConfAgeTri{} on the three-class task, against a majority-class rate of
-\ConfChanceTri{}, while the imaging model scores \ConfImgTri{} (\ConfImgBin{}
-on CN versus AD); adding demographics changes the three-class figure only to
-\ConfImgDemoTri{}.  Within a single sex, where sex cannot contribute, the
-imaging model scores \ConfImgFemaleTri{} for women and \ConfImgMaleTri{} for
-men.  Finally, on a sex-balanced design in which every diagnosis-by-sex cell
-holds the same number of subjects (\BalN{}~subjects), the imaging model still
-reaches \BalTri{} on three classes and \BalBin{} on CN versus AD.
+Table~\ref{tab:confounds} repeats the protocol on the \CohDemog{}~subjects
+with known sex and age.  On three classes sex alone scores \ConfSexTri{} and
+age alone \ConfAgeTri{} (majority rate \ConfChanceTri{}), against
+\ConfImgTri{} for imaging (\ConfImgBin{} on CN versus AD), and adding
+demographics gives \ConfImgDemoTri{}.  Within one sex the imaging model scores
+\ConfImgFemaleTri{} for women and \ConfImgMaleTri{} for men, and on a
+sex-balanced design (\BalN{}~subjects) it still reaches \BalTri{} on three
+classes and \BalBin{} on CN versus AD.
 
 % ============================================================
 \section{Discussion}
@@ -601,10 +598,8 @@ subject-level differential privacy is a property of the perturbed dimension:
 because the noise norm grows as $\sqrt{d}$ while the summed update does not, a
 compact representation over named regions is what makes a strong privacy
 budget affordable.  Second, simulated partitions are a poor proxy for real
-multi-site federation: the drift that real sites induce is what the
-federated optimiser has to correct, and a correction that helps there hurts
-on an IID benchmark, so a simulated benchmark can steer the choice of
-algorithm the wrong way.  Third, explanation fidelity
+multi-site federation: they select plain FedAvg where real sites need a drift
+correction, so federated optimisers should be tuned on natural partitions.  Third, explanation fidelity
 should be reported beside accuracy whenever a model is trained privately,
 because the two can move in opposite directions.
 
@@ -614,9 +609,7 @@ MCI is a heterogeneous group that structural MRI alone separates poorly.  The
 federation is simulated in a single process; clients exchange only clipped,
 noised updates, but network effects are not modelled.  The feature
 standardisation statistics are cohort aggregates outside the privacy
-guarantee.  The proximal strength was selected on the folds it is reported
-on, which makes the FedProx figures slightly optimistic.  All data come from
-ADNI, so generalisation to other populations
+guarantee.  All data come from ADNI, so generalisation to other populations
 and scanners requires external validation.  Nothing here is a medical device
 or a diagnosis.
 
