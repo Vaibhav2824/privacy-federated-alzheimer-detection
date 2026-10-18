@@ -44,9 +44,12 @@ function timeline(data: SiteData): string {
     ${milestone('Superseded', `v5 · ${h.v5.n_subjects} subjects, real-site federation, subject-level DP`, pct(h.v5.accuracy), 'Best model, subject-disjoint',
       'Privacy, federation and explanations measured together',
       'Federated over real acquisition sites with subject-level differential privacy, membership-inference auditing and region-level explanations, under both subject- and site-disjoint evaluation.')}
-    ${milestone('Current', `v6 · Proper tissue segmentation, same ${h.v6.n_subjects} subjects`, pct(h.v6.accuracy), 'Best model, subject-disjoint, imaging only',
+    ${milestone('Superseded', `v6 · Proper tissue segmentation, same ${h.v6.n_subjects} subjects`, pct(h.v6.accuracy), 'Best model, subject-disjoint, imaging only',
       'The features were the bottleneck',
-      'The intensity-only tissue mixture on affine-registered volumes was replaced by network segmentation, nonlinear warping and Neuromorphometrics region volumes over intracranial volume. Same subjects, folds and seeds. These are the numbers on this site.')}
+      'The intensity-only tissue mixture on affine-registered volumes was replaced by network segmentation, nonlinear warping and Neuromorphometrics region volumes over intracranial volume. Same subjects, folds and seeds.')}
+    ${milestone('Current', `v7 · FedProx and tighter privacy accounting, same ${h.v7.n_subjects} subjects`, pct(h.v7.accuracy), 'Best model, subject-disjoint, imaging only',
+      'Better optimisation, not bigger features',
+      'Real-site federation trains with a FedProx proximal term and privacy is accounted with the PRV accountant, which needs less noise for the same ε. Richer multi-atlas features were tested and rejected: they help without privacy but hurt at ε = 1. These are the numbers on this site.')}
   </ol>`;
 }
 
@@ -91,7 +94,7 @@ function downgraded(data: SiteData): string {
 function render(data: SiteData): string {
   return `
   ${pageHead('Methodological integrity · audit trail', 'The path to honest measurement',
-    `A record of the errors found, the claims retracted, and how the headline went from ${pct(data.history.v1.accuracy)} to a defensible ${pct(data.history.v6.accuracy)} on three classes.`)}
+    `A record of the errors found, the claims retracted, and how the headline went from ${pct(data.history.v1.accuracy)} to a defensible ${pct(data.history.v7.accuracy)} on three classes.`)}
   ${section('01 · Chronological evolution', 'Milestones and corrections', timeline(data))}
   ${section('02 · Root cause', 'The slice-axis defect', `${DEFECT}
     <div class="mt-6 overflow-x-auto rounded-lg border border-hairline bg-surface"><table class="w-full text-sm">

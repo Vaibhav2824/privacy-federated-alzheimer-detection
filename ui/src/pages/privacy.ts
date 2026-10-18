@@ -85,7 +85,7 @@ function render(data: SiteData): string {
   const p0 = privacyAt(data, 'cn-ad', null);
   const p10 = privacyAt(data, 'cn-ad', 10);
   return `
-  ${pageHead('Empirical privacy evaluation · Rényi differential privacy', 'Privacy-budget explorer',
+  ${pageHead('Empirical privacy evaluation · subject-level differential privacy', 'Privacy-budget explorer',
     'How calibrated Gaussian noise at each privacy budget shapes diagnostic accuracy, membership-inference risk and how far the model\'s explanations can be trusted.',
     `<span class="badge shrink-0">δ = ${dp.delta} · subject-level · clip C = ${dp.clip_norm}</span>`)}
   <section class="shell mt-10">
@@ -108,7 +108,7 @@ function render(data: SiteData): string {
       <p class="text-sm text-slate">At this cohort size the noise acts partly as regularisation, which is why accuracy can rise.
         An accuracy-only privacy-utility curve cannot show that the explanation moved.</p>
       <div class="rounded-xl bg-muted p-4 text-sm"><p class="font-mono text-xs uppercase tracking-wider text-slate">Calibration</p>
-        <p class="mt-2">σ is the smallest noise multiplier for which the Rényi DP accountant certifies (ε, δ = ${dp.delta}) after
+        <p class="mt-2">σ is the smallest noise multiplier for which the PRV accountant certifies (ε, δ = ${dp.delta}) after
           ${dp.rounds} rounds with subject sampling rate ${dp.subject_sample_rate} and per-subject clipping at C = ${dp.clip_norm}.</p></div>
     </div></div>`)}
   ${section('Full trade-off matrix', 'Every budget, every metric', matrix(data))}`;

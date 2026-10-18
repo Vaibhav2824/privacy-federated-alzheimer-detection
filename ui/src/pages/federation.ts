@@ -78,7 +78,8 @@ function algorithm(data: SiteData): string {
 Δ ← Σ Δ_i + N(0, σ²C²I)        <span class="text-slate">// noise added once, at the server</span>
 w_t+1 ← w_t + Δ / participants</pre>
     <p class="mt-3 rounded-xl bg-muted p-3 text-xs text-slate">${icon('info', '!text-sm')} Federation is simulated in one process: clients
-      exchange only clipped, noised updates, and a Rényi DP accountant tracks (ε, δ = ${d.delta}) across all ${d.rounds} rounds.</p>`;
+      exchange only clipped, noised updates, and a PRV accountant tracks (ε, δ = ${d.delta}) across all ${d.rounds} rounds.
+      The private arm keeps plain averaging; the non-private arm adds the FedProx term (μ = ${d.prox_mu}).</p>`;
 }
 
 function render(data: SiteData): string {
@@ -105,11 +106,12 @@ function render(data: SiteData): string {
         <div class="mt-4 flex flex-col gap-3">${realism(data)}</div>
       </div>
       <blockquote class="card font-display text-lg leading-8">
-        <p class="italic">Real hospital partitions are at least as hard as the standard simulated benchmark.</p>
-        <p class="mt-3 font-sans text-sm text-slate">Three-class accuracy on real sites is ${pct(fed('natural')?.accuracy)}, against
+        <p class="italic">Real hospital partitions call for a different optimiser than the simulated benchmark suggests.</p>
+        <p class="mt-3 font-sans text-sm text-slate">With FedProx (μ = ${data.dp_config.prox_mu}), three-class accuracy on real sites is ${pct(fed('natural')?.accuracy)}, against
           ${pct(fed('dirichlet')?.accuracy)} for the Dirichlet draw and ${pct(fed('iid')?.accuracy)} for IID: federating over real sites costs
           ${points(fed('natural')?.accuracy, central?.accuracy)} against the same model trained centrally
-          (${pct(best.accuracy)} for the best centralised model). Client-size imbalance and scanner variation sit on top of label skew.</p>
+          (${pct(best.accuracy)} for the best centralised model). Client-size imbalance and scanner variation add a client drift the
+          proximal term corrects; on IID clients, where there is no drift, the same term lowers accuracy.</p>
       </blockquote>
     </div>
   </section>

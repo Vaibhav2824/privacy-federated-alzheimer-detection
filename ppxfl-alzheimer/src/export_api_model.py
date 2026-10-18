@@ -44,10 +44,11 @@ def train(X, y, sites, epsilon: float, seed: int = 42, rounds: int = 60, local_e
           learning_rate: float = 0.5, clip_norm: float = 1.0, sample_rate: float = 0.5,
           delta: float = 1e-3):
     standardised, _ = _standardise(X, X[:1])
-    noise = calibrate_noise(epsilon, sample_rate, rounds, delta)
+    noise = calibrate_noise(epsilon, sample_rate, rounds, delta, accountant="prv")
     config = FedConfig(rounds=rounds, local_epochs=local_epochs, learning_rate=learning_rate,
                        clip_norm=clip_norm, noise_multiplier=noise,
-                       subject_sample_rate=sample_rate, seed=seed, delta=delta)
+                       subject_sample_rate=sample_rate, seed=seed, delta=delta,
+                       accountant="prv")
     clients = make_clients("natural", np.arange(len(y)), y, sites, seed=seed)
     result = train_federated(standardised, y, clients, config, n_classes=len(CLASSES))
     return result, config, len(clients)
@@ -58,7 +59,7 @@ def main(argv=None) -> int:
     parser.add_argument("--features", default=os.path.join("data", "mni2mm", "features_vbm.npz"))
     parser.add_argument("--volumes-example", default=None,
                         help="any deepmriprep neuromorphometrics_volumes CSV, for the ROI order")
-    parser.add_argument("--summary", default=os.path.join("results_v6", "results_summary_v6.json"))
+    parser.add_argument("--summary", default=os.path.join("results_v7", "results_summary_v7.json"))
     parser.add_argument("--epsilon", type=float, default=10.0)
     parser.add_argument("--out", default=os.path.join("..", "backend", "model.json"))
     args = parser.parse_args(argv)
@@ -76,7 +77,7 @@ def main(argv=None) -> int:
                      if c["family"] == "privacy" and c["label_set"] == "cn-mci-ad"
                      and c["target_epsilon"] == args.epsilon)
     model = {
-        "name": "PPXFL region model (v6, subject-level DP-FedAvg)",
+        "name": "PPXFL region model (v7, subject-level DP-FedAvg)",
         "classes": CLASSES,
         "regions": regions,
         "mean": mean.tolist(),
@@ -86,7 +87,8 @@ def main(argv=None) -> int:
         "privacy": {
             "target_epsilon": args.epsilon,
             "accounted_epsilon": compute_epsilon(config.noise_multiplier, config.subject_sample_rate,
-                                                 config.rounds, config.delta),
+                                                 config.rounds, config.delta, config.accountant),
+            "accountant": config.accountant,
             "delta": config.delta, "noise_multiplier": config.noise_multiplier,
             "clip_norm": config.clip_norm, "rounds": config.rounds,
             "subject_sample_rate": config.subject_sample_rate,
