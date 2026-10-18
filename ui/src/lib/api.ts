@@ -1,7 +1,7 @@
 /**
  * Client for the region-model API on Render (`backend/app.py`).
  *
- * The API serves the paper's v6 model: subject-level DP-FedAvg at ε = 10 over
+ * The API serves the paper's v7 model: subject-level DP-FedAvg at ε = 10 over
  * deepmriprep region volumes. Errors are turned into sentences a visitor can
  * act on; the free Render instance sleeps when idle, so a failed first request
  * usually means "wait for it to wake", and the message says so.

@@ -41,14 +41,18 @@ def root(tmp_path):
     _summary(tmp_path / "results_v4" / "results_summary_v4.json", [_central("ensemble", 0.525, 760)])
     _summary(tmp_path / "results_v5" / "results_summary_v5.json",
              [_central("ensemble", 0.51, 799), _private(10.0, 0.44)])
-    v6 = tmp_path / "results_v6"
-    _summary(v6 / "results_summary_v6_imaging_only.json",
+    _summary(tmp_path / "results_v6" / "results_summary_v6_imaging_only.json",
+             [_central("ensemble_cv", 0.586, 799)])
+    v7 = tmp_path / "results_v7"
+    _summary(v7 / "results_summary_v7_imaging_only.json",
              [_central("ensemble_cv", 0.586, 799), _private(10.0, 0.2)])
-    _summary(v6 / "results_summary_v6.json", [_central("ensemble_cv", 0.584, 799), _private(1.0, 0.14)])
-    m = v6 / "metrics"
+    _summary(v7 / "results_summary_v7.json", [_central("ensemble_cv", 0.584, 799), _private(1.0, 0.14)])
+    m = v7 / "metrics"
     m.mkdir()
+    (m / "fed_natural_cn-ad_subject_s42.json").write_text(json.dumps({"prox_mu": 1.0}))
     (m / "dp_cn-mci-ad_eps1.0_s42.json").write_text(json.dumps({
         "clip_norm": 1.0, "rounds": 60, "local_epochs": 3, "subject_sample_rate": 0.5, "delta": 1e-3,
+        "accountant": "prv",
         "partition": {"n_clients": 2, "clients": [
             {"n_subjects": 9, "sites": ["005"], "class_counts": {"0": 1, "2": 8}, "label_entropy": 0.5},
             {"n_subjects": 23, "sites": ["002", "003"], "class_counts": {"0": 13, "1": 6, "2": 4},
@@ -77,7 +81,8 @@ def test_build_exports_aggregates_only(root):
     h = data["history"]
     assert h["v1"]["accuracy"] == 0.97 and h["v2"]["accuracy"] == pytest.approx(0.35)
     assert h["v3"]["agreement_eps10"] == 0.06 and h["v5"]["agreement_eps10"] == 0.44
-    assert h["v6"] == {"accuracy": 0.586, "n_subjects": 799}
+    assert h["v6"] == h["v7"] == {"accuracy": 0.586, "n_subjects": 799}
+    assert data["dp_config"]["accountant"] == "prv" and data["dp_config"]["prox_mu"] == 1.0
 
 
 def test_headline_refuses_a_summary_without_the_model(root):
@@ -88,5 +93,5 @@ def test_headline_refuses_a_summary_without_the_model(root):
 def test_main_writes_the_file(root, tmp_path, capsys):
     out = tmp_path / "site.json"
     assert export_site.main(["--root", str(root), "--out", str(out)]) == 0
-    assert json.loads(out.read_text(encoding="utf-8"))["cohort"] == "v6"
+    assert json.loads(out.read_text(encoding="utf-8"))["cohort"] == "v7"
     assert "3 conditions, 2 clients" in capsys.readouterr().out

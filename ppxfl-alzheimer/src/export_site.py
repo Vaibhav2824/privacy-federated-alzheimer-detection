@@ -53,7 +53,7 @@ def _agreement_eps10(summary_path):
 
 
 def _history(root):
-    """v1 slice-leak headline, v2 subject-disjoint rebuild, then v3 to v6."""
+    """v1 slice-leak headline, v2 subject-disjoint rebuild, then v3 to v7."""
     with open(os.path.join(root, "results", "metrics", "all_experiments_results.csv"),
               encoding="utf-8") as handle:
         v1 = max(float(r["accuracy"]) for r in csv.DictReader(handle)
@@ -74,11 +74,14 @@ def _history(root):
         "v5": v5,
         "v6": _headline(os.path.join(root, "results_v6", "results_summary_v6_imaging_only.json"),
                         model="ensemble_cv"),
+        # v7 keeps the v6 centralised arm; it changes the federated and private arms.
+        "v7": _headline(os.path.join(root, "results_v7", "results_summary_v7_imaging_only.json"),
+                        model="ensemble_cv"),
     }
 
 
 def build(root: str) -> dict:
-    results = os.path.join(root, "results_v6")
+    results = os.path.join(root, "results_v7")
     metrics = os.path.join(results, "metrics")
     run = _load(os.path.join(metrics, "dp_cn-mci-ad_eps1.0_s42.json"))
     partition = run["partition"]
@@ -94,8 +97,8 @@ def build(root: str) -> dict:
         attacks.setdefault(f"{r['label_set']}|{key}", []).append(r["attack_auroc"])
     # Centralised headline numbers are imaging only, like the federated and
     # private arms; the age-and-sex variant is kept as its own family.
-    imaging = _load(os.path.join(results, "results_summary_v6_imaging_only.json"))["conditions"]
-    with_covariates = _load(os.path.join(results, "results_summary_v6.json"))["conditions"]
+    imaging = _load(os.path.join(results, "results_summary_v7_imaging_only.json"))["conditions"]
+    with_covariates = _load(os.path.join(results, "results_summary_v7.json"))["conditions"]
     conditions = [_condition(c) for c in imaging if c["family"] == "centralised"]
     for c in with_covariates:
         row = _condition(c)
@@ -103,13 +106,14 @@ def build(root: str) -> dict:
             row["family"] = "centralised+cov"
         conditions.append(row)
     return {
-        "cohort": "v6",
+        "cohort": "v7",
         "conditions": conditions,
         "attack_auroc": {k: mean(v) for k, v in attacks.items()},
         "confounds": _load(os.path.join(metrics, "confounds.json")),
         "dimension_law": _load(os.path.join(metrics, "dimension_law.json"))["rows"],
-        "dp_config": {k: run[k] for k in ("clip_norm", "rounds", "local_epochs",
-                                          "subject_sample_rate", "delta")},
+        "dp_config": {**{k: run[k] for k in ("clip_norm", "rounds", "local_epochs",
+                                             "subject_sample_rate", "delta", "accountant")},
+                      "prox_mu": _load(os.path.join(metrics, "fed_natural_cn-ad_subject_s42.json"))["prox_mu"]},
         "partition": {"n_clients": partition["n_clients"],
                       "n_sites": sum(c["n_sites"] for c in clients),
                       "clients": clients},
