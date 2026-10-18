@@ -146,8 +146,10 @@ def run_federated_configuration(X, y, sites, label_set: str, split_scheme: str,
 
         payload["epsilon"] = compute_epsilon(
             config.noise_multiplier, config.subject_sample_rate,
-            config.rounds, config.delta
+            config.rounds, config.delta, config.accountant
         )
+        payload["accountant"] = config.accountant
+    payload["prox_mu"] = config.prox_mu
     return payload
 
 
@@ -162,7 +164,7 @@ def command_federated(args) -> None:
                     config = FedConfig(
                         rounds=args.rounds, local_epochs=args.local_epochs,
                         learning_rate=args.learning_rate,
-                        clip_norm=args.clip_norm, seed=seed
+                        clip_norm=args.clip_norm, seed=seed, prox_mu=args.prox_mu
                     )
                     payload = run_federated_configuration(
                         X, y, sites, label_set, split_scheme, client_scheme,
@@ -195,14 +197,15 @@ def command_privacy(args) -> None:
                 else:
                     noise = calibrate_noise(
                         epsilon_target, args.subject_sample_rate,
-                        args.rounds, args.delta
+                        args.rounds, args.delta, accountant=args.accountant
                     )
                 config = FedConfig(
                     rounds=args.rounds, local_epochs=args.local_epochs,
                     learning_rate=args.learning_rate,
                     clip_norm=args.clip_norm, noise_multiplier=noise,
                     subject_sample_rate=args.subject_sample_rate,
-                    seed=seed, delta=args.delta
+                    seed=seed, delta=args.delta, accountant=args.accountant,
+                    prox_mu=args.prox_mu
                 )
                 payload = run_federated_configuration(
                     X, y, sites, label_set, args.scheme, args.client_scheme,
@@ -263,7 +266,7 @@ def command_dimension_law(args) -> None:
     rows = []
     for epsilon in args.epsilons:
         noise = calibrate_noise(epsilon, args.subject_sample_rate, args.rounds,
-                                args.delta)
+                                args.delta, accountant=args.accountant)
         for name, dimension in dimensions.items():
             law = noise_to_signal_law(dimension, noise, args.clip_norm, participants)
             rows.append({"model": name, "target_epsilon": epsilon,
@@ -288,6 +291,8 @@ def main(argv=None) -> int:
     parser.add_argument("--seeds", nargs="+", type=int, default=[42, 123, 2024])
     parser.add_argument("--label-sets", nargs="+", default=["cn-mci-ad", "cn-ad"])
     parser.add_argument("--top-k", type=int, default=10)
+    parser.add_argument("--prox-mu", type=float, default=0.0, help="FedProx strength")
+    parser.add_argument("--accountant", choices=["rdp", "prv"], default="rdp")
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
