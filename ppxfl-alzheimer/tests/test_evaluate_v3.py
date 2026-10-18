@@ -323,3 +323,27 @@ def test_evaluate_cli_appends_covariates(tmp_path, cohort, capsys):
         "--demographics", str(demographics),
     ]) == 0
     assert f"{X.shape[1] + 2} features" in capsys.readouterr().out
+
+
+def test_covariates_from_apoeres_and_ptdemog_tables(tmp_path):
+    import csv
+
+    from src.evaluate_v3 import add_covariates
+
+    subjects = ["001_S_0001", "001_S_0002", "001_S_0003"]
+    demographics = tmp_path / "export.csv"
+    _demographics_export(demographics, subjects[:2], [0, 2], confounded=False)
+    apoe, demog = tmp_path / "APOERES.csv", tmp_path / "PTDEMOG.csv"
+    with open(apoe, "w", encoding="utf-8", newline="") as handle:
+        csv.writer(handle).writerows([["PTID", "GENOTYPE"], ["001_S_0001", "3/4"],
+                                      ["001_S_0002", "4/4"], ["001_S_0003", ""]])
+    with open(demog, "w", encoding="utf-8", newline="") as handle:
+        csv.writer(handle).writerows([["PTID", "PTEDUCAT"], ["001_S_0001", "-4"],
+                                      ["001_S_0001", "16"], ["001_S_0001", "18"],
+                                      ["001_S_0002", ""]])
+    out, names = add_covariates(np.zeros((3, 2)), ["a", "b"], subjects, str(demographics),
+                                tables=(str(apoe), str(demog)))
+    assert names[-2:] == ["cov::apoe4", "cov::pteducat"]
+    assert out[0, 4:].tolist() == [1.0, 16.0]   # missing code skipped, first valid kept
+    assert out[1, 4] == 2.0 and np.isnan(out[1, 5])
+    assert np.isnan(out[2, 4])                  # no genotype recorded

@@ -1,0 +1,775 @@
+{
+  "results_dir": "results_v7/metrics_apoe",
+  "n_runs": 72,
+  "n_conditions": 24,
+  "conditions": [
+    {
+      "family": "centralised",
+      "model": "ensemble",
+      "label_set": "cn-ad",
+      "split_scheme": "site",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 528,
+      "chance_accuracy": 0.5208333333333334,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.8819444444444443,
+        "std": 0.002893040211462042,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.8806587615283267,
+        "std": 0.003146536357434116,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.8813970747753078,
+        "std": 0.0029971898716244154,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.9358390226374415,
+        "std": 0.0010728829382118295,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble",
+      "label_set": "cn-ad",
+      "split_scheme": "subject",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 528,
+      "chance_accuracy": 0.5208333333333334,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.8825757575757577,
+        "std": 0.005010892634592044,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.8812121212121212,
+        "std": 0.005171877981021291,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.8820026049422552,
+        "std": 0.005095769932519659,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.9369984429272966,
+        "std": 0.001697005946896034,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble",
+      "label_set": "cn-mci",
+      "split_scheme": "site",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 546,
+      "chance_accuracy": 0.5036630036630036,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.6813186813186812,
+        "std": 0.011140590714831929,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.6811226657721123,
+        "std": 0.011088284378454397,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.680985930049211,
+        "std": 0.011007738433539842,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7532148048753214,
+        "std": 0.005793735076730584,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble",
+      "label_set": "cn-mci",
+      "split_scheme": "subject",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 546,
+      "chance_accuracy": 0.5036630036630036,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.6794871794871794,
+        "std": 0.012689016905266517,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.6792508106899251,
+        "std": 0.012697508844924023,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.6790347875560446,
+        "std": 0.012727878466144663,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7538767751313878,
+        "std": 0.0015979819137334197,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble",
+      "label_set": "cn-mci-ad",
+      "split_scheme": "site",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 799,
+      "chance_accuracy": 0.344180225281602,
+      "uniform_chance": 0.3333333333333333,
+      "accuracy": {
+        "mean": 0.5823946599916562,
+        "std": 0.007647185139684351,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.5845301077516704,
+        "std": 0.007610579417358262,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.5732210326458507,
+        "std": 0.0076268414265049525,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7552607520508364,
+        "std": 0.004160660795556086,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble",
+      "label_set": "cn-mci-ad",
+      "split_scheme": "subject",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 799,
+      "chance_accuracy": 0.344180225281602,
+      "uniform_chance": 0.3333333333333333,
+      "accuracy": {
+        "mean": 0.5861493533583646,
+        "std": 0.011287233423837013,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.5878032045142586,
+        "std": 0.010877990227902506,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.5756904414219969,
+        "std": 0.010882648806133342,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.756726897362547,
+        "std": 0.0007585030108321192,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble",
+      "label_set": "mci-ad",
+      "split_scheme": "site",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 524,
+      "chance_accuracy": 0.517175572519084,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.6800254452926208,
+        "std": 0.002915124487885357,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.6803256372484673,
+        "std": 0.0030387361455514452,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.6799331608341718,
+        "std": 0.0029451149822758414,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7391061262391281,
+        "std": 0.008239942249647888,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble",
+      "label_set": "mci-ad",
+      "split_scheme": "subject",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 524,
+      "chance_accuracy": 0.517175572519084,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.6825699745547075,
+        "std": 0.006702069817336372,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.6825231295791219,
+        "std": 0.006511423053601556,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.6823521050101043,
+        "std": 0.006594448832492986,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7482218300443875,
+        "std": 0.00999059134920786,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble_cv",
+      "label_set": "cn-ad",
+      "split_scheme": "site",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 528,
+      "chance_accuracy": 0.5208333333333334,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.8813131313131312,
+        "std": 0.0021869328378394896,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.8798945981554677,
+        "std": 0.0018324467616035772,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.8807111388461669,
+        "std": 0.002053720337526189,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.9355276080967779,
+        "std": 0.0014876090919972752,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble_cv",
+      "label_set": "cn-ad",
+      "split_scheme": "subject",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 528,
+      "chance_accuracy": 0.5208333333333334,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.8806818181818182,
+        "std": 0.0050108926345920025,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.8791831357048748,
+        "std": 0.005291327441582038,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.8800417027303857,
+        "std": 0.0051442936202601,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.9372619475386273,
+        "std": 0.001981751820929368,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble_cv",
+      "label_set": "cn-mci",
+      "split_scheme": "site",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 546,
+      "chance_accuracy": 0.5036630036630036,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.6886446886446885,
+        "std": 0.012820512820512775,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.6884043385888404,
+        "std": 0.012838457830047952,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.6881948030838144,
+        "std": 0.012895542955634488,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7543687800514368,
+        "std": 0.004681172063601991,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble_cv",
+      "label_set": "cn-mci",
+      "split_scheme": "subject",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 546,
+      "chance_accuracy": 0.5036630036630036,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.6892551892551891,
+        "std": 0.008655339974821596,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.6889746170188976,
+        "std": 0.008673792757657266,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.6886673814813534,
+        "std": 0.008738536109810735,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7536978642513699,
+        "std": 0.0006748403609542779,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble_cv",
+      "label_set": "cn-mci-ad",
+      "split_scheme": "site",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 799,
+      "chance_accuracy": 0.344180225281602,
+      "uniform_chance": 0.3333333333333333,
+      "accuracy": {
+        "mean": 0.5903212348769294,
+        "std": 0.010116275054636746,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.5925019487349023,
+        "std": 0.009926335034435034,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.5739493994768249,
+        "std": 0.010618722641953338,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7595712501237362,
+        "std": 0.003506618507093973,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble_cv",
+      "label_set": "cn-mci-ad",
+      "split_scheme": "subject",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 799,
+      "chance_accuracy": 0.344180225281602,
+      "uniform_chance": 0.3333333333333333,
+      "accuracy": {
+        "mean": 0.5878181059657906,
+        "std": 0.006299402949746159,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.5895739036441748,
+        "std": 0.006272664705461637,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.5705781073659185,
+        "std": 0.00481772700155827,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7585289106485599,
+        "std": 0.0026306360266246218,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble_cv",
+      "label_set": "mci-ad",
+      "split_scheme": "site",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 524,
+      "chance_accuracy": 0.517175572519084,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.6870229007633588,
+        "std": 0.005049143723405705,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.687484503303531,
+        "std": 0.004982005593182768,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.6869873329925662,
+        "std": 0.005035737202047736,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7429468761090773,
+        "std": 0.0070484699901723165,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "ensemble_cv",
+      "label_set": "mci-ad",
+      "split_scheme": "subject",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 524,
+      "chance_accuracy": 0.517175572519084,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.6921119592875318,
+        "std": 0.009413898592206585,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.6921420202344316,
+        "std": 0.00957453356151728,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.691934984300462,
+        "std": 0.009478846788509097,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7511680255142473,
+        "std": 0.008563522777373543,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "logreg_cv",
+      "label_set": "cn-ad",
+      "split_scheme": "site",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 528,
+      "chance_accuracy": 0.5208333333333334,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.8768939393939394,
+        "std": 0.0018939393939393923,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.8759156785243741,
+        "std": 0.002067965655676758,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.8764452758052549,
+        "std": 0.001955155792260521,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.930204814947898,
+        "std": 0.004415031913827503,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "logreg_cv",
+      "label_set": "cn-ad",
+      "split_scheme": "subject",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 528,
+      "chance_accuracy": 0.5208333333333334,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.8794191919191919,
+        "std": 0.005467332094598756,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.8782345191040845,
+        "std": 0.005659953922112238,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.8789031790174374,
+        "std": 0.005562829134119774,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.9339705353934603,
+        "std": 0.0010351538673391172,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "logreg_cv",
+      "label_set": "cn-mci",
+      "split_scheme": "site",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 546,
+      "chance_accuracy": 0.5036630036630036,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.6849816849816849,
+        "std": 0.011437725271791897,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.6847858660404786,
+        "std": 0.011397602311646016,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.684651995908737,
+        "std": 0.011342817996456724,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7442334786984235,
+        "std": 0.004907491114362861,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "logreg_cv",
+      "label_set": "cn-mci",
+      "split_scheme": "subject",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 546,
+      "chance_accuracy": 0.5036630036630036,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.683150183150183,
+        "std": 0.009157509157509125,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.6829229565022924,
+        "std": 0.009225417537696635,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.682692148420899,
+        "std": 0.009423011697503501,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.743540199038354,
+        "std": 0.0031844785988165876,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "logreg_cv",
+      "label_set": "cn-mci-ad",
+      "split_scheme": "site",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 799,
+      "chance_accuracy": 0.344180225281602,
+      "uniform_chance": 0.3333333333333333,
+      "accuracy": {
+        "mean": 0.5836462244472257,
+        "std": 0.0019117962849210968,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.5856812955481333,
+        "std": 0.001942884971665588,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.5697161809599046,
+        "std": 0.0025638043120098327,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7577459945894117,
+        "std": 0.0024003968500556573,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "logreg_cv",
+      "label_set": "cn-mci-ad",
+      "split_scheme": "subject",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 799,
+      "chance_accuracy": 0.344180225281602,
+      "uniform_chance": 0.3333333333333333,
+      "accuracy": {
+        "mean": 0.57363370880267,
+        "std": 0.008333326806607479,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.575937264510985,
+        "std": 0.008722357052213916,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.5611412230626058,
+        "std": 0.006495618555948921,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7508160200800211,
+        "std": 0.008563671524032031,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "logreg_cv",
+      "label_set": "mci-ad",
+      "split_scheme": "site",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 524,
+      "chance_accuracy": 0.517175572519084,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.6863867684478372,
+        "std": 0.00670206981733632,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.6866507202621431,
+        "std": 0.006473702865538592,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.6862973784379586,
+        "std": 0.0066421461312325125,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.7418675767785347,
+        "std": 0.006727528077540558,
+        "n": 3
+      }
+    },
+    {
+      "family": "centralised",
+      "model": "logreg_cv",
+      "label_set": "mci-ad",
+      "split_scheme": "subject",
+      "client_scheme": "none",
+      "target_epsilon": null,
+      "n_runs": 3,
+      "n_subjects": 524,
+      "chance_accuracy": 0.517175572519084,
+      "uniform_chance": 0.5,
+      "accuracy": {
+        "mean": 0.6895674300254453,
+        "std": 0.01226927577734476,
+        "n": 3
+      },
+      "balanced_accuracy": {
+        "mean": 0.6901195494168381,
+        "std": 0.011936679027261483,
+        "n": 3
+      },
+      "macro_f1": {
+        "mean": 0.6895290754403592,
+        "std": 0.012238158426123507,
+        "n": 3
+      },
+      "macro_auroc": {
+        "mean": 0.748387128140056,
+        "std": 0.0064271660248898296,
+        "n": 3
+      }
+    }
+  ]
+}

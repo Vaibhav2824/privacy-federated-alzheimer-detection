@@ -1,0 +1,86 @@
+{
+  "model": "ensemble",
+  "label_set": "cn-mci-ad",
+  "class_names": [
+    "CN",
+    "MCI",
+    "AD"
+  ],
+  "split_scheme": "site",
+  "n_splits": 5,
+  "seed": 2024,
+  "n_subjects": 799,
+  "class_counts": {
+    "CN": 275,
+    "MCI": 271,
+    "AD": 253
+  },
+  "chance_accuracy": 0.344180225281602,
+  "uniform_chance": 0.3333333333333333,
+  "overall": {
+    "accuracy": 0.5757196495619524,
+    "macro_f1": 0.566295490287538,
+    "balanced_accuracy": 0.577842081978132,
+    "macro_auroc": 0.7572260370261222,
+    "accuracy_ci95": [
+      0.541927409261577,
+      0.6082603254067585
+    ],
+    "macro_f1_ci95": [
+      0.5344611742831642,
+      0.5977886932805891
+    ],
+    "balanced_accuracy_ci95": [
+      0.5457471011843592,
+      0.6093339692773242
+    ],
+    "macro_auroc_ci95": [
+      0.7339067337610481,
+      0.78017057525955
+    ]
+  },
+  "per_fold": [
+    {
+      "accuracy": 0.5897435897435898,
+      "macro_f1": 0.5817460317460318,
+      "balanced_accuracy": 0.5918238993710692,
+      "macro_auroc": 0.762298345240276
+    },
+    {
+      "accuracy": 0.5263157894736842,
+      "macro_f1": 0.5179834327959384,
+      "balanced_accuracy": 0.5306605823554976,
+      "macro_auroc": 0.7166302764258896
+    },
+    {
+      "accuracy": 0.5796178343949044,
+      "macro_f1": 0.5591876616030061,
+      "balanced_accuracy": 0.5831443688586546,
+      "macro_auroc": 0.7806574985261995
+    },
+    {
+      "accuracy": 0.632258064516129,
+      "macro_f1": 0.6192995382650555,
+      "balanced_accuracy": 0.6328557063851181,
+      "macro_auroc": 0.7912987450394646
+    },
+    {
+      "accuracy": 0.55625,
+      "macro_f1": 0.5535287515679673,
+      "balanced_accuracy": 0.5584293465813999,
+      "macro_auroc": 0.7432745089606924
+    }
+  ],
+  "fold_mean": {
+    "accuracy": 0.5768370556256615,
+    "macro_f1": 0.5663490831955998,
+    "balanced_accuracy": 0.5793827807103479,
+    "macro_auroc": 0.7588318748385043
+  },
+  "fold_std": {
+    "accuracy": 0.0352761244267876,
+    "macro_f1": 0.033453549042153065,
+    "balanced_accuracy": 0.034179478560892845,
+    "macro_auroc": 0.026703851664825265
+  }
+}
