@@ -21,7 +21,8 @@ model over named anatomical regions stays usable at ε = 1, where the
 23.5M-parameter network it replaces collapses onto the majority class.
 
 > The numbers below, in the paper and on the site all come from the current
-> **v6** features (deepmriprep segmentation; same subjects, folds and seeds as v5).
+> **v7** runs: deepmriprep features (as in v6), a FedProx federated arm and a
+> PRV-accounted privacy arm, on the same subjects, folds and seeds.
 
 ---
 
@@ -131,18 +132,21 @@ The natural partition puts one client per real site, pooling sites below eight
 subjects so that none is discarded, which yields 39 clients from 65 sites. The
 heterogeneity is the cohort's own: one client holds no MCI and another no AD.
 
-| Partition | CN / MCI / AD | CN vs AD |
-| --- | --- | --- |
-| IID | 53.9% | 84.6% |
-| Dirichlet α = 0.5 | 53.1% | 83.7% |
-| **Real ADNI sites** | **51.3%** | **82.1%** |
+| Partition | CN / MCI / AD, FedAvg | FedProx | CN vs AD, FedAvg | FedProx |
+| --- | --- | --- | --- | --- |
+| IID | 53.9% | 50.0% | 84.6% | 83.0% |
+| Dirichlet α = 0.5 | 53.1% | 51.7% | 83.7% | 83.5% |
+| **Real ADNI sites** | 51.3% | **55.1%** | 82.1% | **84.3%** |
 
-Against a tuned logistic regression trained centrally on the same subjects
-(56.6% and 87.3%), federating over the real sites costs 5.3 and 5.2 points; the
-simulated partitions cost 2.7–3.6. The real partition is the hardest of the
-three, which indicates that the standard simulated benchmark does not capture
-what makes multi-site federation difficult — extreme client-size imbalance and
-genuine scanner variation sit on top of label skew.
+Under plain FedAvg the real partition is the hardest of the three: extreme
+client-size imbalance and genuine scanner variation add a client drift that
+label skew alone does not produce. FedProx adds a proximal term
+(μ/2)‖w − wᵗ‖² to local training (μ = 1, the best of 0.01–10 on the real-site
+partition) and corrects that drift, so the real-site model becomes the most
+accurate of the three, 1.5 and 3.0 points short of a tuned logistic regression
+trained centrally on the same subjects (56.6% and 87.3%). On the IID partition,
+where there is no drift to correct, the same term *lowers* accuracy: a
+simulated benchmark would have pointed to the wrong optimiser.
 
 A **site-disjoint** evaluation is reported next to the subject-disjoint one,
 since a federated model is deployed at hospitals that did not contribute to it.
@@ -158,29 +162,32 @@ dimension:
 
 | model | d | noise/signal at ε=1 | ε=2 | ε=5 | ε=10 |
 | --- | --- | --- | --- | --- | --- |
-| Region model | 405 | **0.36** | **0.20** | **0.10** | **0.06** |
-| ResNet50 head | 6,147 | 1.39 | 0.78 | 0.37 | 0.22 |
-| ResNet50, full network | 23,508,035 | 86.05 | 48.11 | 23.10 | 13.86 |
+| Region model | 405 | **0.32** | **0.18** | **0.09** | **0.05** |
+| ResNet50 head | 6,147 | 1.24 | 0.70 | 0.34 | 0.21 |
+| ResNet50, full network | 23,508,035 | 76.93 | 43.34 | 21.10 | 12.81 |
 
-Below 1.0 the update survives the noise, and utility follows:
+σ is calibrated with the PRV accountant (Gopi et al., 2021), which composes
+the privacy loss distribution numerically; the Rényi bound would need
+σ = 11.34 rather than 10.14 at ε = 1. Below 1.0 the update survives the noise,
+and utility follows:
 
 | Task | ε | σ | Accuracy | Macro F1 | Attack AUROC |
 | --- | --- | --- | --- | --- | --- |
 | CN vs AD | non-private | — | 81.9% | 0.819 | — |
-| CN vs AD | 10 | 1.83 | **86.2%** | 0.861 | — |
-| CN vs AD | 5 | 3.04 | 85.5% | 0.854 | — |
-| CN vs AD | 2 | 6.34 | 84.0% | 0.839 | — |
-| CN vs AD | 1 | 11.34 | **80.7%** | 0.806 | — |
+| CN vs AD | 10 | 1.69 | **86.2%** | 0.861 | — |
+| CN vs AD | 5 | 2.78 | 85.5% | 0.854 | — |
+| CN vs AD | 2 | 5.71 | 84.3% | 0.842 | — |
+| CN vs AD | 1 | 10.14 | **81.2%** | 0.811 | — |
 | CN / MCI / AD | non-private | — | 52.6% | 0.521 | 0.593 |
-| CN / MCI / AD | 10 | 1.83 | 57.6% | 0.541 | 0.554 |
-| CN / MCI / AD | 5 | 3.04 | 57.7% | 0.542 | 0.551 |
-| CN / MCI / AD | 2 | 6.34 | 55.8% | 0.532 | 0.540 |
-| CN / MCI / AD | 1 | 11.34 | 51.7% | 0.502 | **0.529** |
+| CN / MCI / AD | 10 | 1.69 | 57.7% | 0.543 | 0.555 |
+| CN / MCI / AD | 5 | 2.78 | 57.7% | 0.541 | 0.552 |
+| CN / MCI / AD | 2 | 5.71 | 56.4% | 0.538 | 0.542 |
+| CN / MCI / AD | 1 | 10.14 | 52.6% | 0.508 | **0.531** |
 
 At this cohort size the noise acts as regularisation: every private
 configuration at ε ≥ 2 beats its own non-private baseline, and the region model
 stays usable down to ε = 1. A subject-level membership inference attack falls
-from 0.593 to 0.529 against a chance rate of 0.500, so the formal budget and the
+from 0.593 to 0.531 against a chance rate of 0.500, so the formal budget and the
 empirical attack move together.
 
 ## Explanations degrade faster than accuracy
@@ -193,14 +200,14 @@ subjects.
 | ε | CN vs AD accuracy | Region-attribution agreement | Medial-temporal share |
 | --- | --- | --- | --- |
 | non-private | 81.9% | **0.860** | 10.8% |
-| 10 | **86.2%** | **0.198** | 9.9% |
-| 5 | 85.5% | 0.194 | 8.7% |
-| 2 | 84.0% | 0.187 | 5.9% |
-| 1 | 80.7% | 0.138 | 4.3% |
+| 10 | **86.2%** | **0.200** | 10.1% |
+| 5 | 85.5% | 0.195 | 8.9% |
+| 2 | 84.3% | 0.194 | 6.3% |
+| 1 | 81.2% | 0.148 | 4.6% |
 
 At ε = 10 the private model is *more* accurate than the non-private one while
 the Spearman agreement of its region attribution has fallen by more than
-three-quarters, from 0.860 to 0.198. A model that is simultaneously more
+three-quarters, from 0.860 to 0.200. A model that is simultaneously more
 accurate and less explicable is exactly the case an accuracy-only
 privacy–utility curve cannot show.
 
@@ -254,6 +261,24 @@ Every utility number rose, by 3.5 to 9.1 points, and the privacy and federation
 findings kept their direction. Explanations became *more* sensitive to privacy
 noise, not less, which strengthens the case for reporting them alongside accuracy.
 
+## What v7 changed, and what it did not
+
+v7 tested eight proposed improvements against the v6 baseline on the same
+subjects, folds and seeds, and kept only those that improved every run they
+were meant to improve.
+
+| Change | Outcome | Evidence |
+| --- | --- | --- |
+| FedProx (μ = 1) for real-site federation | **kept** | CN vs AD 82.1% → 84.3% (subject) and 81.6% → 85.0% (site); CN / MCI / AD 51.3% → 55.1% and 53.0% → 54.5%; all 12 runs improved |
+| PRV accountant in place of Rényi DP | **kept** | 10% less noise for the same ε; CN vs AD at ε = 1 80.7% → 81.2%, CN / MCI / AD 51.7% → 52.6% |
+| FedProx in the private arm | rejected | lowers accuracy at ε ≤ 2 (CN vs AD at ε = 1: 79.0%); kept in `results_v7/metrics_dp_fedprox/` |
+| FedAdam server optimiser | rejected | no gain on CN vs AD at any server learning rate |
+| Multi-atlas features (cobra, Hammers, LPBA40, Julich-Brain; 964 features) | rejected for the main pipeline | centralised CN / MCI / AD 56.6% → 59.3%, but private CN vs AD at ε = 1 81.2% → 78.2%; reported in the paper as a measured instance of the dimension law (`results_v7/feature_ablation.json`) |
+| Ordinal (CN < MCI < AD) formulation | rejected | CN / MCI / AD 56.6% → 56.6% |
+| Site harmonisation (ComBat-style, fitted in-fold) | rejected | lowers CN vs AD to 85.5% even in its best form |
+| Adaptive clipping | not applied | every per-subject update already exceeds the clip bound (median norm 3.7 vs C = 1), so it cannot help |
+| APOE4 and education covariates | pending | needs `ADNIMERGE.csv` from ADNI IDA; `--adnimerge` is ready |
+
 ## What the larger cohort changed
 
 The study was first run on 297 subjects across 42 sites, then rerun unchanged on
@@ -278,7 +303,7 @@ The site's Demo page runs the paper's region model through a small API on
 Render. It serves only the **subject-level DP-FedAvg model at ε = 10**, trained
 on all 799 subjects with the same configuration as the privacy arm, so releasing
 it carries a formal privacy guarantee for every training subject. Its
-cross-validated three-class accuracy is the 57.6% reported above.
+cross-validated three-class accuracy is the 57.7% reported above.
 
 The API takes what [deepmriprep](https://pypi.org/project/deepmriprep/) writes
 for one T1 scan, so the scan itself never leaves the user's machine:
@@ -299,6 +324,7 @@ MNI152 template, so no ADNI-derived subject data is published.
 
 ```
 paper.tex, paper.pdf     the write-up; tables and prose numbers are generated
+figures/v7/              the paper's figures
 figures/v4/              figures for the 760-subject cohort
 figures/v3/              figures for the first, 297-subject cohort
 ui/                      seven-page site (Vercel, vercel.json); reads ui/public/data/site.json
@@ -307,19 +333,21 @@ ppxfl-alzheimer/
   src/preprocess_v3.py     scan selection, orientation, stripping, registration
   src/orientation*.py      the 48-candidate orientation search
   src/handedness.py        left/right resolution against anchor subjects
-  src/vbm_features.py      deepmriprep region volumes (the current features)
+  src/vbm_features.py      deepmriprep region volumes (the current features; --extended-out for the multi-atlas set)
+  src/feature_ablation.py  richer features vs. the perturbed dimension, centralised and private
   src/features.py          the earlier intensity-mixture Harvard-Oxford features
   src/slices_v3.py         2.5D slices at named MNI coordinates
   src/deep_features.py     frozen-backbone embeddings (head dimension 6,147)
   src/splits_v3.py         subject and site folds; natural/IID/Dirichlet clients
-  src/federated_v3.py      FedAvg with subject-level DP and RDP accounting
+  src/federated_v3.py      FedAvg/FedProx with subject-level DP and RDP or PRV accounting
   src/xai_v3.py            region attribution and its stability under privacy
   src/mia_v3.py            subject-level membership inference
   src/paper_tables*.py     results JSON to the paper's generated table blocks
   src/export_site.py       results JSON to the site's data file
   src/export_api_model.py  trains and exports the API's ε = 10 model
   src/paper_facts.py       results JSON to the paper's prose macros
-  results_v6/              the current runs (deepmriprep features, 799 subjects)
+  results_v7/              the current runs (v6 centralised arm, FedProx, PRV accounting)
+  results_v6/              the v6 runs (deepmriprep features, plain FedAvg, RDP accounting)
   results_v4/              the 760-subject cohort's runs
   results_v3/              the first, 297-subject cohort's runs
   results_v2/              the slice-space runs, kept for the audit trail
@@ -361,10 +389,10 @@ minute per scan on a laptop GPU), then evaluate them, rerun the federated and
 private arms, and rebuild the site's data file:
 
 ```bash
-python -m src.vbm_features
+python -m src.vbm_features --extended-out data/mni2mm/features_extended.npz
 python -m src.evaluate_v3 --features data/mni2mm/features_vbm.npz --models ensemble ensemble_cv logreg_cv --out-dir results_v6/metrics_nocov
-python -m src.experiments_v3 --features data/mni2mm/features_vbm.npz --out-dir results_v6/metrics federated
-python -m src.experiments_v3 --features data/mni2mm/features_vbm.npz --out-dir results_v6/metrics privacy
+bash scripts/run_v7.sh
+python -m src.feature_ablation --features base=data/mni2mm/features_vbm.npz extended=data/mni2mm/features_extended.npz --out results_v7/feature_ablation.json
 python -m src.export_site
 ```
 
@@ -376,7 +404,7 @@ Rebuild the paper's generated tables and prose macros from the results, and
 export the API model:
 
 ```bash
-python -m src.paper_tables_v3 --summary results_v6/results_summary_v6.json --centralised-summary results_v6/results_summary_v6_imaging_only.json --best-centralised --compact --confounds results_v6/metrics/confounds.json
+python -m src.paper_tables_v3 --summary results_v7/results_summary_v7.json --centralised-summary results_v7/results_summary_v7_imaging_only.json --fedavg-summary results_v7/results_summary_v7_fedavg.json --best-centralised --compact --confounds results_v7/metrics/confounds.json --law results_v7/metrics/dimension_law.json
 python -m src.paper_facts
 python -m src.paper_figures
 python -m src.export_api_model
