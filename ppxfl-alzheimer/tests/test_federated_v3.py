@@ -198,3 +198,22 @@ def test_private_training_clips_every_subject_update(separable):
     assert result.trace
     for step in result.trace:
         assert step.signal_norm <= 0.5 * len(y) + 1e-6
+
+
+def _accuracy(X, y, result):
+    return float(np.mean(np.argmax(predict_proba(X, result), axis=1) == y))
+
+
+def test_fedprox_pulls_local_training_towards_the_global_model(separable):
+    X, y = separable
+    clients = [np.arange(0, 90), np.arange(90, 180)]
+    plain = train_federated(X, y, clients, FedConfig(rounds=5, local_epochs=3))
+    prox = train_federated(X, y, clients, FedConfig(rounds=5, local_epochs=3, prox_mu=1.0))
+    assert not np.allclose(plain.weights, prox.weights)
+    assert _accuracy(X, y, prox) > 0.8
+
+
+def test_prv_accounting_is_tighter_than_rdp():
+    assert compute_epsilon(5.0, 0.5, 60, 1e-3, "prv") < compute_epsilon(5.0, 0.5, 60, 1e-3)
+    assert calibrate_noise(2.0, 0.5, 60, 1e-3, accountant="prv") < \
+        calibrate_noise(2.0, 0.5, 60, 1e-3)

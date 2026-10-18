@@ -115,6 +115,7 @@ def main(argv=None) -> int:
     parser.add_argument("--subject-sample-rate", type=float, default=0.5)
     parser.add_argument("--delta", type=float, default=1e-3)
     parser.add_argument("--n-splits", type=int, default=5)
+    parser.add_argument("--accountant", choices=["rdp", "prv"], default="rdp")
     args = parser.parse_args(argv)
 
     X, y, subjects, sites, feature_names = load_features(args.features)
@@ -124,7 +125,8 @@ def main(argv=None) -> int:
     for label_set in args.label_sets:
         for epsilon in [None] + list(args.epsilons):
             noise = 0.0 if epsilon is None else calibrate_noise(
-                epsilon, args.subject_sample_rate, args.rounds, args.delta
+                epsilon, args.subject_sample_rate, args.rounds, args.delta,
+                accountant=args.accountant
             )
             for seed in args.seeds:
                 config = FedConfig(
@@ -132,7 +134,7 @@ def main(argv=None) -> int:
                     learning_rate=args.learning_rate, clip_norm=args.clip_norm,
                     noise_multiplier=noise,
                     subject_sample_rate=args.subject_sample_rate,
-                    seed=seed, delta=args.delta,
+                    seed=seed, delta=args.delta, accountant=args.accountant,
                 )
                 payload = run(X, y, sites, label_set, config, args.n_splits)
                 payload["target_epsilon"] = epsilon

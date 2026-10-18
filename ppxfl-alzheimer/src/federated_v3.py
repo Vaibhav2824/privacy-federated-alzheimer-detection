@@ -43,6 +43,9 @@ class FedConfig:
     subject_sample_rate: float = 1.0
     seed: int = 42
     delta: float = 1e-3
+    # FedProx: proximal pull of local training back towards the global model.
+    prox_mu: float = 0.0
+    accountant: str = "rdp"
 
 
 @dataclass
@@ -118,6 +121,9 @@ def _local_train(X, y, indices, weights, bias, config: FedConfig, n_classes: int
             grad_w, error = _subject_gradient(
                 X[index], int(y[index]), local_w, local_b, n_classes, config.l2
             )
+            if config.prox_mu:
+                grad_w = grad_w + config.prox_mu * (local_w - weights)
+                error = error + config.prox_mu * (local_b - bias)
             local_w -= config.learning_rate * grad_w
             local_b -= config.learning_rate * error
     return _flatten(local_w - weights, local_b - bias)
@@ -206,7 +212,7 @@ def train_federated(X, y, clients, config: FedConfig, n_classes: int = 3) -> Fed
     if config.noise_multiplier > 0.0:
         epsilon = compute_epsilon(
             config.noise_multiplier, config.subject_sample_rate,
-            config.rounds, config.delta
+            config.rounds, config.delta, config.accountant
         )
     return FedResult(weights=weights, bias=bias, trace=trace,
                      epsilon=epsilon, perturbed_dimension=dimension)
@@ -224,22 +230,31 @@ RDP_ALPHAS = [1 + x / 10.0 for x in range(1, 100)] + list(range(11, 512))
 
 
 def compute_epsilon(noise_multiplier: float, sample_rate: float, steps: int,
-                    delta: float) -> float:
-    """RDP accounting for the subsampled Gaussian mechanism over ``steps`` rounds."""
-    from opacus.accountants import RDPAccountant
+                    delta: float, accountant: str = "rdp") -> float:
+    """Epsilon of the subsampled Gaussian mechanism over ``steps`` rounds.
 
-    accountant = RDPAccountant()
-    accountant.history = [(noise_multiplier, sample_rate, steps)]
-    return float(accountant.get_epsilon(delta=delta, alphas=RDP_ALPHAS))
+    ``rdp`` is the Renyi bound; ``prv`` numerically composes the privacy loss
+    distribution (Gopi et al., 2021), which is tighter, so the same budget
+    buys less noise.
+    """
+    from opacus.accountants import PRVAccountant, RDPAccountant
+
+    if accountant == "prv":
+        prv = PRVAccountant()
+        prv.history = [(noise_multiplier, sample_rate, steps)]
+        return float(prv.get_epsilon(delta=delta, eps_error=0.01))
+    rdp = RDPAccountant()
+    rdp.history = [(noise_multiplier, sample_rate, steps)]
+    return float(rdp.get_epsilon(delta=delta, alphas=RDP_ALPHAS))
 
 
 def calibrate_noise(target_epsilon: float, sample_rate: float, steps: int,
                     delta: float, low: float = 0.3, high: float = 200.0,
-                    tolerance: float = 1e-3) -> float:
+                    tolerance: float = 1e-3, accountant: str = "rdp") -> float:
     """Smallest noise multiplier whose accounted epsilon meets the target."""
     for _ in range(80):
         mid = 0.5 * (low + high)
-        if compute_epsilon(mid, sample_rate, steps, delta) > target_epsilon:
+        if compute_epsilon(mid, sample_rate, steps, delta, accountant) > target_epsilon:
             low = mid
         else:
             high = mid
