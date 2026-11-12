@@ -1,0 +1,144 @@
+{
+  "protocol": "5-fold subject-disjoint CV x seeds 42/123/2024, real ADNI sites as clients, subject-level DP-FedAvg, PRV accountant, delta = 1e-3",
+  "main_model": {
+    "name": "v8 DP-FedAvg logistic regression, 27 a-priori features",
+    "parameters_three_class": 84
+  },
+  "private": {
+    "cn-mci-ad_eps1": {
+      "v7_paper_model": {
+        "accuracy": 0.5257,
+        "balanced_accuracy": 0.5278,
+        "macro_auroc": 0.7079,
+        "accuracy_std": 0.0152,
+        "explanation_agreement": 0.048
+      },
+      "paper_model_on_v8_data": {
+        "accuracy": 0.5917,
+        "balanced_accuracy": 0.5732,
+        "macro_auroc": 0.7452,
+        "accuracy_std": 0.0185,
+        "explanation_agreement": 0.162
+      },
+      "v8_dp27": {
+        "accuracy": 0.6175,
+        "balanced_accuracy": 0.5887,
+        "macro_auroc": 0.7794,
+        "accuracy_std": 0.0061,
+        "explanation_agreement": 0.504
+      }
+    },
+    "cn-mci-ad_eps10": {
+      "v7_paper_model": {
+        "accuracy": 0.577,
+        "balanced_accuracy": 0.5796,
+        "macro_auroc": 0.7495,
+        "accuracy_std": 0.0065,
+        "explanation_agreement": 0.424
+      },
+      "paper_model_on_v8_data": {
+        "accuracy": 0.6104,
+        "balanced_accuracy": 0.5904,
+        "macro_auroc": 0.763,
+        "accuracy_std": 0.0053,
+        "explanation_agreement": 0.369
+      },
+      "v8_dp27": {
+        "accuracy": 0.6215,
+        "balanced_accuracy": 0.5927,
+        "macro_auroc": 0.7837,
+        "accuracy_std": 0.0076,
+        "explanation_agreement": 0.67
+      }
+    },
+    "cn-ad_eps1": {
+      "v7_paper_model": {
+        "accuracy": 0.8125,
+        "balanced_accuracy": 0.8109,
+        "macro_auroc": 0.8847,
+        "accuracy_std": 0.0019,
+        "explanation_agreement": 0.148
+      },
+      "paper_model_on_v8_data": {
+        "accuracy": 0.8574,
+        "balanced_accuracy": 0.8501,
+        "macro_auroc": 0.9249,
+        "accuracy_std": 0.0076,
+        "explanation_agreement": 0.218
+      },
+      "v8_dp27": {
+        "accuracy": 0.8951,
+        "balanced_accuracy": 0.8832,
+        "macro_auroc": 0.9465,
+        "accuracy_std": 0.0017,
+        "explanation_agreement": 0.536
+      }
+    },
+    "cn-ad_eps10": {
+      "v7_paper_model": {
+        "accuracy": 0.8617,
+        "balanced_accuracy": 0.8599,
+        "macro_auroc": 0.9225,
+        "accuracy_std": 0.0076,
+        "explanation_agreement": 0.2
+      },
+      "paper_model_on_v8_data": {
+        "accuracy": 0.8867,
+        "balanced_accuracy": 0.8796,
+        "macro_auroc": 0.9401,
+        "accuracy_std": 0.0079,
+        "explanation_agreement": 0.308
+      },
+      "v8_dp27": {
+        "accuracy": 0.9008,
+        "balanced_accuracy": 0.8888,
+        "macro_auroc": 0.9489,
+        "accuracy_std": 0.0024,
+        "explanation_agreement": 0.623
+      }
+    }
+  },
+  "membership_inference_auroc_three_class": {
+    "no_dp": 0.517,
+    "eps_10": 0.509,
+    "eps_1": 0.507
+  },
+  "federated_no_dp": {
+    "fedavg_dp27": {
+      "cn-mci-ad": {
+        "accuracy": 0.6186,
+        "accuracy_std": 0.0058,
+        "n_runs": 3
+      },
+      "cn-ad": {
+        "accuracy": 0.8852,
+        "accuracy_std": 0.0043,
+        "n_runs": 3
+      }
+    },
+    "fedprox_dp27": {
+      "cn-mci-ad": {
+        "accuracy": 0.6101,
+        "accuracy_std": 0.0032,
+        "n_runs": 3
+      },
+      "cn-ad": {
+        "accuracy": 0.889,
+        "accuracy_std": 0.0041,
+        "n_runs": 3
+      }
+    },
+    "fedboost": {
+      "cn-mci-ad": {
+        "accuracy": 0.6286,
+        "accuracy_std": 0.0061,
+        "n_runs": 3
+      },
+      "cn-ad": {
+        "accuracy": 0.8986,
+        "accuracy_std": 0.0017,
+        "n_runs": 3
+      }
+    }
+  }
+}

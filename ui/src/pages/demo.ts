@@ -1,4 +1,6 @@
-import { API_URL, parseTiv, predictRegions, wake, type ClassName, type RegionPrediction } from '../lib/api';
+import {
+  API_URL, CLINICAL_FIELDS, parseClinical, parseTiv, predictRegions, wake, type ClassName, type RegionPrediction,
+} from '../lib/api';
 import { loadClassifier } from '../lib/inference';
 import { pct, type SiteData } from '../lib/site';
 import { mountChat } from '../ui/chat';
@@ -13,6 +15,11 @@ const CLASS_TEXT: Record<ClassName, string> = { CN: 'text-cn', MCI: 'text-[#9a6a
 const CLASS_NAME: Record<ClassName, string> = {
   CN: 'Cognitively normal', MCI: 'Mild cognitive impairment', AD: "Alzheimer's disease",
 };
+
+// Cross-validated three-class accuracy of the served model (results_v8_summary/):
+// with every input the cohort had, and from the scan plus age, sex and education only.
+const ACC_ALL = 0.618;
+const ACC_SCAN = 0.601;
 
 const DEEPMRIPREP = `pip install deepmriprep
 python -c "from deepmriprep import run_preprocess; run_preprocess(input_paths=['t1.nii.gz'], output_dir='out', outputs=['neuromorphometrics_volumes', 'tiv'], dir_format='flat')"`;
@@ -29,14 +36,13 @@ function steps(): string {
       <div><p class="font-mono text-xs text-slate">Step ${n}</p><p class="font-display font-semibold">${title}</p>
         <p class="mt-0.5 text-sm text-slate">${body}</p></div></li>`;
   return `<ol class="shell mt-10 grid gap-4 md:grid-cols-3" data-stagger>
-    ${step(1, 'neurology', 'Measure the brain locally', '134 region volumes from a T1 scan, on your own machine.')}
-    ${step(2, 'shield_lock', 'Send numbers, not scans', 'Only the volumes and intracranial volume reach the private model.')}
-    ${step(3, 'insights', 'See the answer and the why', 'Class probabilities plus the regions that drove them.')}
+    ${step(1, 'neurology', 'Measure the brain locally', '20 Alzheimer-signature region volumes from a T1 scan, on your own machine.')}
+    ${step(2, 'shield_lock', 'Send numbers, not scans', 'Only the volumes, intracranial volume and any clinical values you add reach the private model.')}
+    ${step(3, 'insights', 'See the answer and the why', 'Class probabilities plus the features that drove them.')}
   </ol>`;
 }
 
-function emptyState(data: SiteData): string {
-  const acc = data.conditions.find((c) => c.family === 'privacy' && c.label_set === 'cn-mci-ad' && c.target_epsilon === 10)?.accuracy;
+function emptyState(): string {
   return `<div class="flex h-full flex-col items-center justify-center gap-5 py-10 text-center">
       <div class="relative grid h-40 w-40 place-items-center">
         <div class="absolute inset-0 rounded-full border-2 border-dashed border-hairline"></div>
@@ -45,8 +51,8 @@ function emptyState(data: SiteData): string {
       </div>
       <div><p class="font-display text-2xl font-semibold">Ready when you are</p>
         <p class="mx-auto mt-2 max-w-sm text-sm text-slate">Press <b class="text-ink">Run on a sample brain</b> for a one-click result, or upload your own
-          deepmriprep output. This model scores <span class="num text-ink">${pct(acc)}</span> three-class accuracy under
-          subject-disjoint cross-validation.</p></div>
+          deepmriprep output. This model scores <span class="num text-ink">${pct(ACC_ALL)}</span> three-class accuracy under
+          subject-disjoint cross-validation, and <span class="num text-ink">${pct(ACC_SCAN)}</span> from the scan, age, sex and education alone.</p></div>
     </div>`;
 }
 
@@ -155,29 +161,31 @@ function result(out: RegionPrediction): string {
         : '<span class="badge">MCI left out</span>'}</div>
     ${mode === 'three' ? threeClass(out) : twoClass(out)}
     <div class="border-t border-hairline pt-5">
-      <div class="flex items-baseline justify-between gap-3"><p class="font-display text-lg font-semibold">Why: regions that drove it</p>
+      <div class="flex items-baseline justify-between gap-3"><p class="font-display text-lg font-semibold">Why: what drove it</p>
         <p class="hidden font-mono text-[11px] text-slate sm:block"><span class="text-ad">◀ against</span> · <span class="text-teal">towards ▶</span></p></div>
-      <p class="mt-1 text-xs text-slate">z: how far a region's volume sits from the training cohort's mean. Bar: its push towards the
+      <p class="mt-1 text-xs text-slate">z: how far a value sits from the training cohort's mean. Bar: its push towards the
         three-class prediction (${out.predicted}), relative to an average cohort member.</p>
       <div class="mt-4 flex flex-col gap-2">${regions}</div>
+      ${out.not_given.length ? `<p class="mt-3 text-xs text-slate">Not given, so set to the cohort median: ${out.not_given.map(esc).join(', ')}.</p>` : ''}
     </div>
     <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
-      ${fact('Privacy', `ε = ${m.privacy.accounted_epsilon.toFixed(2)}`)}${fact('δ', String(m.privacy.delta))}
+      ${fact('Privacy', `ε = ${m.privacy.accounted_epsilon.toFixed(2)} · δ ${m.privacy.delta}`)}${fact('Parameters', String(m.privacy.parameters))}
       ${fact('Trained on', `${m.training.n_subjects} · ${m.training.n_clients} sites`)}${fact('CV accuracy', `${pct(m.evaluation.accuracy)} / ${pct(m.evaluation.chance_accuracy)}`)}
     </div>
     <p class="text-xs text-slate">${esc(m.name)}. ${esc(m.disclaimer)}</p>
   </div>`;
 }
 
-function regionSection(data: SiteData): string {
+function regionSection(): string {
   return `
   <section class="shell mt-8 grid gap-6 lg:grid-cols-[1fr_1.35fr]">
     <div class="flex flex-col gap-6" data-reveal>
       <div class="card">
-        <p class="eyebrow">The paper's model · server API</p>
-        <h2 class="mt-2 text-2xl">Classify region volumes</h2>
-        <p class="mt-2 text-sm text-slate">The v7 region model trained with subject-level DP-FedAvg at ε = 10. It reads the
-          region volumes deepmriprep measures from a T1 scan, so the scan itself never leaves your machine.</p>
+        <p class="eyebrow">The v8 private model · server API</p>
+        <h2 class="mt-2 text-2xl">Classify a brain</h2>
+        <p class="mt-2 text-sm text-slate">84 parameters, trained with subject-level DP-FedAvg at ε = 1 across the real ADNI sites. It reads
+          20 region volumes deepmriprep measures from a T1 scan, so the scan itself never leaves your machine, plus any
+          clinical values you add.</p>
         <div id="mode-slot" class="mt-5">${modePicker()}</div>
         <p class="mt-5 text-sm font-medium">2. Run it</p>
         <button id="run-example" type="button" class="btn btn-primary mt-2 h-12 w-full justify-center text-base">${icon('bolt')} Run on a sample brain (MNI152)</button>
@@ -189,6 +197,13 @@ function regionSection(data: SiteData): string {
             <span class="flex gap-2"><input id="tiv-file" type="file" accept=".csv,text/csv" class="${FILE_INPUT} min-w-0 flex-1">
             <input id="tiv-value" type="number" min="700" max="2600" step="any" placeholder="cm³" class="w-28 rounded-xl border border-hairline bg-paper px-3 text-sm"></span></label>
         </div>
+        <details class="group mt-4 rounded-xl border border-hairline p-4 text-sm">
+          <summary class="flex cursor-pointer list-none items-center justify-between font-medium">Add clinical values <span class="font-normal text-slate">optional · used by both buttons</span></summary>
+          <p class="mt-2 text-xs text-slate">Leave any blank: the model then uses the training cohort's median, as in its evaluation.</p>
+          <div class="mt-3 grid grid-cols-2 gap-3">${CLINICAL_FIELDS.map((f) => `<label class="flex flex-col gap-1 text-xs font-medium">${f.label}
+            <input data-clinical="${f.key}" type="number" step="any" min="${f.min}" max="${f.max}" placeholder="${f.unit}"
+              class="rounded-lg border border-hairline bg-paper px-2 py-1.5 text-sm font-normal"></label>`).join('')}</div>
+        </details>
         <button id="run-api" type="button" class="btn mt-5 w-full justify-center">${icon('play_arrow')} Classify my files</button>
         <p id="api-status" class="mt-3 min-h-6 font-mono text-xs text-slate" role="status"></p>
       </div>
@@ -200,7 +215,7 @@ function regionSection(data: SiteData): string {
           MNI152 template, an average healthy adult brain, so it contains no ADNI data.</p>
       </details>
     </div>
-    <div class="card beam min-h-[34rem] !p-7" id="api-result" aria-live="polite" data-reveal>${emptyState(data)}</div>
+    <div class="card beam min-h-[34rem] !p-7" id="api-result" aria-live="polite" data-reveal>${emptyState()}</div>
   </section>`;
 }
 
@@ -225,10 +240,10 @@ function legacySection(data: SiteData): string {
 function render(data: SiteData): string {
   return `
   ${pageHead('Live demo · region model on Render, slice model in your browser', 'Try the model, live',
-    'Run the paper\'s privacy-preserving region model on deepmriprep region volumes, or the legacy slice model entirely inside this tab.',
+    'Run the v8 privacy-preserving model on deepmriprep region volumes and optional clinical values, or the legacy slice model entirely inside this tab.',
     `<span class="badge shrink-0 !px-3 !py-1">${icon('shield', '!text-sm')} No scan is ever uploaded</span>`)}
   ${steps()}
-  ${regionSection(data)}
+  ${regionSection()}
   ${legacySection(data)}
   <section class="shell mt-8"><div class="card bg-muted text-sm">
     <p class="font-mono text-xs uppercase tracking-wider text-amber">Research demonstration · not a medical device</p>
@@ -241,7 +256,12 @@ async function readText(input: HTMLInputElement): Promise<string | null> {
   return file ? file.text() : null;
 }
 
-function wireRegionModel(data: SiteData): void {
+function clinical(): Record<string, string> {
+  return Object.fromEntries([...document.querySelectorAll<HTMLInputElement>('input[data-clinical]')]
+    .map((input) => [input.dataset.clinical as string, input.value]));
+}
+
+function wireRegionModel(): void {
   const status = document.getElementById('api-status');
   const panel = document.getElementById('api-result');
   const buttons = [...document.querySelectorAll<HTMLButtonElement>('#run-api, #run-example')];
@@ -256,8 +276,9 @@ function wireRegionModel(data: SiteData): void {
     set(`Contacting ${API_URL.replace('https://', '')}…`);
     try {
       const [csv, tiv] = await load();
+      const values = parseClinical(clinical());
       if (panel) panel.innerHTML = loadingState();
-      const out = await predictRegions(csv, tiv);
+      const out = await predictRegions(csv, tiv, values);
       if (panel) {
         last = out;
         panel.innerHTML = result(out);
@@ -266,7 +287,7 @@ function wireRegionModel(data: SiteData): void {
       }
       set('Done.');
     } catch (error) {
-      if (panel) panel.innerHTML = emptyState(data);
+      if (panel) panel.innerHTML = emptyState();
       set(error instanceof Error ? error.message : String(error), true);
     } finally {
       buttons.forEach((b) => (b.disabled = false));
@@ -305,7 +326,7 @@ function wireRegionModel(data: SiteData): void {
 void mountPage('demo', render).then((data) => {
   if (!data) return;
   wake();
-  wireRegionModel(data);
+  wireRegionModel();
   const root = document.getElementById('chat-root');
   // The reference quoted back is the slice model's own held-out accuracy.
   if (root) mountChat(root, { classifier: loadClassifier(), referenceAccuracy: data.history.v2.accuracy });

@@ -52,6 +52,7 @@ omit =
     # atlas table for the region order; its training and accounting calls are
     # the covered federated_v3 functions.
     src/export_api_model.py
+    src/export_api_model_v8.py
     # The paper's figures: matplotlib rendering over the results JSONs, like figures_v3.
     src/paper_figures.py
     # v8 cohort build: every line reads the ADNIMERGE / UPenn / UCBerkeley tables

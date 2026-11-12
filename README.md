@@ -16,17 +16,106 @@ hospital sites costs, what subject-level differential privacy costs, and what
 privacy does to a model's explanations.
 
 The headline result is that the cost of subject-level privacy is set by the
-**perturbed dimension**, not by the cohort or the mechanism. A 405-parameter
-model over named anatomical regions stays usable at ε = 1, where the
-23.5M-parameter network it replaces collapses onto the majority class.
+**perturbed dimension**, not by the cohort or the mechanism. A small model over
+named anatomical regions and literature-chosen biomarkers stays usable at ε = 1,
+where the 23.5M-parameter network it replaces collapses onto the majority class.
 
-> The numbers below, in the paper and on the site all come from the current
-> **v7** runs: deepmriprep features (as in v6), a FedProx federated arm and a
-> PRV-accounted privacy arm, on the same subjects, folds and seeds.
+> **Current results: v8** (below). A 1,262-subject cohort (ADNI 1, GO, 2, 3 and
+> 4), CSF, amyloid-PET and plasma biomarkers, and an 84-parameter private model.
+> The live demo serves this model. The paper and the sections after
+> [v8](#v8-results-current) still report the **v7** runs on 799 subjects with the
+> 405-parameter region model; they are kept as they were published.
 
 ---
 
-## Cohort and protocol
+## v8 results (current)
+
+**Cohort.** 1,262 ADNI subjects (532 CN, 388 MCI, 342 AD) from 70 sites,
+covering ADNI 1, GO, 2, 3 and 4, with each diagnosis matched to the visit of the
+scan. Region volumes come from deepmriprep exactly as in v7. Biomarkers are
+joined from the ADNI study tables: CSF p-tau181/Aβ42 (Roche Elecsys), amyloid PET
+in centiloids, plasma p-tau217 (Fujirebio), NfL and GFAP (Quanterix), and APOE4.
+No cognitive score (MMSE, CDR, ADAS, FAQ, MoCA) is ever an input.
+
+**Model.** Subject-level DP-FedAvg logistic regression on 27 features fixed in
+advance from the AD literature, not selected on this data:
+- 20 AD-signature region volumes / TIV: hippocampus, amygdala, entorhinal,
+  parahippocampal, inferior and middle temporal, fusiform, precuneus, lateral and
+  inferior lateral ventricles, left and right;
+- APOE4, amyloid PET, education, age and sex;
+- a **tau composite** (CSF p-tau/Aβ42 and plasma p-tau217) and a
+  **neurodegeneration composite** (plasma NfL and GFAP), each the mean of the
+  z-scored parts a subject has, with the z-score fitted inside each training fold.
+
+For three classes that is **84 parameters**, against 405 for the v7 region
+model. Missing biomarkers are filled with the training-fold median.
+
+**Protocol** (unchanged from v7): five subject-disjoint folds × seeds 42, 123 and
+2024; the real ADNI sites as federated clients; per-subject clipping at 1, 50%
+subject sampling, 60 rounds; PRV accountant, δ = 10⁻³. Numbers are means over
+the three seeds.
+
+### Private model against the paper
+
+| | v7 paper model (405 params) | v7 model on v8 data | **v8 model (84 params)** |
+| --- | --- | --- | --- |
+| CN / MCI / AD, ε = 1 | 52.6% | 59.2% | **61.8%** (AUROC 0.779) |
+| CN / MCI / AD, ε = 10 | 57.7% | 61.0% | **62.2%** (AUROC 0.784) |
+| CN vs AD, ε = 1 | 81.2% | 85.7% | **89.5%** (AUROC 0.946) |
+| CN vs AD, ε = 10 | 86.2% | 88.7% | **90.1%** |
+| Attribution agreement, three-class, ε = 1 | 0.048 | 0.162 | **0.504** |
+| Attribution agreement, three-class, ε = 10 | 0.424 | 0.369 | **0.670** |
+| Attribution agreement, CN vs AD, ε = 1 | 0.148 | 0.218 | **0.536** |
+
+The middle column separates the two sources of the gain. More data and the
+visit-matched labels move the v7 model by 6.6 points at ε = 1. The smaller,
+biomarker-aware model adds a further 2.6 points, and roughly triples how well its
+explanations agree with the non-private model's.
+
+Privacy now costs almost nothing. The v8 model is at **61.8% / 89.5%** at ε = 1,
+against 61.4% / 88.5% without any noise and **62.9% / 90.5%** for the best
+centralised, non-private model on the same subjects. A membership-inference attack
+on the three-class model scores AUROC **0.507** at ε = 1 (0.517 without DP), where
+0.5 is a coin flip. At ε = 10 the noise is 0.015 of the signal for 84 parameters,
+0.131 for a ResNet50 head and 8.1 for the full ResNet50.
+
+### Federated, without privacy
+
+| Model (subject-disjoint) | CN / MCI / AD | CN vs AD |
+| --- | --- | --- |
+| v7 FedProx (paper) | 55.1% | 84.3% |
+| v8 FedAvg, 27 features | 61.9% | 88.5% |
+| v8 FedProx, 27 features | 61.0% | 88.9% |
+| v8 federated gradient boosting (403 features) | **62.9%** | **89.9%** |
+| Centralised best, MRI + biomarkers | 62.9% | 90.5% |
+
+Federated gradient boosting (`src/fedboost_v8.py`) shares only per-site
+gradient/hessian histograms and quantile sketches, so it matches centralised
+boosting on the same folds (62.0% vs 61.3%). It carries no formal DP guarantee;
+a DP version reached about 54% three-class at ε = 1, so the private model stays
+the logistic regression.
+
+### Scanner shift
+
+Trained on the older ADNI phases and tested on ADNI 4's newer scanners, the
+centralised biomarker model loses nothing: three-class 69.7% against 69.8%
+with phases mixed, CN vs AD 93.2% against 93.0%.
+
+### What was tried and not kept
+
+Balanced class weights, tail averaging of the last rounds, an ordinal
+(CN < MCI < AD) model and a hyperparameter grid were all tested on seed 42; none
+beat the defaults by more than noise, so the defaults are reported. The ordinal
+model raises macro F1 (0.604 vs 0.550) but lowers accuracy.
+
+Aggregate results are in
+[`ppxfl-alzheimer/results_v8_summary/`](ppxfl-alzheimer/results_v8_summary/)
+(`results_summary_v8.json` for the tables above). Per-fold files stay local
+because they carry ADNI site codes.
+
+## v7 results (as in the paper)
+
+### Cohort and protocol
 
 799 ADNI subjects (275 CN, 271 MCI, 253 AD) across 65 sites. Each scan is
 oriented, skull-stripped and registered to MNI152 for quality control, then
@@ -312,11 +401,12 @@ at their revised strength rather than at the one first measured:
 
 ## Live demo and API
 
-The site's Demo page runs the paper's region model through a small API on
-Render. It serves only the **subject-level DP-FedAvg model at ε = 10**, trained
-on all 799 subjects with the same configuration as the privacy arm, so releasing
-it carries a formal privacy guarantee for every training subject. Its
-cross-validated three-class accuracy is the 57.7% reported above.
+The site's Demo page runs the **v8 private model** through a small API on
+Render: 84 parameters, subject-level DP-FedAvg at **ε = 1**, trained on all
+1,262 subjects with the same configuration as the privacy arm, so releasing it
+carries a formal privacy guarantee for every training subject. Its
+cross-validated three-class accuracy is 61.8% with every input the cohort had,
+and 60.1% from the scan, age, sex and education alone.
 
 The API takes what [deepmriprep](https://pypi.org/project/deepmriprep/) writes
 for one T1 scan, so the scan itself never leaves the user's machine:
@@ -326,8 +416,12 @@ pip install deepmriprep
 python -c "from deepmriprep import run_preprocess; run_preprocess(input_paths=['t1.nii.gz'], output_dir='out', outputs=['neuromorphometrics_volumes', 'tiv'], dir_format='flat')"
 ```
 
-`POST /predict` with `{"volumes_csv": "<the CSV text>", "tiv_cm3": <TIV>}`
-returns CN/MCI/AD probabilities and the regions that drove the prediction;
+`POST /predict` with `{"volumes_csv": "<the CSV text>", "tiv_cm3": <TIV>,
+"clinical": {"age": 74, "sex": 2, "plasma_ptau217": 0.4}}` returns CN/MCI/AD
+probabilities and the features that drove the prediction. Every clinical field
+(age, sex, education, apoe4, amyloid_cl, csf_ptau_ab42, plasma_ptau217,
+plasma_nfl, plasma_gfap) is optional; one left out is set to the cohort median,
+as in the evaluation, and listed in the response as not given;
 `GET /model` returns the model card. Inputs are validated, requests are rate
 limited per client, and only the Vercel site and localhost may call it from a
 browser. The example on the Demo page is deepmriprep's output for the public
@@ -341,7 +435,7 @@ figures/v7/              the paper's figures
 figures/v4/              figures for the 760-subject cohort
 figures/v3/              figures for the first, 297-subject cohort
 ui/                      seven-page site (Vercel, vercel.json); reads ui/public/data/site.json
-backend/                 region-model API (FastAPI on Render, render.yaml); model.json is the ε = 10 DP model
+backend/                 model API (FastAPI on Render, render.yaml); model.json is the v8 ε = 1 DP model
 ppxfl-alzheimer/
   src/preprocess_v3.py     scan selection, orientation, stripping, registration
   src/orientation*.py      the 48-candidate orientation search
@@ -358,9 +452,14 @@ ppxfl-alzheimer/
   src/mia_v3.py            subject-level membership inference
   src/paper_tables*.py     results JSON to the paper's generated table blocks
   src/export_site.py       results JSON to the site's data file
-  src/export_api_model.py  trains and exports the API's ε = 10 model
+  src/build_v8*.py         the v8 cohort, biomarkers and 27-feature private-model file
+  src/fedboost_v8.py       federated gradient boosting and its DP variant
+  src/phase_shift_v8.py    the ADNI 4 scanner-shift test
+  src/export_api_model_v8.py  trains and exports the API's v8 ε = 1 model
+  src/export_api_model.py  the v7 API model (ε = 10, 134 regions)
   src/paper_facts.py       results JSON to the paper's prose macros
-  results_v7/              the current runs (v6 centralised arm, FedProx, PRV accounting)
+  results_v8_summary/      v8 aggregate results (the current numbers)
+  results_v7/              the paper's runs (v6 centralised arm, FedProx, PRV accounting)
   results_v6/              the v6 runs (deepmriprep features, plain FedAvg, RDP accounting)
   results_v4/              the 760-subject cohort's runs
   results_v3/              the first, 297-subject cohort's runs
@@ -411,6 +510,16 @@ bash scripts/run_mu_sweep.sh
 python -m src.mu_selection --run 0=results_v7/metrics_fedavg 0.01=results_v7/metrics_mu_sweep/mu0.01 0.1=results_v7/metrics_mu_sweep/mu0.1 1=results_v7/metrics 3=results_v7/metrics_mu_sweep/mu3
 python -m src.evaluate_v3 --features data/mni2mm/features_vbm.npz --models ensemble ensemble_cv logreg_cv --covariates --apoe-tables data/adni_tables/APOERES.csv data/adni_tables/PTDEMOG.csv --out-dir results_v7/metrics_apoe
 python -m src.export_site
+```
+
+The v8 runs need the ADNI study tables as CSV (ADNIMERGE, the UPenn CSF and
+plasma tables, the UC Berkeley amyloid tables). Build the cohort and feature
+files, run every arm, collect the shareable summary and export the API model:
+
+```bash
+bash scripts/run_v8.sh
+python scripts/collect_v8_summary.py
+python -m src.export_api_model_v8 --epsilon 1
 ```
 
 `--covariates` appends age and sex to the centralised models, and
