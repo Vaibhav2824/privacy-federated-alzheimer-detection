@@ -70,11 +70,9 @@ def run(X, y, sites, label_set: str, config: FedConfig, n_splits: int,
     folds = make_folds("subject", y_sub, sites_sub, n_splits=n_splits, seed=config.seed)
     member, non_member = [], []
     for fold in folds:
-        mean = X_sub[fold.train].mean(axis=0)
-        std = X_sub[fold.train].std(axis=0)
-        std[std == 0] = 1.0
-        train_X = (X_sub[fold.train] - mean) / std
-        test_X = (X_sub[fold.test] - mean) / std
+        from .experiments_v3 import _standardise
+
+        train_X, test_X = _standardise(X_sub[fold.train], X_sub[fold.test])
 
         clients = make_clients(
             client_scheme, np.arange(len(fold.train)), y_sub[fold.train],
@@ -119,6 +117,8 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
 
     X, y, subjects, sites, feature_names = load_features(args.features)
+    from .experiments_v3 import configure_composites
+    configure_composites(feature_names)
     os.makedirs(args.out_dir, exist_ok=True)
 
     rows = []

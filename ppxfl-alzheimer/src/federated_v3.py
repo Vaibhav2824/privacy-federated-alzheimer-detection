@@ -46,6 +46,17 @@ class FedConfig:
     # FedProx: proximal pull of local training back towards the global model.
     prox_mu: float = 0.0
     accountant: str = "rdp"
+    # v8 options; the defaults reproduce the paper exactly.
+    # "balanced" scales each subject's loss by n / (K * n_class) using the
+    # training class counts (an aggregate, like the standardisation statistics);
+    # clipping still bounds every subject's update, so the guarantee is unchanged.
+    class_weight: str = "none"
+    # Average the global model over the last ``avg_last`` rounds.  Post-processing
+    # of already-released models, so it costs no privacy budget.
+    avg_last: int = 0
+    # "softmax" (multinomial) or "ordinal" (cumulative logit CN < MCI < AD:
+    # one weight per feature plus K-1 thresholds).
+    model: str = "softmax"
 
 
 @dataclass
@@ -63,6 +74,7 @@ class FedResult:
     trace: list[RoundTrace] = field(default_factory=list)
     epsilon: float | None = None
     perturbed_dimension: int = 0
+    model: str = "softmax"
 
 
 def softmax(logits: np.ndarray) -> np.ndarray:
@@ -85,6 +97,32 @@ def _subject_gradient(x: np.ndarray, y: int, weights: np.ndarray, bias: np.ndarr
     error = probabilities - target
     grad_w = np.outer(x, error) + l2 * weights
     return grad_w, error
+
+
+def _sigmoid(z):
+    return 1.0 / (1.0 + np.exp(-np.clip(z, -35, 35)))
+
+
+def _ordinal_cdf(scores: np.ndarray, thresholds: np.ndarray) -> np.ndarray:
+    """P(y <= k) for k = -1..K-1 (first column 0, last 1); scores shape (n,)."""
+    inner = _sigmoid(thresholds[None, :] - scores[:, None])
+    n = len(scores)
+    return np.hstack([np.zeros((n, 1)), inner, np.ones((n, 1))])
+
+
+def _ordinal_subject_gradient(x, y, weights, bias, l2):
+    """Cumulative-logit NLL gradient for one subject. weights (F, 1), bias = thresholds."""
+    score = float(x @ weights[:, 0])
+    cdf = _ordinal_cdf(np.array([score]), bias)[0]
+    p = max(cdf[y + 1] - cdf[y], 1e-9)
+    grad_t = np.zeros_like(bias)
+    # d p / d theta_k: + F'(theta_y) for k = y, - F'(theta_{y-1}) for k = y - 1
+    if y < len(bias):
+        grad_t[y] -= cdf[y + 1] * (1 - cdf[y + 1]) / p
+    if y - 1 >= 0:
+        grad_t[y - 1] += cdf[y] * (1 - cdf[y]) / p
+    grad_w = (-x * grad_t.sum())[:, None] + l2 * weights
+    return grad_w, grad_t
 
 
 def _flatten(grad_w: np.ndarray, grad_b: np.ndarray) -> np.ndarray:
@@ -116,11 +154,20 @@ def _local_train(X, y, indices, weights, bias, config: FedConfig, n_classes: int
     local_w = weights.copy()
     local_b = bias.copy()
     order = np.asarray(indices)
+    weight_of = getattr(config, "_class_weights", None)
     for _ in range(config.local_epochs):
         for index in rng.permutation(order):
-            grad_w, error = _subject_gradient(
-                X[index], int(y[index]), local_w, local_b, n_classes, config.l2
-            )
+            if config.model == "ordinal":
+                grad_w, error = _ordinal_subject_gradient(
+                    X[index], int(y[index]), local_w, local_b, config.l2)
+            else:
+                grad_w, error = _subject_gradient(
+                    X[index], int(y[index]), local_w, local_b, n_classes, config.l2
+                )
+            if weight_of is not None:
+                cw = weight_of[int(y[index])]
+                grad_w = (grad_w - config.l2 * local_w) * cw + config.l2 * local_w
+                error = error * cw
             if config.prox_mu:
                 grad_w = grad_w + config.prox_mu * (local_w - weights)
                 error = error + config.prox_mu * (local_b - bias)
@@ -147,10 +194,21 @@ def train_federated(X, y, clients, config: FedConfig, n_classes: int = 3) -> Fed
     """
     rng = np.random.default_rng(config.seed)
     n_features = X.shape[1]
-    weights = np.zeros((n_features, n_classes))
-    bias = np.zeros(n_classes)
+    if config.model == "ordinal":
+        weights = np.zeros((n_features, 1))
+        bias = np.linspace(-1.0, 1.0, n_classes - 1)
+    else:
+        weights = np.zeros((n_features, n_classes))
+        bias = np.zeros(n_classes)
     dimension = weights.size + bias.size
     private = config.noise_multiplier > 0.0
+    if config.class_weight == "balanced":
+        counts = np.bincount(np.asarray(y, dtype=int), minlength=n_classes)
+        object.__setattr__(config, "_class_weights",
+                           len(y) / (n_classes * np.maximum(counts, 1)))
+    else:
+        object.__setattr__(config, "_class_weights", None)
+    tail_w, tail_b, tail_n = np.zeros_like(weights), np.zeros_like(bias), 0
 
     trace: list[RoundTrace] = []
     for round_index in range(config.rounds):
@@ -200,6 +258,10 @@ def train_federated(X, y, clients, config: FedConfig, n_classes: int = 3) -> Fed
         step_w, step_b = _unflatten(step, weights.shape, bias.shape)
         weights += step_w
         bias += step_b
+        if config.avg_last and round_index >= config.rounds - config.avg_last:
+            tail_w += weights
+            tail_b += bias
+            tail_n += 1
 
         trace.append(RoundTrace(
             round_index=round_index,
@@ -208,6 +270,8 @@ def train_federated(X, y, clients, config: FedConfig, n_classes: int = 3) -> Fed
             noise_to_signal=noise_norm / signal_norm if signal_norm > 0 else float("inf"),
         ))
 
+    if tail_n:
+        weights, bias = tail_w / tail_n, tail_b / tail_n
     epsilon = None
     if config.noise_multiplier > 0.0:
         epsilon = compute_epsilon(
@@ -215,10 +279,13 @@ def train_federated(X, y, clients, config: FedConfig, n_classes: int = 3) -> Fed
             config.rounds, config.delta, config.accountant
         )
     return FedResult(weights=weights, bias=bias, trace=trace,
-                     epsilon=epsilon, perturbed_dimension=dimension)
+                     epsilon=epsilon, perturbed_dimension=dimension, model=config.model)
 
 
 def predict_proba(X, result: FedResult) -> np.ndarray:
+    if result.model == "ordinal":
+        cdf = _ordinal_cdf(X @ result.weights[:, 0], np.sort(result.bias))
+        return np.clip(np.diff(cdf, axis=1), 1e-9, 1.0)
     return softmax(X @ result.weights + result.bias)
 
 

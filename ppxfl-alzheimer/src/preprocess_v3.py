@@ -43,7 +43,7 @@ from dataclasses import asdict, dataclass
 
 import numpy as np
 
-SUBJECT_ID_RE = re.compile(r"\d{3}_S_\d{4}")
+SUBJECT_ID_RE = re.compile(r"\d{3}_S_\d{4,5}")
 SCAN_ID_RE = re.compile(r"I\d+")
 DATE_RE = re.compile(r"(\d{4}-\d{2}-\d{2})_\d{2}_\d{2}_\d{2}")
 

@@ -72,7 +72,66 @@ def _metrics(y_true, y_pred, y_score, n_classes):
     return out
 
 
+def _impute(train_X, test_X):
+    """Fill missing values (biomarkers not measured) with the training median.
+
+    Fitted on the training fold only, so nothing about the test subjects leaks.
+    A no-op for complete feature matrices, which keeps earlier results identical.
+    """
+    if not (np.isnan(train_X).any() or np.isnan(test_X).any()):
+        return train_X, test_X
+    median = np.nanmedian(train_X, axis=0)
+    median = np.where(np.isnan(median), 0.0, median)
+    fill = lambda A: np.where(np.isnan(A), median, A)
+    return fill(train_X), fill(test_X)
+
+
+# In-fold composites.  Feature files may carry several measurements of the same
+# biology as columns named ``comp::<group>::<part>`` (e.g. CSF p-tau/AB42 and
+# plasma p-tau217, measured in different subjects).  Inside each fold every part
+# is z-scored with the *training* fold's mean and SD, and the parts a subject has
+# are averaged into one ``bio::<group>_composite`` feature.  Files without such
+# columns are untouched, so earlier results are unchanged.
+_COMPOSITES: list = []
+
+
+def configure_composites(feature_names) -> list:
+    """Register composite groups from the column names; return model feature names."""
+    global _COMPOSITES
+    names = [str(n) for n in feature_names]
+    groups: dict = {}
+    for i, n in enumerate(names):
+        if n.startswith("comp::"):
+            groups.setdefault(n.split("::")[1], []).append(i)
+    _COMPOSITES = list(groups.items())
+    if not _COMPOSITES:
+        return names
+    drop = {i for _, idx in _COMPOSITES for i in idx}
+    return [n for i, n in enumerate(names) if i not in drop] + \
+        [f"bio::{g}_composite" for g, _ in _COMPOSITES]
+
+
+def _composite(train_X, test_X):
+    if not _COMPOSITES:
+        return train_X, test_X
+    import warnings
+    drop = {i for _, idx in _COMPOSITES for i in idx}
+    keep = [i for i in range(train_X.shape[1]) if i not in drop]
+    tr, te = [train_X[:, keep]], [test_X[:, keep]]
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)
+        for _, idx in _COMPOSITES:
+            mu = np.nanmean(train_X[:, idx], axis=0)
+            sd = np.nanstd(train_X[:, idx], axis=0)
+            sd[~(sd > 0)] = 1.0
+            tr.append(np.nanmean((train_X[:, idx] - mu) / sd, axis=1)[:, None])
+            te.append(np.nanmean((test_X[:, idx] - mu) / sd, axis=1)[:, None])
+    return np.hstack(tr), np.hstack(te)
+
+
 def _standardise(train_X, test_X):
+    train_X, test_X = _composite(train_X, test_X)
+    train_X, test_X = _impute(train_X, test_X)
     mean = train_X.mean(axis=0)
     std = train_X.std(axis=0)
     std[std == 0] = 1.0
@@ -119,7 +178,7 @@ def run_federated_configuration(X, y, sites, label_set: str, split_scheme: str,
 
     overall = _metrics(y_sub, predictions, scores, n_classes)
     counts = np.bincount(y_sub, minlength=n_classes)
-    dimension = X_sub.shape[1] * n_classes + n_classes
+    dimension = train_X.shape[1] * n_classes + n_classes   # after composites
 
     payload = {
         "label_set": label_set,
@@ -155,6 +214,7 @@ def run_federated_configuration(X, y, sites, label_set: str, split_scheme: str,
 
 def command_federated(args) -> None:
     X, y, subjects, sites, feature_names = load_features(args.features)
+    feature_names = configure_composites(feature_names)
     os.makedirs(args.out_dir, exist_ok=True)
     summary = []
     for label_set in args.label_sets:
@@ -181,6 +241,7 @@ def command_federated(args) -> None:
 
 def command_privacy(args) -> None:
     X, y, subjects, sites, feature_names = load_features(args.features)
+    feature_names = configure_composites(feature_names)
     os.makedirs(args.out_dir, exist_ok=True)
 
     # One reference per label set. A three-class model and a two-class model
@@ -205,7 +266,8 @@ def command_privacy(args) -> None:
                     clip_norm=args.clip_norm, noise_multiplier=noise,
                     subject_sample_rate=args.subject_sample_rate,
                     seed=seed, delta=args.delta, accountant=args.accountant,
-                    prox_mu=args.prox_mu
+                    prox_mu=args.prox_mu, class_weight=args.class_weight,
+                    avg_last=args.avg_last, model=args.model
                 )
                 payload = run_federated_configuration(
                     X, y, sites, label_set, args.scheme, args.client_scheme,
@@ -259,7 +321,7 @@ def command_dimension_law(args) -> None:
     """The closed-form noise-to-signal ratio across model dimensions."""
     X, y, _, _, feature_names = load_features(args.features)
     dimensions = {
-        "roi_logreg": X.shape[1] * 3 + 3,
+        "roi_logreg": len(configure_composites(feature_names)) * 3 + 3,
         **REFERENCE_DIMENSIONS,
     }
     participants = int(X.shape[0] * (args.n_splits - 1) / args.n_splits)
@@ -293,6 +355,10 @@ def main(argv=None) -> int:
     parser.add_argument("--top-k", type=int, default=10)
     parser.add_argument("--prox-mu", type=float, default=0.0, help="FedProx strength")
     parser.add_argument("--accountant", choices=["rdp", "prv"], default="rdp")
+    parser.add_argument("--class-weight", choices=["none", "balanced"], default="none")
+    parser.add_argument("--avg-last", type=int, default=0,
+                        help="average the global model over the last N rounds")
+    parser.add_argument("--model", choices=["softmax", "ordinal"], default="softmax")
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 

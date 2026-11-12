@@ -81,3 +81,9 @@ commitmsg.txt
 .claude/
 .agents/
 skills-lock.json
+
+# v8 cohort: subject-level tables and derived arrays (ADNI data use agreement)
+ppxfl-alzheimer/data/v8/
+ppxfl-alzheimer/data/mni2mm_v8*/
+ppxfl-alzheimer/data/ida_search_v8.csv
+ppxfl-alzheimer/data/v8_*/

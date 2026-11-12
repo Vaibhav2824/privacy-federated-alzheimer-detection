@@ -54,7 +54,7 @@ def run(rows, bet_dir: str, out_dir: str) -> None:
             if not os.path.exists(os.path.join(out_dir, f"tiv{r['subject_id']}.csv"))]
     print(f"deepmriprep: {len(todo)} of {len(rows)} subjects to process", flush=True)
     if todo:
-        run_preprocess(input_paths=todo, output_dir=out_dir, dir_format="flat",
+        run_preprocess(input_paths=todo, output_dir=out_dir, dir_format="flat", no_gpu=os.environ.get("DMP_GPU") != "1",
                        outputs=[f"{ATLAS}_volumes", "tiv", "warp_mse"])
 
 
@@ -160,7 +160,7 @@ def main(argv=None) -> int:
         todo = [os.path.join(args.data_dir, "bet", f"{s}.nii.gz") for s in subjects
                 if not os.path.exists(os.path.join(multi_dir, f"{EXTRA_ATLASES[-1]}_volumes{s}.csv"))]
         if todo:
-            run_preprocess(input_paths=todo, output_dir=multi_dir, dir_format="flat",
+            run_preprocess(input_paths=todo, output_dir=multi_dir, dir_format="flat", no_gpu=os.environ.get("DMP_GPU") != "1",
                            outputs=[f"{a}_volumes" for a in EXTRA_ATLASES])
         extended, ext_names = extended_features(subjects, out_dir, multi_dir)
         save_features(args.extended_out, extended.astype(np.float32),
