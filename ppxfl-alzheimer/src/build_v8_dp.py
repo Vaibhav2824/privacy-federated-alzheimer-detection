@@ -33,7 +33,8 @@ def build(v8_dir: str) -> str:
     d = np.load(os.path.join(v8_dir, "features_v8_ext.npz"), allow_pickle=True)
     names = [str(n) for n in d["feature_names"]]
     X = d["X"].astype(np.float64)
-    col = lambda k: X[:, names.index(k)]
+    def col(k):
+        return X[:, names.index(k)]
     base = [i for i in dp_feature_index(names) if names[i] != "bio::csf_ptau_ab42"]
     with np.errstate(divide="ignore", invalid="ignore"):
         parts = {

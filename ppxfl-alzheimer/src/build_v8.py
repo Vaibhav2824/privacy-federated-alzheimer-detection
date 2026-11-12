@@ -106,7 +106,8 @@ def build(old_npz, old_manifest, new_npz, new_manifest, tables_dir, out_dir,
     dates_map = {**scan_dates(old_manifest), **scan_dates(new_manifest)}
     dates = [dates_map.get(s, pd.NaT) for s in subjects]
 
-    t = lambda name: pd.read_csv(os.path.join(tables_dir, f"{name}.csv"), low_memory=False)
+    def t(name):
+        return pd.read_csv(os.path.join(tables_dir, f"{name}.csv"), low_memory=False)
 
     # 1. visit-matched diagnosis
     demo = t("ADSP_PHC_DEMODX")
@@ -177,7 +178,7 @@ def build(old_npz, old_manifest, new_npz, new_manifest, tables_dir, out_dir,
         bio[f"bio::{block}_measured"] = bio[cols].notna().any(axis=1).astype(float)
 
     os.makedirs(out_dir, exist_ok=True)
-    base = dict(y=y, subjects=np.asarray(subjects), sites=np.asarray(sites))
+    base = {"y": y, "subjects": np.asarray(subjects), "sites": np.asarray(sites)}
     np.savez_compressed(os.path.join(out_dir, "features_v8_mri.npz"), X=X,
                         feature_names=np.asarray(names_old), **base)
     Xb = np.hstack([X, bio.values.astype(np.float32)])

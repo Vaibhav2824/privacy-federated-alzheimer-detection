@@ -217,3 +217,73 @@ def test_prv_accounting_is_tighter_than_rdp():
     assert compute_epsilon(5.0, 0.5, 60, 1e-3, "prv") < compute_epsilon(5.0, 0.5, 60, 1e-3)
     assert calibrate_noise(2.0, 0.5, 60, 1e-3, accountant="prv") < \
         calibrate_noise(2.0, 0.5, 60, 1e-3)
+
+
+# ---- v8 options: ordinal model, class weighting, tail averaging -----------------
+
+def _ordinal_nll(x, y, weights, bias):
+    from src.federated_v3 import _ordinal_cdf
+    cdf = _ordinal_cdf(np.array([float(x @ weights[:, 0])]), bias)[0]
+    return -np.log(cdf[y + 1] - cdf[y])
+
+
+@pytest.mark.parametrize("label", [0, 1, 2])
+def test_ordinal_gradient_matches_finite_differences(label):
+    from src.federated_v3 import _ordinal_subject_gradient
+    rng = np.random.default_rng(label)
+    x = rng.normal(size=4)
+    weights = rng.normal(size=(4, 1))
+    bias = np.array([-0.5, 0.7])
+    grad_w, grad_t = _ordinal_subject_gradient(x, label, weights, bias, l2=0.0)
+    step = 1e-6
+    for i in range(4):
+        bumped = weights.copy()
+        bumped[i, 0] += step
+        numeric = (_ordinal_nll(x, label, bumped, bias)
+                   - _ordinal_nll(x, label, weights, bias)) / step
+        assert grad_w[i, 0] == pytest.approx(numeric, abs=1e-4)
+    for k in range(2):
+        bumped = bias.copy()
+        bumped[k] += step
+        numeric = (_ordinal_nll(x, label, weights, bumped)
+                   - _ordinal_nll(x, label, weights, bias)) / step
+        assert grad_t[k] == pytest.approx(numeric, abs=1e-4)
+
+
+@pytest.fixture
+def ordered():
+    """Three ordered classes along one direction, which an ordinal model can fit."""
+    rng = np.random.default_rng(3)
+    X = np.vstack([rng.normal(c * 2.0, 0.7, size=(50, 3)) for c in range(3)])
+    return X, np.repeat(np.arange(3), 50)
+
+
+def test_ordinal_model_learns_and_returns_probabilities(ordered):
+    X, y = ordered
+    result = train_federated(X, y, [np.arange(len(y))],
+                             FedConfig(rounds=40, learning_rate=0.1, model="ordinal"))
+    proba = predict_proba(X, result)
+    assert result.model == "ordinal"
+    assert result.perturbed_dimension == X.shape[1] + 2
+    assert proba.shape == (len(y), 3)
+    assert np.allclose(proba.sum(axis=1), 1.0, atol=1e-6)
+    assert float(np.mean(np.argmax(proba, axis=1) == y)) > 0.8
+
+
+def test_balanced_class_weight_changes_the_result(separable):
+    X, y = separable
+    keep = np.r_[0:60, 60:80, 120:180]          # under-represent class 1
+    X, y = X[keep], y[keep]
+    clients = [np.arange(len(y))]
+    plain = train_federated(X, y, clients, FedConfig(rounds=10))
+    weighted = train_federated(X, y, clients, FedConfig(rounds=10, class_weight="balanced"))
+    assert not np.allclose(plain.weights, weighted.weights)
+
+
+def test_tail_averaging_averages_the_last_rounds(separable):
+    X, y = separable
+    clients = [np.arange(len(y))]
+    last = train_federated(X, y, clients, FedConfig(rounds=6))
+    averaged = train_federated(X, y, clients, FedConfig(rounds=6, avg_last=3))
+    assert not np.allclose(last.weights, averaged.weights)
+    assert averaged.weights.shape == last.weights.shape

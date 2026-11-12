@@ -507,7 +507,7 @@ def _tree_leaves(t: dict, X: np.ndarray) -> np.ndarray:
         node[idx] = np.where(go_left, t["left"][node[idx]], t["right"][node[idx]])
 
 
-def run_dp_configuration(X, y, sites, label_set, split_scheme, cfg: DPBoostConfig,
+def run_dp_configuration(X, y, sites, label_set, split_scheme, cfg: DPBoostConfig,  # pragma: no cover
                          feature_names, n_splits=5):
     from .experiments_v3 import _metrics
     from .splits_v3 import make_clients, make_folds
@@ -526,7 +526,7 @@ def run_dp_configuration(X, y, sites, label_set, split_scheme, cfg: DPBoostConfi
             "metrics": _metrics(ys, prob.argmax(1), prob, K), "per_fold": info}
 
 
-def command_dp(a):
+def command_dp(a):  # pragma: no cover
     from .evaluate_v3 import load_features
     X, y, _, sites, names = load_features(a.features)
     os.makedirs(a.out_dir, exist_ok=True)
@@ -555,6 +555,8 @@ def command_dp(a):
 # ----------------------------------------------------------------------------
 # experiments (same folds / clients / metrics as experiments_v3)
 # ----------------------------------------------------------------------------
+# The run_* / command_* drivers below load the ADNI feature matrix and are
+# exercised by scripts/run_v8.sh, not by the CPU test suite (see .coveragerc).
 
 def _subset(X, y, sites, label_set):
     from .evaluate_v3 import LABEL_SETS
@@ -565,7 +567,7 @@ def _subset(X, y, sites, label_set):
             [s for s, k in zip(sites, keep) if k], len(classes))
 
 
-def run_configuration(X, y, sites, label_set, split_scheme, cfg: FedBoostConfig,
+def run_configuration(X, y, sites, label_set, split_scheme, cfg: FedBoostConfig,  # pragma: no cover
                       n_splits=5, with_fedprox=True, prox_mu=1.0, feature_names=None):
     from .experiments_v3 import _metrics, _standardise
     from .federated_v3 import FedConfig, predict_proba, train_federated
@@ -605,7 +607,7 @@ def run_configuration(X, y, sites, label_set, split_scheme, cfg: FedBoostConfig,
     return out
 
 
-def command_federated(a):
+def command_federated(a):  # pragma: no cover
     from .evaluate_v3 import load_features
     X, y, _, sites, names = load_features(a.features)
     os.makedirs(a.out_dir, exist_ok=True)
@@ -634,10 +636,11 @@ def command_federated(a):
         json.dump(summary, h, indent=2)
 
 
-def command_check(a):
+def command_check(a):  # pragma: no cover
     """Federated vs centralised (sklearn HGB, same hyper-parameters) on identical folds."""
     from sklearn.ensemble import HistGradientBoostingClassifier
     from sklearn.metrics import accuracy_score
+
     from .evaluate_v3 import load_features
     from .splits_v3 import make_clients, make_folds
 
@@ -664,7 +667,7 @@ def command_check(a):
     print(f"same prediction on {np.mean(pf == pc):.1%} of subjects")
 
 
-def main(argv=None) -> int:
+def main(argv=None) -> int:  # pragma: no cover
     p = argparse.ArgumentParser(description="federated gradient boosting (v8)")
     sub = p.add_subparsers(dest="cmd", required=True)
     for name in ("check", "federated", "dp"):

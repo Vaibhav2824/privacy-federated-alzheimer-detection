@@ -54,6 +54,15 @@ omit =
     src/export_api_model.py
     # The paper's figures: matplotlib rendering over the results JSONs, like figures_v3.
     src/paper_figures.py
+    # v8 cohort build: every line reads the ADNIMERGE / UPenn / UCBerkeley tables
+    # or the per-subject feature files, which only exist under the data use
+    # agreement. The models they feed are covered via federated_v3 and fedboost_v8.
+    src/build_v8.py
+    src/build_v8_ext.py
+    src/build_v8_dp.py
+    src/phase_shift_v8.py
+    # Monkey-patches deepmriprep for Apple MPS; needs deepmriprep and a GPU.
+    src/dmp_mps_patch.py
 
 [report]
 fail_under = 100

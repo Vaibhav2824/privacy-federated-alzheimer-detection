@@ -82,7 +82,8 @@ def _impute(train_X, test_X):
         return train_X, test_X
     median = np.nanmedian(train_X, axis=0)
     median = np.where(np.isnan(median), 0.0, median)
-    fill = lambda A: np.where(np.isnan(A), median, A)
+    def fill(A):
+        return np.where(np.isnan(A), median, A)
     return fill(train_X), fill(test_X)
 
 

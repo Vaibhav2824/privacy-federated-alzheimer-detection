@@ -7,9 +7,10 @@
    same model instead, everything else stays on the GPU.
 """
 import os
-import torch
+
 import deepmriprep.register as _reg
 import deepmriprep.segment as _seg
+import torch
 from deepbet.utils import load_model as _orig
 
 _CPU = {}
@@ -35,7 +36,7 @@ class _Auto:
                 if "mps" not in str(e).lower():
                     raise
                 if self.path not in _CPU:
-                    print(f"[mps] {os.path.basename(self.path)} -> CPU | {tuple(x.shape)} | " + ([l for l in str(e).splitlines() if "Error" in l] or [str(e)])[-1][:160], flush=True)
+                    print(f"[mps] {os.path.basename(self.path)} -> CPU | {tuple(x.shape)} | " + ([ln for ln in str(e).splitlines() if "Error" in ln] or [str(e)])[-1][:160], flush=True)
                     _CPU[self.path] = torch.jit.load(self.path, map_location="cpu").eval()
                 self.cpu = _CPU[self.path]
         out = self.cpu(x.cpu())
