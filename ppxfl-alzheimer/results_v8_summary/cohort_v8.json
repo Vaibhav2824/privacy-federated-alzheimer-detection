@@ -1,0 +1,41 @@
+{
+  "subjects": 1262,
+  "from_v7": 799,
+  "new": 463,
+  "sites": 70,
+  "classes": {
+    "CN": 532,
+    "MCI": 388,
+    "AD": 342
+  },
+  "phases": {
+    "ADNI1": 435,
+    "ADNI3": 410,
+    "ADNI4": 211,
+    "ADNI2": 199,
+    "ADNIGO": 7
+  },
+  "labels_visit_matched": 1131,
+  "labels_changed_vs_enrolment": 5,
+  "coverage": {
+    "bio::apoe4": 0.803,
+    "bio::education": 0.895,
+    "bio::amyloid_cl": 0.555,
+    "bio::csf_ab42": 0.421,
+    "bio::csf_tau": 0.418,
+    "bio::csf_ptau": 0.417,
+    "bio::csf_ptau_ab42": 0.417,
+    "bio::plasma_ptau217": 0.386,
+    "bio::plasma_nfl": 0.331,
+    "bio::plasma_gfap": 0.331
+  },
+  "mri_features": 134,
+  "bio_features": 148,
+  "fold_partition": {
+    "n_clients": 48,
+    "client_size_min": 8,
+    "client_size_median": 18,
+    "client_size_max": 89,
+    "clients_missing_a_class": 1
+  }
+}

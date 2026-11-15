@@ -22,9 +22,9 @@ where the 23.5M-parameter network it replaces collapses onto the majority class.
 
 > **Current results: v8** (below). A 1,262-subject cohort (ADNI 1, GO, 2, 3 and
 > 4), CSF, amyloid-PET and plasma biomarkers, and an 84-parameter private model.
-> The live demo serves this model. The paper and the sections after
-> [v8](#v8-results-current) still report the **v7** runs on 799 subjects with the
-> 405-parameter region model; they are kept as they were published.
+> The paper and the live demo report this model. The sections after
+> [v8](#v8-results-current) are the earlier **v7** runs on 799 subjects with the
+> 405-parameter region model, kept for the record.
 
 ---
 
@@ -113,7 +113,7 @@ Aggregate results are in
 (`results_summary_v8.json` for the tables above). Per-fold files stay local
 because they carry ADNI site codes.
 
-## v7 results (as in the paper)
+## v7 results (earlier paper version)
 
 ### Cohort and protocol
 
@@ -431,7 +431,8 @@ MNI152 template, so no ADNI-derived subject data is published.
 
 ```
 paper.tex, paper.pdf     the write-up; tables and prose numbers are generated
-figures/v7/              the paper's figures
+figures/v8/              the paper's figures
+figures/v7/              figures for the v7 paper
 figures/v4/              figures for the 760-subject cohort
 figures/v3/              figures for the first, 297-subject cohort
 ui/                      seven-page site (Vercel, vercel.json); reads ui/public/data/site.json
@@ -520,6 +521,7 @@ files, run every arm, collect the shareable summary and export the API model:
 bash scripts/run_v8.sh
 python scripts/collect_v8_summary.py
 python -m src.export_api_model_v8 --epsilon 1
+python scripts/paper_v8.py        # the paper's numbers, tables and figures
 ```
 
 `--covariates` appends age and sex to the centralised models, and

@@ -1,10 +1,17 @@
 % ============================================================
-%  IEEE conference paper (IEEEtran).  Every number in this file is either a
-%  generated table block (src/paper_tables_v3.py) or a macro in the
-%  current-facts block (src/paper_facts.py); none is typed by hand.
+%  IEEE conference paper (IEEEtran).  Every result in this file is either a
+%  generated table block or a macro in the current-facts block, both written
+%  by ppxfl-alzheimer/scripts/paper_v8.py from results_v8_summary/; none is
+%  typed by hand.  Builds with pdfLaTeX or, with Times, with XeLaTeX/Tectonic.
 % ============================================================
 \documentclass[conference]{IEEEtran}
 
+\usepackage{iftex}
+\ifXeTeX
+  \usepackage{fontspec}
+  \setmainfont{texgyretermes}[Extension=.otf, UprightFont=*-regular,
+    BoldFont=*-bold, ItalicFont=*-italic, BoldItalicFont=*-bolditalic]
+\fi
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
@@ -16,45 +23,69 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta}
 
-\graphicspath{{figures/v7/}}
+\graphicspath{{figures/v8/}}
 
-% Written by `python -m src.paper_facts` from results_v7; do not edit by hand.
+% Written by `python scripts/paper_v8.py` from results_v8_summary; do not edit by hand.
 % BEGIN AUTO:current-facts
-\newcommand{\CohSubjects}{799}
-\newcommand{\CohCN}{275}
-\newcommand{\CohMCI}{271}
-\newcommand{\CohAD}{253}
-\newcommand{\CohSites}{65}
-\newcommand{\CohClients}{39}
-\newcommand{\CohFeatures}{134}
-\newcommand{\CohDim}{405}
-\newcommand{\CohTriAcc}{58.6\%}
-\newcommand{\CohTriF}{0.569}
-\newcommand{\CohTriAUROC}{0.748}
-\newcommand{\CohTriSite}{57.9\%}
-\newcommand{\CohBinAcc}{87.3\%}
-\newcommand{\CohBinSite}{86.7\%}
-\newcommand{\CohBinAUROC}{0.919}
-\newcommand{\CohBinCov}{88.8\%}
-\newcommand{\CohMciAdAcc}{69.3\%}
-\newcommand{\CohCnMciAcc}{67.5\%}
-\newcommand{\CohFedTri}{55.1\%}
-\newcommand{\CohFedBin}{84.3\%}
-\newcommand{\CohFedIidBin}{83.0\%}
-\newcommand{\CohFedDirBin}{83.5\%}
-\newcommand{\CohProxMu}{1}
-\newcommand{\MuReal}{1}
-\newcommand{\MuRealGainLow}{1.4}
-\newcommand{\MuRealGainHigh}{3.6}
-\newcommand{\MuSimMax}{0.1}
-\newcommand{\MuSimShift}{1.5}
-\newcommand{\ApoeAccShift}{1.0}
-\newcommand{\ApoeAucShift}{0.008}
-\newcommand{\CohDpBinNone}{81.9\%}
-\newcommand{\CohDpBinOne}{81.2\%}
-\newcommand{\CohDpBinTen}{86.2\%}
-\newcommand{\CohDpTriNone}{52.6\%}
-\newcommand{\CohDpTriTen}{57.7\%}
+\newcommand{\CohSubjects}{1{,}262}
+\newcommand{\CohCN}{532}
+\newcommand{\CohMCI}{388}
+\newcommand{\CohAD}{342}
+\newcommand{\CohSites}{70}
+\newcommand{\CohPrev}{799}
+\newcommand{\CohNew}{463}
+\newcommand{\CohAdniOne}{435}
+\newcommand{\CohAdniGo}{7}
+\newcommand{\CohAdniTwo}{199}
+\newcommand{\CohAdniThree}{410}
+\newcommand{\CohAdniFour}{211}
+\newcommand{\CohClients}{48}
+\newcommand{\CohClientMin}{8}
+\newcommand{\CohClientMax}{89}
+\newcommand{\CohMriFeatures}{134}
+\newcommand{\CohMriDim}{405}
+\newcommand{\CohFeatures}{27}
+\newcommand{\CohRegions}{20}
+\newcommand{\CohDim}{84}
+\newcommand{\CovAmyloid}{56\%}
+\newcommand{\CovCsf}{42\%}
+\newcommand{\CovPtau}{39\%}
+\newcommand{\CovNfl}{33\%}
+\newcommand{\CovApoe}{80\%}
+\newcommand{\CenTriMri}{60.9\%}
+\newcommand{\CenTriBio}{62.9\%}
+\newcommand{\CenBinMri}{89.5\%}
+\newcommand{\CenBinBio}{90.5\%}
+\newcommand{\CenBinBioAUROC}{0.960}
+\newcommand{\CenTriBioAUROC}{0.788}
+\newcommand{\CenTriBioSite}{61.8\%}
+\newcommand{\CenBinBioSite}{90.8\%}
+\newcommand{\CenMciAdBio}{73.6\%}
+\newcommand{\CenCnMciBio}{68.6\%}
+\newcommand{\CenTriChance}{42.2\%}
+\newcommand{\FedAvgTri}{61.9\%}
+\newcommand{\FedAvgBin}{88.5\%}
+\newcommand{\FedProxTri}{61.0\%}
+\newcommand{\FedProxBin}{88.9\%}
+\newcommand{\FedAvgTriSite}{62.0\%}
+\newcommand{\BoostTri}{62.9\%}
+\newcommand{\BoostBin}{89.9\%}
+\newcommand{\BoostTriSite}{60.4\%}
+\newcommand{\DpTriNone}{61.4\%}
+\newcommand{\DpTriOne}{61.8\%}
+\newcommand{\DpTriTen}{62.2\%}
+\newcommand{\DpBinNone}{88.5\%}
+\newcommand{\DpBinOne}{89.5\%}
+\newcommand{\DpBinTen}{90.1\%}
+\newcommand{\DpTriOneBal}{58.9\%}
+\newcommand{\DpTriOneAUROC}{0.779}
+\newcommand{\DpBinOneAUROC}{0.946}
+\newcommand{\MriTriOne}{59.2\%}
+\newcommand{\MriBinOne}{85.7\%}
+\newcommand{\MriTriTen}{61.0\%}
+\newcommand{\MriBinTen}{88.7\%}
+\newcommand{\VsevTriOne}{52.6\%}
+\newcommand{\VsevBinOne}{81.2\%}
 \newcommand{\CohSigmaOne}{10.14}
 \newcommand{\CohSigmaTen}{1.69}
 \newcommand{\CohSigmaOneRdp}{11.34}
@@ -63,32 +94,26 @@
 \newcommand{\CohClip}{1}
 \newcommand{\CohSampleRate}{0.5}
 \newcommand{\CohDelta}{0.001}
-\newcommand{\CohXaiNonPrivate}{0.860}
-\newcommand{\CohXaiTen}{0.200}
-\newcommand{\CohMtNonPrivate}{10.8\%}
-\newcommand{\CohMtTen}{10.1\%}
-\newcommand{\CohAttackNone}{0.593}
-\newcommand{\CohAttackOne}{0.531}
-\newcommand{\AblExtFeatures}{964}
-\newcommand{\AblExtDim}{2895}
-\newcommand{\AblBaseTri}{56.6\%}
-\newcommand{\AblExtTri}{59.3\%}
-\newcommand{\AblBaseBinOne}{81.2\%}
-\newcommand{\AblExtBinOne}{78.2\%}
-\newcommand{\AblBaseBinTen}{86.2\%}
-\newcommand{\AblExtBinTen}{87.3\%}
-\newcommand{\CohDemog}{677}
-\newcommand{\ConfSexTri}{32.6\%}
-\newcommand{\ConfAgeTri}{32.9\%}
-\newcommand{\ConfImgTri}{56.2\%}
-\newcommand{\ConfImgDemoTri}{56.4\%}
-\newcommand{\ConfImgFemaleTri}{51.6\%}
-\newcommand{\ConfImgMaleTri}{51.5\%}
-\newcommand{\ConfImgBin}{87.1\%}
-\newcommand{\ConfChanceTri}{33.4\%}
-\newcommand{\BalN}{630}
-\newcommand{\BalTri}{57.8\%}
-\newcommand{\BalBin}{88.6\%}
+\newcommand{\XaiTriNone}{0.915}
+\newcommand{\XaiTriOne}{0.504}
+\newcommand{\XaiTriTen}{0.670}
+\newcommand{\XaiBinOne}{0.536}
+\newcommand{\XaiMriTriOne}{0.162}
+\newcommand{\XaiMriBinOne}{0.218}
+\newcommand{\XaiVsevTriOne}{0.048}
+\newcommand{\AttackNone}{0.517}
+\newcommand{\AttackTen}{0.509}
+\newcommand{\AttackOne}{0.507}
+\newcommand{\LawOursOne}{0.092}
+\newcommand{\LawOursTen}{0.015}
+\newcommand{\LawHeadTen}{0.131}
+\newcommand{\LawFullTen}{8.1}
+\newcommand{\LawFullOne}{49}
+\newcommand{\ShiftN}{211}
+\newcommand{\ShiftTri}{69.7\%}
+\newcommand{\MixedTri}{69.8\%}
+\newcommand{\ShiftBin}{93.2\%}
+\newcommand{\MixedBin}{93.0\%}
 % END AUTO:current-facts
 
 \begin{document}
@@ -113,32 +138,32 @@ Disease Classification from Structural MRI}
 \maketitle
 
 \begin{abstract}
-Deep learning on magnetic resonance imaging (MRI) could support earlier
-detection of Alzheimer's disease, but privacy regulation prevents hospitals
-from pooling the scans such models are trained on.  We present a federated,
-differentially private and explainable pipeline for cognitively normal (CN),
-mild cognitive impairment (MCI) and Alzheimer's disease (AD) classification,
-evaluated on \CohSubjects{} subjects from \CohSites{} sites of the Alzheimer's
-Disease Neuroimaging Initiative with subject-disjoint and site-disjoint
-cross-validation.  Each scan is segmented by a neural voxel-based morphometry
-pipeline and summarised as \CohFeatures{} atlas region volumes, giving a model
-with \CohDim{} parameters.  The model reaches \CohBinAcc{} accuracy on CN
-versus AD (AUROC \CohBinAUROC{}) and \CohTriAcc{} on the three-class task.
-Federated over \CohClients{} clients formed from the real acquisition sites
-with a proximal term (FedProx), it reaches \CohFedBin{} on CN versus AD.  Under subject-level differential
-privacy it retains \CohDpBinOne{} at a privacy budget of one, while a
-membership-inference attack falls to an AUROC of \CohAttackOne{}.  We show
-that the utility cost of subject-level privacy is governed by the number of
-perturbed parameters, and that explanation fidelity degrades far faster than
-accuracy: at a budget of ten the private model is more accurate than its
-non-private counterpart while the agreement of its region attributions falls
-from \CohXaiNonPrivate{} to \CohXaiTen{}.
+Machine learning on MRI and fluid biomarkers could support earlier detection
+of Alzheimer's disease, but privacy regulation prevents hospitals from pooling
+the data such models are trained on.  We present a federated, differentially
+private and explainable pipeline for cognitively normal (CN), mild cognitive
+impairment (MCI) and Alzheimer's disease (AD) classification, evaluated on
+\CohSubjects{} subjects from \CohSites{} sites of the Alzheimer's Disease
+Neuroimaging Initiative with subject-disjoint and site-disjoint
+cross-validation.  Each subject is described by \CohFeatures{} features fixed in
+advance from the AD literature: \CohRegions{} region volumes from neural
+voxel-based morphometry, APOE4, amyloid PET, a tau and a neurodegeneration
+composite of cerebrospinal fluid and plasma markers, and demographics, giving a
+model with \CohDim{} parameters.  Trained with subject-level differential
+privacy over the real acquisition sites, it reaches \DpBinOne{} on CN versus AD
+(AUROC \DpBinOneAUROC{}) and \DpTriOne{} on the three-class task at a privacy
+budget of one, within about one point of the best centralised non-private
+model, while a membership-inference attack scores an AUROC of \AttackOne{}.
+Under the same protocol a \CohMriDim{}-parameter model over all
+\CohMriFeatures{} atlas regions reaches \MriBinOne{} and \MriTriOne{}, and its
+region attributions agree with the non-private model's only weakly
+(\XaiMriTriOne{} against \XaiTriOne{}): the cost of subject-level privacy, in
+accuracy and in explanation, is set by the number of perturbed parameters.
 \end{abstract}
 
 \begin{IEEEkeywords}
 Alzheimer's disease, differential privacy, explainable artificial
-intelligence, federated learning, magnetic resonance imaging, membership
-inference
+intelligence, federated learning, fluid biomarkers, magnetic resonance imaging
 \end{IEEEkeywords}
 
 % Wide floats print at the top of the page after their definition, so each is
@@ -150,20 +175,22 @@ inference
                 text width=24mm, fill=gray!8},
   arrow/.style={-{Stealth[length=2mm]}, thick}]
 \node[stage] (t1) {ADNI T1 MRI\\one scan per subject};
-\node[stage, right=of t1] (orient) {Orientation search\\48 candidates};
-\node[stage, right=of orient] (bet) {Skull stripping\\(deepbet)};
-\node[stage, right=of bet] (reg) {MNI152 registration\\quality control};
-\node[stage, right=of reg] (vbm) {Region volumes\\(deepmriprep)};
-\node[stage, right=of vbm] (fl) {DP-FedAvg over\\real sites};
-\draw[arrow] (t1) -- (orient);
-\draw[arrow] (orient) -- (bet);
-\draw[arrow] (bet) -- (reg);
-\draw[arrow] (reg) -- (vbm);
-\draw[arrow] (vbm) -- (fl);
+\node[stage, right=of t1] (bet) {Orientation, skull\\stripping, MNI QC};
+\node[stage, right=of bet] (vbm) {\CohRegions{} region volumes\\(deepmriprep)};
+\node[stage, below=of vbm] (bio) {APOE4, amyloid PET,\\CSF and plasma};
+\node[stage, right=of vbm] (feat) {\CohFeatures{} features,\\in-fold composites};
+\node[stage, right=of feat] (fl) {DP-FedAvg over\\real sites};
+\node[stage, right=of fl] (xai) {Prediction and\\feature attribution};
+\draw[arrow] (t1) -- (bet);
+\draw[arrow] (bet) -- (vbm);
+\draw[arrow] (vbm) -- (feat);
+\draw[arrow] (bio) -| (feat);
+\draw[arrow] (feat) -- (fl);
+\draw[arrow] (fl) -- (xai);
 \end{tikzpicture}
-\caption{Pipeline from a structural T1 scan to a subject-level private
-federated model.  Raw scans never leave the acquiring site; only clipped,
-noised model updates are aggregated.}
+\caption{Pipeline from a structural T1 scan and fluid biomarkers to a
+subject-level private federated model.  Raw data never leave the acquiring
+site; only clipped, noised model updates are aggregated.}
 \label{fig:pipeline}
 \end{figure*}
 
@@ -171,73 +198,75 @@ noised model updates are aggregated.}
 \section{Introduction}
 \label{sec:intro}
 
-Structural MRI captures the atrophy that accompanies Alzheimer's disease,
-most prominently in the medial temporal lobe~\cite{jack2010}, and machine
-learning on MRI has been studied extensively as a route to earlier
-diagnosis~\cite{cuingnet2011,wen2020}.  Models of this kind need data from
-many hospitals, yet patient-privacy regulation makes centralising scans
-difficult.  Federated learning~\cite{mcmahan2017} trains a shared model while
-the scans stay at each site~\cite{kaissis2020,rieke2020}, but it does not by
-itself bound what the model reveals about any patient: model updates and the
-released model can leak training membership~\cite{shokri2017,yeom2018}.
-Differential privacy (DP)~\cite{dwork2014} provides that bound, at a cost in
-utility that is often prohibitive for deep networks on small medical
-cohorts~\cite{ziller2021}.  Clinical deployment also requires that a model
-explain its decisions, and it is not known how privacy affects those
-explanations.
+Structural MRI captures the atrophy that accompanies Alzheimer's disease, most
+prominently in the medial temporal lobe~\cite{jack2010}, and machine learning
+on MRI has been studied extensively as a route to earlier
+diagnosis~\cite{cuingnet2011,wen2020}.  The biological definition of the
+disease now rests on amyloid, tau and neurodegeneration
+biomarkers~\cite{jack2018}, and blood tests such as plasma
+p-tau217~\cite{palmqvist2020} are making them cheap to measure.  Models of
+this kind need data from many hospitals, yet patient-privacy regulation makes
+centralising them difficult.  Federated learning~\cite{mcmahan2017} trains a
+shared model while the data stay at each site~\cite{kaissis2020,rieke2020},
+but it does not by itself bound what the model reveals about any patient:
+model updates and the released model can leak training
+membership~\cite{shokri2017,yeom2018}.  Differential privacy
+(DP)~\cite{dwork2014} provides that bound, at a cost in utility that is often
+prohibitive for deep networks on small medical cohorts~\cite{ziller2021}.
+Clinical use also requires that a model explain its decisions, and it is not
+known how privacy affects those explanations.
 
 This paper measures the three costs together, on the same subjects and under
 the same protocol: what federating over real hospital sites costs, what
 subject-level DP costs, and what privacy does to the model's explanations.
 Our contributions are:
 \begin{itemize}
-\item a region-volume representation of structural MRI, obtained with neural
-  voxel-based morphometry~\cite{fisch2024deepmriprep}, that reaches
-  \CohBinAcc{} on CN versus AD and \CohTriAcc{} on CN/MCI/AD under
-  subject-disjoint evaluation, and that holds under site-disjoint evaluation;
-\item federated training over the cohort's real acquisition sites, showing
-  that simulated partitions select a different federated optimiser;
-\item subject-level DP-FedAvg with numerical privacy accounting, together with an
-  analysis showing that its cost is set by the perturbed dimension, so that
-  the region model remains usable at $\varepsilon = 1$ where a convolutional
-  network does not;
-\item a measurement of explanation fidelity under privacy, made possible
-  because every feature is a named anatomical region, and an empirical
-  membership-inference audit of the private models.
+\item a compact representation of \CohFeatures{} named features, chosen a
+  priori from the AD literature, that combines MRI region volumes with fluid
+  and PET biomarkers measured in different subsets of subjects;
+\item subject-level DP-FedAvg over the cohort's real acquisition sites that
+  reaches \DpBinOne{} on CN versus AD and \DpTriOne{} on CN/MCI/AD at
+  $\varepsilon = 1$, within about one point of the best non-private
+  centralised model;
+\item a measured instance of the dimension law of DP: the same protocol on all
+  \CohMriFeatures{} atlas regions loses accuracy and, far more, explanation
+  fidelity;
+\item federated gradient boosting over the same sites, a membership-inference
+  audit, and a test of generalisation to the newest ADNI scanners.
 \end{itemize}
 
 % ============================================================
 \section{Related Work}
 \label{sec:related}
 
-\emph{MRI-based classification.}  Benchmarks of structural-MRI
+\emph{Classification from MRI and biomarkers.}  Benchmarks of structural-MRI
 classifiers~\cite{cuingnet2011} and of convolutional networks~\cite{wen2020}
-report that voxel-based features from tissue segmentation perform as well as
-deep networks for CN versus AD, and that evaluations which split data below
-the subject level overstate accuracy~\cite{wen2020}.  Cross-cohort studies
-confirm the strength of modulated grey-matter features~\cite{bron2021}, and
-the blinded CADDementia challenge places the best three-class accuracy from
-structural MRI at 63.0\%~\cite{bron2015}.
+report that voxel-based features perform as well as deep networks for CN
+versus AD, and that splitting data below the subject level overstates
+accuracy~\cite{wen2020,bron2021}.  The blinded CADDementia challenge places
+the best three-class accuracy from structural MRI at
+63.0\%~\cite{bron2015}.  Amyloid PET is quantified on the common Centiloid
+scale~\cite{klunk2015}, and plasma p-tau217 separates AD from other
+conditions nearly as well as CSF or PET~\cite{palmqvist2020}.
 
 \emph{Federated learning for Alzheimer's disease.}  Federated averaging and
 secure aggregation have been applied to MRI-based Alzheimer's
 detection~\cite{mitrovska2024}, to MCI-to-AD progression from multi-site
 health records~\cite{pan2025}, and combined with rule-based reasoning under
-uncertainty~\cite{basnin2025}.  Explainable federated models have been
-proposed for brain-tumour MRI~\cite{mastoi2025}.  FedProx~\cite{li2020fedprox}
-adds a proximal term to local training to limit client drift under
-heterogeneous data.  These studies typically
-simulate client heterogeneity; we federate over the sites that acquired the
-data.
+uncertainty~\cite{basnin2025}.  FedProx~\cite{li2020fedprox} adds a proximal
+term to limit client drift, and histogram-based gradient-boosted
+trees~\cite{chen2016xgboost} can be federated over horizontally partitioned
+data~\cite{li2023fedtree}.  These studies typically simulate client
+heterogeneity; we federate over the sites that acquired the data.
 
 \emph{Differential privacy in medical imaging.}  DP-SGD~\cite{abadi2016}
 bounds the influence of each training example, and user-level
 DP-FedAvg~\cite{mcmahan2018} bounds the influence of each participant.
 Applied to deep networks on medical images, DP has been shown to cost
 accuracy~\cite{ziller2021}.  We account for privacy with the privacy random
-variable (PRV) accountant~\cite{gopi2021}, which is tighter than R\'enyi
+variable (PRV) accountant~\cite{gopi2021}, tighter than R\'enyi
 DP~\cite{mironov2017}, as implemented in Opacus~\cite{opacus}, and audit it
-empirically with membership inference~\cite{shokri2017,yeom2018,carlini2022}.
+with membership inference~\cite{shokri2017,yeom2018,carlini2022}.
 
 % ============================================================
 \section{Materials and Methods}
@@ -248,206 +277,148 @@ empirically with membership inference~\cite{shokri2017,yeom2018,carlini2022}.
 
 We use T1-weighted MRI from the Alzheimer's Disease Neuroimaging Initiative
 (ADNI)~\cite{petersen2010}: \CohSubjects{} subjects (\CohCN{}~CN,
-\CohMCI{}~MCI and \CohAD{}~AD) acquired at \CohSites{} sites.  Each subject
-contributes exactly one scan, chosen deterministically by ADNI preprocessing
-level and then by the earliest acquisition date, so that the subject is the
-unit of evaluation.
+\CohMCI{}~MCI and \CohAD{}~AD) from \CohSites{} sites and every ADNI phase
+(ADNI-1: \CohAdniOne{}, ADNI-GO: \CohAdniGo{}, ADNI-2: \CohAdniTwo{},
+ADNI-3: \CohAdniThree{}, ADNI-4: \CohAdniFour{}).  Each subject contributes exactly one scan, so that the
+subject is the unit of evaluation, and each diagnosis is the one recorded at
+the visit of that scan.  No cognitive test score (MMSE, CDR, ADAS, FAQ, MoCA)
+is ever an input, because ADNI assigns the diagnosis from them.
 
-\subsection{Preprocessing and Region Features}
+\subsection{Features}
 \label{sec:features}
 
-Fig.~\ref{fig:pipeline} summarises the pipeline.  Because some image headers
-do not record anatomical orientation, all 48 axis permutations and
-reflections of each scanner series are registered to a whole-head ICBM152
-template~\cite{fonov2011} and the best is fitted per series and array shape.  Brains are extracted with deepbet~\cite{fisch2023deepbet}
-and registered affinely to MNI152 by mutual
-information~\cite{garyfallidis2014}; a per-subject correlation with the
-template excludes registration failures by a fixed threshold.
+Fig.~\ref{fig:pipeline} summarises the pipeline.  Each scan's orientation is
+recovered by registering all 48 axis permutations and reflections to an
+ICBM152 template~\cite{fonov2011}; brains are extracted with
+deepbet~\cite{fisch2023deepbet} and registered to MNI152 for quality
+control~\cite{garyfallidis2014}.  Region volumes are produced by
+deepmriprep~\cite{fisch2024deepmriprep}, a neural implementation of the CAT12
+voxel-based morphometry pipeline~\cite{gaser2024}: grey matter, white matter
+and CSF are segmented, and the Neuromorphometrics atlas is warped back so that
+each of \CohMriFeatures{} regions is measured on the subject's own anatomy, as
+a volume over total intracranial volume.
 
-Region features are produced by deepmriprep~\cite{fisch2024deepmriprep}, a
-neural implementation of the CAT12 voxel-based morphometry
-pipeline~\cite{gaser2024}.  A trained network segments grey matter, white
-matter and cerebrospinal fluid (CSF), a nonlinear registration aligns the
-brain to the CAT12 template, and the Neuromorphometrics atlas is warped back
-to the subject, so that each region is measured on the subject's own anatomy.
-Each region contributes the tissue that CAT12 assigns to it (grey matter for
-cortical and subcortical regions, CSF for the ventricles) as a volume divided
-by total intracranial volume, which removes head size.  The result is
-\CohFeatures{} features per subject.
+The model reads \CohFeatures{} features fixed before any experiment from the AD
+literature~\cite{jack2010,jack2018}, not selected on this data.  The
+\CohRegions{} region volumes are the left and right hippocampus, amygdala,
+entorhinal area, parahippocampal, inferior and middle temporal and fusiform
+gyri and precuneus (grey matter) and the lateral and inferior lateral
+ventricles (CSF).  The others are APOE4 allele count, amyloid PET in
+centiloids~\cite{klunk2015}, education, age and sex, and two composites.  The
+\emph{tau composite} combines CSF p-tau181/A$\beta$42 (Roche Elecsys) with log
+plasma p-tau217~\cite{palmqvist2020}; the \emph{neurodegeneration composite}
+combines log plasma NfL and GFAP.  Each composite part is z-scored with the
+training fold's mean and standard deviation and the parts a subject has are
+averaged, so a subject with only a blood test and one with only a lumbar
+puncture share one feature.  Coverage is incomplete (amyloid PET
+\CovAmyloid{}, CSF \CovCsf{}, plasma p-tau217 \CovPtau{}, NfL and GFAP
+\CovNfl{}, APOE4 \CovApoe{}); a missing value is set to the training-fold
+median.
 
 \subsection{Classifiers and Evaluation Protocol}
 \label{sec:protocol}
 
-\begin{table*}[!t]
-\centering
-\caption{Centralised Classification on the Region-Volume Features (Imaging
-Only): Best Model per Task and Split, Mean $\pm$ Standard Deviation Over Three
-Seeds of Five-Fold Out-of-Fold Evaluation}
-\label{tab:central}
-\footnotesize
-\begin{tabular}{lllcccccc}
-\toprule
-Task & Split & Model & Accuracy (\%) & Balanced acc.\ (\%) & Macro F1 &
-Macro AUROC & Chance (\%) & Runs \\
-\midrule
-% BEGIN AUTO:v3-centralised
-CN vs AD & site-disjoint & Tuned logistic regression & 86.7 $\pm$ 0.9 & 86.6 $\pm$ 0.9 & 0.866 $\pm$ 0.009 & 0.923 $\pm$ 0.000 & 52.1 & 3 \\
-CN vs AD & subject-disjoint & Tuned logistic regression & 87.3 $\pm$ 0.5 & 87.2 $\pm$ 0.5 & 0.872 $\pm$ 0.005 & 0.919 $\pm$ 0.002 & 52.1 & 3 \\
-CN vs MCI & site-disjoint & Tuned logistic regression & 68.9 $\pm$ 0.8 & 68.8 $\pm$ 0.8 & 0.688 $\pm$ 0.008 & 0.725 $\pm$ 0.002 & 50.4 & 3 \\
-CN vs MCI & subject-disjoint & Tuned logistic regression & 67.5 $\pm$ 0.6 & 67.5 $\pm$ 0.6 & 0.675 $\pm$ 0.005 & 0.718 $\pm$ 0.009 & 50.4 & 3 \\
-CN / MCI / AD & site-disjoint & Tuned ensemble & 57.9 $\pm$ 0.5 & 58.2 $\pm$ 0.5 & 0.566 $\pm$ 0.004 & 0.747 $\pm$ 0.004 & 34.4 & 3 \\
-CN / MCI / AD & subject-disjoint & Tuned ensemble & 58.6 $\pm$ 0.3 & 58.8 $\pm$ 0.3 & 0.569 $\pm$ 0.002 & 0.748 $\pm$ 0.002 & 34.4 & 3 \\
-MCI vs AD & site-disjoint & Tuned logistic regression & 69.3 $\pm$ 1.0 & 69.4 $\pm$ 1.0 & 0.693 $\pm$ 0.010 & 0.749 $\pm$ 0.010 & 51.7 & 3 \\
-MCI vs AD & subject-disjoint & Tuned logistic regression & 69.3 $\pm$ 1.2 & 69.4 $\pm$ 1.2 & 0.693 $\pm$ 0.012 & 0.751 $\pm$ 0.007 & 51.7 & 3 \\
-% END AUTO:v3-centralised
-\bottomrule
-\end{tabular}
-\end{table*}
-
-Centralised baselines are a soft-voting ensemble of L2-regularised logistic
-regression, an RBF support vector machine, shrinkage linear discriminant
-analysis and a random forest, and two tuned variants, a logistic regression
-and an ensemble, whose regularisation is selected by nested cross-validation
-inside each training fold on balanced accuracy.  Standardisation and
-imputation are fitted on the training fold only, and classes are weighted
-inversely to their frequency.
-
-Every configuration is evaluated out-of-fold with five-fold cross-validation
-under two protocols: \emph{subject-disjoint}, stratified by diagnosis, and
-\emph{site-disjoint}, which holds out whole acquisition sites and therefore
-measures generalisation to an unseen scanner.  Each configuration is repeated
-over three seeds.  We report accuracy, balanced accuracy, macro F1 and macro
-AUROC (one-versus-rest), together with the majority-class rate, for CN versus
-AD, MCI versus AD, CN versus MCI and the three-class task.
-
-\subsection{Federated Learning}
-\label{sec:fl}
-
 \begin{table}[!t]
 \centering
-\caption{FedAvg and FedProx Accuracy by Client Partition, With FedProx
-AUROC, Mean $\pm$ Standard Deviation Over Three Seeds}
-\label{tab:fl}
+\caption{Centralised Accuracy (\%): All \CohMriFeatures{} Regions Against
+Regions Plus Biomarkers, Best of Two Models, Mean $\pm$ SD Over Three Seeds}
+\label{tab:central}
 \footnotesize
 \setlength{\tabcolsep}{2.2pt}
-\begin{tabular}{lllccc}
+\begin{tabular}{llcccc}
 \toprule
-Task & Split & Partition & FedAvg (\%) & FedProx (\%) & AUROC \\
+Task & Split & MRI & + biomarkers & AUROC & Chance \\
 \midrule
-% BEGIN AUTO:v3-federated
-CN vs AD & site & Dirichlet & 84.5 $\pm$ 0.6 & 83.4 $\pm$ 0.8 & 0.898 $\pm$ 0.003 \\
-CN vs AD & site & IID & 85.5 $\pm$ 0.6 & 81.2 $\pm$ 2.1 & 0.885 $\pm$ 0.030 \\
-CN vs AD & site & real sites & 81.6 $\pm$ 0.5 & 85.0 $\pm$ 0.9 & 0.911 $\pm$ 0.010 \\
-CN vs AD & subject & Dirichlet & 83.7 $\pm$ 0.6 & 83.5 $\pm$ 1.1 & 0.904 $\pm$ 0.007 \\
-CN vs AD & subject & IID & 84.6 $\pm$ 1.0 & 83.0 $\pm$ 1.6 & 0.901 $\pm$ 0.011 \\
-CN vs AD & subject & real sites & 82.1 $\pm$ 1.6 & 84.3 $\pm$ 0.8 & 0.906 $\pm$ 0.002 \\
-CN / MCI / AD & site & Dirichlet & 52.5 $\pm$ 0.5 & 52.9 $\pm$ 0.8 & 0.708 $\pm$ 0.004 \\
-CN / MCI / AD & site & IID & 54.7 $\pm$ 0.4 & 51.7 $\pm$ 2.0 & 0.694 $\pm$ 0.015 \\
-CN / MCI / AD & site & real sites & 53.0 $\pm$ 0.5 & 54.5 $\pm$ 0.5 & 0.726 $\pm$ 0.003 \\
-CN / MCI / AD & subject & Dirichlet & 53.1 $\pm$ 0.9 & 51.7 $\pm$ 1.7 & 0.693 $\pm$ 0.015 \\
-CN / MCI / AD & subject & IID & 53.9 $\pm$ 3.0 & 50.0 $\pm$ 1.2 & 0.681 $\pm$ 0.016 \\
-CN / MCI / AD & subject & real sites & 51.3 $\pm$ 0.9 & 55.1 $\pm$ 1.2 & 0.724 $\pm$ 0.017 \\
-% END AUTO:v3-federated
+% BEGIN AUTO:v8-centralised
+CN vs AD & subject & 89.5 $\pm$ 0.9 & 90.5 $\pm$ 0.6 & 0.960 & 60.9 \\
+CN vs AD & site & 88.9 $\pm$ 0.1 & 90.8 $\pm$ 0.2 & 0.956 & 60.9 \\
+MCI vs AD & subject & 71.7 $\pm$ 0.8 & 73.6 $\pm$ 0.7 & 0.821 & 53.2 \\
+MCI vs AD & site & 71.0 $\pm$ 0.6 & 72.6 $\pm$ 1.0 & 0.805 & 53.2 \\
+CN vs MCI & subject & 68.0 $\pm$ 0.9 & 68.6 $\pm$ 0.6 & 0.734 & 57.8 \\
+CN vs MCI & site & 67.1 $\pm$ 0.3 & 67.1 $\pm$ 0.5 & 0.721 & 57.8 \\
+CN / MCI / AD & subject & 60.9 $\pm$ 0.4 & 62.9 $\pm$ 0.2 & 0.788 & 42.2 \\
+CN / MCI / AD & site & 59.9 $\pm$ 0.9 & 61.8 $\pm$ 0.9 & 0.783 & 42.2 \\
+% END AUTO:v8-centralised
 \bottomrule
 \end{tabular}
 \end{table}
 
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.8\columnwidth]{site_partition.png}
-\caption{Natural partition of one training fold: one client per ADNI site,
-with sites of fewer than eight subjects pooled into the final client.  Client
-sizes and label mixes are the cohort's own.}
-\label{fig:partition}
-\end{figure}
+Centralised references are a soft-voting ensemble (logistic regression, RBF
+support vector machine, shrinkage LDA and random forest) and a logistic
+regression whose regularisation is tuned by nested cross-validation inside each
+training fold.  Every configuration is evaluated out-of-fold with five-fold
+cross-validation under two protocols: \emph{subject-disjoint}, stratified by
+diagnosis, and \emph{site-disjoint}, which holds out whole acquisition sites
+and so measures generalisation to an unseen scanner.  Each is repeated over
+three seeds.  Standardisation, composites and imputation are fitted on the
+training fold only.  We report accuracy, balanced accuracy and macro AUROC
+(one-versus-rest), with the majority-class rate as chance.
+
+\subsection{Federated Learning}
+\label{sec:fl}
 
 The federated model is a multinomial logistic regression over the
-standardised region features, with $(\CohFeatures{}+1)K$ parameters for $K$
-classes (\CohDim{} for three classes).  The natural partition assigns one
-client per ADNI acquisition site and pools sites with fewer than eight
-subjects into a single client, so that no subject is discarded; a training
-fold yields \CohClients{} clients (Fig.~\ref{fig:partition}).  For comparison
-we also evaluate an IID partition and a Dirichlet label-skew partition with
-concentration $\alpha = 0.5$, each over eight clients.  Training runs
-\CohRounds{} rounds of \CohLocalEpochs{} local epochs with federated averaging
-(FedAvg)~\cite{mcmahan2017} and with FedProx~\cite{li2020fedprox}, which adds
-$\frac{\mu}{2}\lVert \mathbf{w} - \mathbf{w}^{t} \rVert_2^2$ to the local loss
-to hold each client near the global model $\mathbf{w}^{t}$.  Each partition
-chooses $\mu \in \{0, 0.01, 0.1, 1, 3\}$ on one seed and is scored on the
-other two; Table~\ref{tab:fl} reports $\mu = \CohProxMu{}$, the real sites'
-choice.
+standardised features, with $(\CohFeatures{}+1)K$ parameters for $K$ classes
+(\CohDim{} for three).  The natural partition assigns one client per ADNI
+site and pools sites with fewer than eight subjects into one client, so that
+no subject is discarded; a training fold yields \CohClients{} clients of
+\CohClientMin{} to \CohClientMax{} subjects.  Training runs \CohRounds{}
+rounds of \CohLocalEpochs{} local epochs with federated averaging
+(FedAvg)~\cite{mcmahan2017} and with FedProx~\cite{li2020fedprox} ($\mu = 1$).
+For comparison, federated gradient boosting grows histogram trees over all
+\CohMriFeatures{} regions in three tissues and the biomarkers: each site
+sends, per tree node, the summed gradient, hessian and count per feature bin,
+and the server adds the site histograms and picks the
+split~\cite{li2023fedtree}, so no subject row leaves a site.
 
 \subsection{Subject-Level Differential Privacy}
 \label{sec:dp}
 
 \begin{table*}[!t]
 \centering
-\caption{Subject-Level DP-FedAvg Over the Real-Site Partition.  Agreement Is
-the Spearman Correlation of Region Importance With the Non-Private Reference;
-MTL Share Is the Attribution Mass in Hippocampus and Amygdala}
+\caption{Subject-Level DP-FedAvg Over the Real-Site Partition (\CohDim{}
+Parameters).  Agreement Is the Spearman Correlation of Feature Importance With
+the Non-Private Reference; MTL Share Is the Attribution Mass in Hippocampus and
+Amygdala}
 \label{tab:dp}
 \footnotesize
-\begin{tabular}{llccccccc}
+\begin{tabular}{llcccccc}
 \toprule
 Task & $\varepsilon$ & $\sigma$ & Accuracy (\%) & Balanced acc.\ (\%) &
-Macro F1 & Agreement & MTL share (\%) & Runs \\
+Macro AUROC & Agreement & MTL share (\%) \\
 \midrule
-% BEGIN AUTO:v3-privacy
-CN vs AD & non-private & --- & 81.9 $\pm$ 1.9 & 81.9 $\pm$ 1.9 & 0.819 $\pm$ 0.019 & 0.860 $\pm$ 0.121 & 10.8 $\pm$ 0.2 & 3 \\
-CN vs AD & 1 & 10.14 & 81.2 $\pm$ 0.2 & 81.1 $\pm$ 0.2 & 0.811 $\pm$ 0.002 & 0.148 $\pm$ 0.067 & 4.6 $\pm$ 0.6 & 3 \\
-CN vs AD & 2 & 5.71 & 84.3 $\pm$ 1.2 & 84.1 $\pm$ 1.3 & 0.842 $\pm$ 0.012 & 0.194 $\pm$ 0.046 & 6.3 $\pm$ 0.8 & 3 \\
-CN vs AD & 5 & 2.78 & 85.5 $\pm$ 0.6 & 85.4 $\pm$ 0.6 & 0.854 $\pm$ 0.006 & 0.195 $\pm$ 0.015 & 8.9 $\pm$ 0.8 & 3 \\
-CN vs AD & 10 & 1.69 & 86.2 $\pm$ 0.8 & 86.0 $\pm$ 0.8 & 0.861 $\pm$ 0.008 & 0.200 $\pm$ 0.011 & 10.1 $\pm$ 0.5 & 3 \\
-CN / MCI / AD & non-private & --- & 52.6 $\pm$ 1.6 & 52.8 $\pm$ 1.6 & 0.521 $\pm$ 0.014 & 0.918 $\pm$ 0.071 & 6.0 $\pm$ 0.3 & 3 \\
-CN / MCI / AD & 1 & 10.14 & 52.6 $\pm$ 1.5 & 52.8 $\pm$ 1.4 & 0.508 $\pm$ 0.021 & 0.048 $\pm$ 0.097 & 4.5 $\pm$ 0.7 & 3 \\
-CN / MCI / AD & 2 & 5.71 & 56.4 $\pm$ 1.7 & 56.6 $\pm$ 1.6 & 0.538 $\pm$ 0.022 & 0.159 $\pm$ 0.060 & 5.5 $\pm$ 0.6 & 3 \\
-CN / MCI / AD & 5 & 2.78 & 57.7 $\pm$ 0.4 & 57.9 $\pm$ 0.3 & 0.541 $\pm$ 0.005 & 0.338 $\pm$ 0.018 & 6.9 $\pm$ 0.3 & 3 \\
-CN / MCI / AD & 10 & 1.69 & 57.7 $\pm$ 0.7 & 58.0 $\pm$ 0.7 & 0.543 $\pm$ 0.007 & 0.424 $\pm$ 0.013 & 7.4 $\pm$ 0.1 & 3 \\
-% END AUTO:v3-privacy
+% BEGIN AUTO:v8-privacy
+CN vs AD & non-private & --- & 88.5 $\pm$ 0.5 & 88.2 $\pm$ 0.5 & 0.939 & 0.921 & 27.2 \\
+CN vs AD & 10 & 1.69 & 90.1 $\pm$ 0.2 & 88.9 $\pm$ 0.2 & 0.949 & 0.623 & 24.8 \\
+CN vs AD & 5 & 2.78 & 90.1 $\pm$ 0.3 & 89.0 $\pm$ 0.3 & 0.949 & 0.637 & 24.7 \\
+CN vs AD & 2 & 5.71 & 89.9 $\pm$ 0.3 & 88.7 $\pm$ 0.3 & 0.948 & 0.605 & 23.8 \\
+CN vs AD & 1 & 10.14 & 89.5 $\pm$ 0.2 & 88.3 $\pm$ 0.1 & 0.946 & 0.536 & 21.8 \\
+CN / MCI / AD & non-private & --- & 61.4 $\pm$ 1.7 & 59.5 $\pm$ 1.6 & 0.774 & 0.915 & 24.5 \\
+CN / MCI / AD & 10 & 1.69 & 62.2 $\pm$ 0.8 & 59.3 $\pm$ 0.7 & 0.784 & 0.670 & 21.9 \\
+CN / MCI / AD & 5 & 2.78 & 62.0 $\pm$ 0.6 & 59.1 $\pm$ 0.6 & 0.783 & 0.669 & 21.9 \\
+CN / MCI / AD & 2 & 5.71 & 62.0 $\pm$ 0.8 & 59.1 $\pm$ 0.8 & 0.782 & 0.610 & 21.4 \\
+CN / MCI / AD & 1 & 10.14 & 61.8 $\pm$ 0.6 & 58.9 $\pm$ 0.6 & 0.779 & 0.504 & 20.5 \\
+% END AUTO:v8-privacy
 \bottomrule
 \end{tabular}
 \end{table*}
 
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\columnwidth]{privacy_utility.png}
-\caption{Accuracy (left) and region-attribution agreement with the
-non-private model (right) against the privacy budget, for CN versus AD and
-the three-class task.}
-\label{fig:privacy}
-\end{figure}
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.85\columnwidth]{dimension_law.png}
-\caption{Worst-case noise-to-signal ratio, from~\eqref{eq:ratio}, against the
-number of perturbed parameters.  Above the dotted line the noise outweighs
-the summed update.}
-\label{fig:law}
-\end{figure}
-
-We protect each subject rather than each scan or each gradient
-step~\cite{mcmahan2018}.  In every round, each subject is sampled with
+We protect each subject rather than each scan or gradient
+step~\cite{mcmahan2018}.  In every round each subject is sampled with
 probability $q = \CohSampleRate{}$; each sampled subject's local update is
 clipped to an $\ell_2$ norm of $C = \CohClip{}$; the clipped updates are summed
 across all clients; and Gaussian noise $\mathcal{N}(0, \sigma^2 C^2 I_d)$ is
 added once to the sum before it is divided by the number of participants.
-The PRV accountant~\cite{gopi2021,opacus} numerically composes the privacy
-loss distribution of the sampled Gaussian mechanism over the \CohRounds{}
-rounds, and $\sigma$ is the smallest noise multiplier for which it certifies
-$(\varepsilon, \delta)$-DP with $\delta = \CohDelta{}$.  We evaluate
-$\varepsilon \in \{1, 2, 5, 10\}$, for which $\sigma$ ranges from
-\CohSigmaOne{} to \CohSigmaTen{}; the R\'enyi bound~\cite{mironov2017} would
-need $\sigma = \CohSigmaOneRdp{}$ at $\varepsilon = 1$.  The private arm uses
-FedAvg: the proximal term shrinks each single-subject update against fixed
-noise, which lowered accuracy at $\varepsilon \leq 2$.
+The PRV accountant~\cite{gopi2021,opacus} composes the privacy loss of the
+sampled Gaussian mechanism over the \CohRounds{} rounds, and $\sigma$ is the
+smallest noise multiplier for which it certifies $(\varepsilon, \delta)$-DP
+with $\delta = \CohDelta{}$: from \CohSigmaOne{} at $\varepsilon = 1$ to
+\CohSigmaTen{} at $\varepsilon = 10$, where the R\'enyi
+bound~\cite{mironov2017} would need $\sigma = \CohSigmaOneRdp{}$ at
+$\varepsilon = 1$.
 
 The noise is isotropic in the $d$ perturbed parameters, so its expected norm
-is
-\begin{equation}
-\mathbb{E}\,\lVert \boldsymbol{\xi} \rVert_2 \approx \sigma C \sqrt{d},
-\label{eq:noise}
-\end{equation}
+is $\mathbb{E}\,\lVert \boldsymbol{\xi} \rVert_2 \approx \sigma C \sqrt{d}$,
 whereas the summed update of $N$ participating subjects is bounded by $NC$
 irrespective of $d$.  The worst-case noise-to-signal ratio is therefore
 \begin{equation}
@@ -459,135 +430,150 @@ which depends on the model only through $\sqrt{d}$.
 \subsection{Explanation Fidelity and Membership Inference}
 \label{sec:xai}
 
-Because every feature is a named atlas region, a linear model's attribution
-is a value per region, the summed magnitude of its weights over classes, so
-two models' attributions are directly comparable.  We report the
-Spearman correlation between the region importance of each private model and
-that of the non-private reference trained on the same folds, and the share of
-attribution mass in the hippocampus and amygdala, the regions most strongly
-associated with Alzheimer's atrophy~\cite{jack2010}.
-
-To audit privacy empirically we run a subject-level loss-threshold membership
-inference attack~\cite{yeom2018}: training subjects are members and the
-held-out fold supplies non-members, and the attack is scored by AUROC, for
-which 0.5 is chance.
+Because every feature is named, a linear model's attribution is a value per
+feature, the summed magnitude of its weights over classes, so two models'
+attributions are directly comparable.  We report the Spearman correlation
+between the feature importance of each private model and that of the
+non-private reference trained on the same folds, and the share of attribution
+in the hippocampus and amygdala.  To audit privacy empirically we run a
+subject-level loss-threshold membership-inference attack~\cite{yeom2018}:
+training subjects are members, the held-out fold supplies non-members, and the
+attack is scored by AUROC, for which 0.5 is chance.
 
 % ============================================================
 \section{Results}
 \label{sec:results}
 
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{privacy_utility.png}
+\caption{Accuracy (left) and attribution agreement with the non-private model
+(right) against the privacy budget, for the \CohFeatures{}-feature model
+(solid) and the \CohMriFeatures{}-region model (dashed).}
+\label{fig:privacy}
+\end{figure}
+
 \subsection{Centralised Classification}
 \label{sec:res-central}
 
-Table~\ref{tab:central} reports the best model for each task under both
-protocols.  It reaches \CohBinAcc{} on CN versus AD (AUROC \CohBinAUROC{}),
-\CohMciAdAcc{} on MCI versus AD, \CohCnMciAcc{} on CN versus MCI and
-\CohTriAcc{} on the three-class task (macro F1 \CohTriF{}, macro AUROC
-\CohTriAUROC{}).  Holding out whole sites changes these figures little:
-\CohBinSite{} on CN versus AD and \CohTriSite{} on three classes.  Appending
-age and sex raises CN versus AD only to \CohBinCov{}, and adding APOE4
-genotype and education as well moves no task by more than \ApoeAccShift{}
-points of accuracy or \ApoeAucShift{} of AUROC.
-The ordering of the four tasks is the clinically expected one, with MCI the
-hardest class to separate.
+Table~\ref{tab:central} reports the better of the two centralised models for
+each task.  MRI alone reaches \CenBinMri{} on CN versus AD and \CenTriMri{}
+on three classes; adding the biomarkers raises these to \CenBinBio{} (AUROC
+\CenBinBioAUROC{}) and \CenTriBio{} (AUROC \CenTriBioAUROC{}, chance
+\CenTriChance{}).  Holding out whole sites changes them little:
+\CenBinBioSite{} and \CenTriBioSite{}.  The ordering of the tasks is the
+clinically expected one, with MCI the hardest class to separate.
 
 \subsection{Federated Learning Over Real Sites}
 \label{sec:res-fl}
 
-With FedProx the real-site model reaches \CohFedBin{} on CN versus AD and
-\CohFedTri{} on three classes, the best of the three partitions (IID
-\CohFedIidBin{}, Dirichlet \CohFedDirBin{} on CN versus AD;
-Table~\ref{tab:fl}).  Under FedAvg the real partition is the hardest:
-client-size imbalance and scanner variation add a client drift that label
-skew alone does not produce.  Chosen on one seed and scored on the other two,
-the real sites select $\mu = \MuReal{}$ in every task and split, gaining
-\MuRealGainLow{} to \MuRealGainHigh{} points over FedAvg, whereas the IID and
-Dirichlet partitions select $\mu \leq \MuSimMax{}$, within \MuSimShift{}
-points of FedAvg.
-
-\subsection{Privacy--Utility Trade-off}
-\label{sec:res-dp}
-
-Table~\ref{tab:dp} and Fig.~\ref{fig:privacy} report subject-level DP-FedAvg
-over the real sites.  On CN versus AD the private model reaches
-\CohDpBinTen{} at $\varepsilon = 10$ and \CohDpBinOne{} at $\varepsilon = 1$,
-against \CohDpBinNone{} without privacy; on three classes it reaches
-\CohDpTriTen{} at $\varepsilon = 10$ against \CohDpTriNone{}.  Every private
-configuration at $\varepsilon \geq 2$ outperforms its non-private
-counterpart: at this cohort size the calibrated noise acts as a regulariser.
-
-Fig.~\ref{fig:law} evaluates~\eqref{eq:ratio} for the region model and for a
-ResNet50, either fine-tuning only its classification head or the full
-network.  With $d = \CohDim{}$ the region model stays below a ratio of one at
-every budget, whereas the full network's noise exceeds its signal by more
-than an order of magnitude even at $\varepsilon = 10$.  This, rather than the
-privacy budget alone, determines whether a subject-level private federated
-model is usable.
-
-The law also holds for measured accuracy.  Adding tissue volumes and
-grey-matter density for every region, and the cobra, Hammers, LPBA40 and
-Julich-Brain atlases of deepmriprep (hippocampal subfields, entorhinal cortex,
-amygdala nuclei), gives \AblExtFeatures{} features ($d = \AblExtDim{}$).
-Three-class accuracy rises from \AblBaseTri{} to \AblExtTri{} centrally and
-private CN versus AD from \AblBaseBinTen{} to \AblExtBinTen{} at
-$\varepsilon = 10$, but at $\varepsilon = 1$ it falls from \AblBaseBinOne{} to
-\AblExtBinOne{}: richer anatomy pays only when the budget has room for it.
-
-\subsection{Explanation Fidelity Under Privacy}
-\label{sec:res-xai}
-
-Privacy changes what the model attends to far more than how accurate it is
-(Table~\ref{tab:dp}, Fig.~\ref{fig:privacy}).  At $\varepsilon = 10$ the
-private CN-versus-AD model is more accurate than the non-private one, yet the
-Spearman agreement of its region importance with the non-private reference
-falls from \CohXaiNonPrivate{} to \CohXaiTen{}, while the share of attribution
-in the hippocampus and amygdala moves from \CohMtNonPrivate{} to \CohMtTen{}.
-A model that is simultaneously more accurate and less explicable is the case
-an accuracy-only privacy--utility curve cannot reveal.
-
-\subsection{Membership Inference}
-\label{sec:res-mia}
-
-Against the non-private federated three-class model the subject-level attack
-reaches an AUROC of \CohAttackNone{}; under DP-FedAvg at $\varepsilon = 1$ it
-falls to \CohAttackOne{}, close to the chance level of 0.5.  The formal budget
-and the empirical attack therefore move together.
-
-\subsection{Demographic Confounds}
-\label{sec:res-confounds}
-
 \begin{table}[!t]
 \centering
-\caption{Demographic Baselines, the Imaging Model and the Imaging Model Within
-Each Sex (Balanced Accuracy, \%)}
-\label{tab:confounds}
+\caption{Federated Accuracy Without Privacy Over the Real-Site Partition
+(\%), Mean $\pm$ SD Over Three Seeds; AUROC of Federated Boosting}
+\label{tab:fl}
 \footnotesize
-\begin{tabular}{lcc}
+\setlength{\tabcolsep}{2.2pt}
+\begin{tabular}{llcccc}
 \toprule
-Predictor & CN / MCI / AD & CN vs AD \\
+Task & Split & FedAvg & FedProx & Boosting & AUROC \\
 \midrule
-% BEGIN AUTO:v3-confounds-rows
-Sex only & 32.6 & 47.2 \\
-Age only & 32.9 & 47.8 \\
-Sex + age & 32.7 & 47.1 \\
-Imaging (region volumes) & 56.2 & 87.1 \\
-Imaging + demographics & 56.4 & 86.9 \\
-\midrule
-Imaging, female only & 51.6 ($n$ = 337) & 84.5 ($n$ = 232) \\
-Imaging, male only & 51.5 ($n$ = 340) & 84.7 ($n$ = 220) \\
-% END AUTO:v3-confounds-rows
+% BEGIN AUTO:v8-federated
+CN vs AD & subject & 88.5 $\pm$ 0.4 & 88.9 $\pm$ 0.4 & 89.9 $\pm$ 0.2 & 0.954 \\
+CN vs AD & site & 89.5 $\pm$ 0.6 & 89.4 $\pm$ 0.5 & 88.9 $\pm$ 0.1 & 0.944 \\
+CN / MCI / AD & subject & 61.9 $\pm$ 0.6 & 61.0 $\pm$ 0.3 & 62.9 $\pm$ 0.6 & 0.785 \\
+CN / MCI / AD & site & 62.0 $\pm$ 1.1 & 60.3 $\pm$ 1.1 & 60.4 $\pm$ 0.3 & 0.761 \\
+% END AUTO:v8-federated
 \bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:confounds} repeats the protocol on the \CohDemog{}~subjects
-with known sex and age.  On three classes sex alone scores \ConfSexTri{} and
-age alone \ConfAgeTri{} (majority rate \ConfChanceTri{}), against
-\ConfImgTri{} for imaging (\ConfImgBin{} on CN versus AD), and adding
-demographics gives \ConfImgDemoTri{}.  Within one sex the imaging model scores
-\ConfImgFemaleTri{} for women and \ConfImgMaleTri{} for men, and on a
-sex-balanced design (\BalN{}~subjects) it still reaches \BalTri{} on three
-classes and \BalBin{} on CN versus AD.
+Over the real sites, FedAvg on the \CohFeatures{} features reaches
+\FedAvgBin{} on CN versus AD and \FedAvgTri{} on three classes
+(Table~\ref{tab:fl}); FedProx gives \FedProxBin{} and \FedProxTri{}.
+Federated boosting reaches \BoostBin{} and \BoostTri{}, matching the best
+centralised model on three classes: the summed site histograms are exactly the
+histogram a central server would build, so federation itself costs nothing.  It carries no formal privacy
+guarantee, so the private model below is the logistic regression.
+
+\subsection{Privacy--Utility Trade-off}
+\label{sec:res-dp}
+
+\begin{table}[!t]
+\centering
+\caption{The Same Private Protocol on Three Representations: Accuracy (\%) and
+Three-Class Attribution Agreement at $\varepsilon = 1$}
+\label{tab:models}
+\footnotesize
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{lcccccc}
+\toprule
+& & \multicolumn{2}{c}{CN/MCI/AD} & \multicolumn{2}{c}{CN vs AD} & \\
+Representation & $d$ & $\varepsilon{=}1$ & $\varepsilon{=}10$ & $\varepsilon{=}1$ & $\varepsilon{=}10$ & Agr. \\
+\midrule
+% BEGIN AUTO:v8-models
+v7 regions, 799 subjects & 405 & 52.6 & 57.7 & 81.2 & 86.2 & 0.048 \\
+134 regions, v8 cohort & 405 & 59.2 & 61.0 & 85.7 & 88.7 & 0.162 \\
+27 features, v8 cohort & 84 & 61.8 & 62.2 & 89.5 & 90.1 & 0.504 \\
+% END AUTO:v8-models
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:dp} and Fig.~\ref{fig:privacy} report subject-level DP-FedAvg
+over the real sites.  At $\varepsilon = 1$ the private model reaches
+\DpBinOne{} on CN versus AD (AUROC \DpBinOneAUROC{}) and \DpTriOne{} on three
+classes (balanced \DpTriOneBal{}, AUROC \DpTriOneAUROC{}), against
+\DpBinNone{} and \DpTriNone{} without privacy and \CenBinBio{} and
+\CenTriBio{} for the best centralised model.  At $\varepsilon = 10$ it reaches
+\DpBinTen{} and \DpTriTen{}.  Strong privacy therefore costs about one point,
+and the private models are no worse than the non-private one: at this size
+the calibrated noise acts as a regulariser.
+
+Table~\ref{tab:models} separates the sources of this result.  The paper's
+earlier \CohMriDim{}-parameter region model scored \VsevTriOne{} and
+\VsevBinOne{} at $\varepsilon = 1$ on 799 subjects.  On the present cohort the
+same model reaches \MriTriOne{} and \MriBinOne{}, so more data and
+visit-matched labels account for most of the gain; the compact model adds
+the rest and, above all, keeps its explanations.  By~\eqref{eq:ratio} its
+noise-to-signal ratio is \LawOursOne{} at $\varepsilon = 1$ and \LawOursTen{}
+at $\varepsilon = 10$, against \LawHeadTen{} for a ResNet50 classification
+head and \LawFullTen{} for a full ResNet50 at $\varepsilon = 10$
+(Fig.~\ref{fig:law}).
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.85\columnwidth]{dimension_law.png}
+\caption{Worst-case noise-to-signal ratio,~\eqref{eq:ratio}, against the number
+of perturbed parameters.  Above the dotted line the noise outweighs the summed
+update.}
+\label{fig:law}
+\end{figure}
+
+\subsection{Explanation Fidelity Under Privacy}
+\label{sec:res-xai}
+
+Privacy changes what a model attends to far more than how accurate it is.
+At $\varepsilon = 1$ the three-class attribution agreement of the
+\CohFeatures{}-feature model with its non-private reference is \XaiTriOne{}
+(\XaiTriTen{} at $\varepsilon = 10$); for the \CohMriFeatures{}-region model
+on the same subjects it is \XaiMriTriOne{}, and for the earlier model
+\XaiVsevTriOne{}, essentially unrelated to its non-private reference although
+its accuracy barely moved.  An accuracy-only privacy--utility curve cannot
+reveal this; a small, named representation is what keeps a private model
+explicable.
+
+\subsection{Membership Inference and Scanner Shift}
+\label{sec:res-mia}
+
+Against the non-private federated three-class model the subject-level attack
+reaches an AUROC of \AttackNone{}; at $\varepsilon = 10$ it is \AttackTen{}
+and at $\varepsilon = 1$ \AttackOne{}, at chance.  To test the newest
+scanners, the centralised model was trained on ADNI-1 to ADNI-3 only and tested
+on the \ShiftN{} ADNI-4 subjects: it reaches \ShiftTri{} on three classes
+(\ShiftBin{} on CN versus AD) against \MixedTri{} (\MixedBin{}) when ADNI-4
+subjects from other folds are in training, so the newer protocols cost
+nothing.
 
 % ============================================================
 \section{Discussion}
@@ -595,42 +581,40 @@ classes and \BalBin{} on CN versus AD.
 
 Three findings are likely to hold beyond this cohort.  First, the cost of
 subject-level differential privacy is a property of the perturbed dimension:
-because the noise norm grows as $\sqrt{d}$ while the summed update does not, a
-compact representation over named regions is what makes a strong privacy
-budget affordable.  Second, simulated partitions are a poor proxy for real
-multi-site federation: they select plain FedAvg where real sites need a drift
-correction, so federated optimisers should be tuned on natural partitions.  Third, explanation fidelity
-should be reported beside accuracy whenever a model is trained privately,
-because the two can move in opposite directions.
+the noise norm grows as $\sqrt{d}$ while the summed update does not, so a
+compact representation is what makes a strong privacy budget affordable.
+Second, that compactness can come from domain knowledge rather than from the
+data: \CohFeatures{} features named in advance lose almost nothing to privacy.
+Third, explanation fidelity should be reported beside accuracy whenever a model
+is trained privately, because a large private model can be as accurate and
+far less explicable.
 
 \emph{Limitations.}  The three-class task remains far from clinical
-reliability, in line with the best blinded benchmark~\cite{bron2015}, because
-MCI is a heterogeneous group that structural MRI alone separates poorly.  The
-federation is simulated in a single process; clients exchange only clipped,
-noised updates, but network effects are not modelled.  The feature
-standardisation statistics are cohort aggregates outside the privacy
-guarantee.  All data come from ADNI, so generalisation to other populations
-and scanners requires external validation.  Nothing here is a medical device
-or a diagnosis.
+reliability, because MCI is heterogeneous.  Biomarker coverage is partial and
+imputed, and although the features were named in advance, the form of the two
+composites was settled after comparing a few variants under the same
+cross-validation, so the reported accuracy may be slightly optimistic.
+Education enters ADNI's memory-test cut-offs and may carry some label
+information.  The federation runs in one process; feature standardisation and
+imputation statistics are cohort aggregates outside the privacy guarantee.
+All data come from ADNI, so other populations require external validation.
+Nothing here is a medical device or a diagnosis.
 
 % ============================================================
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented a federated, differentially private and explainable pipeline
-for Alzheimer's disease classification from structural MRI.  Region volumes
-from neural voxel-based morphometry reach \CohBinAcc{} on CN versus AD and
-\CohTriAcc{} on CN/MCI/AD under subject-disjoint evaluation, federated
-training with FedProx over \CohClients{} real-site clients reaches
-\CohFedBin{} on CN
-versus AD, and subject-level DP-FedAvg keeps \CohDpBinOne{} at $\varepsilon =
-1$ while reducing a membership-inference attack to an AUROC of
-\CohAttackOne{}.  The privacy cost is governed by the number of perturbed
-parameters, and privacy degrades the model's explanations well before its
-accuracy.  The code, folds and per-run results are publicly available, and a
-public demonstration serves only the $\varepsilon = 10$ private model.
+We presented a federated, differentially private and explainable pipeline for
+Alzheimer's disease classification from MRI and fluid biomarkers.  A model of
+\CohDim{} parameters over \CohFeatures{} literature-chosen features, trained
+with subject-level DP-FedAvg over \CohSites{} real ADNI sites, keeps
+\DpBinOne{} on CN versus AD and \DpTriOne{} on CN/MCI/AD at $\varepsilon = 1$,
+about one point below the best non-private model, while a membership-inference
+attack is at chance (AUROC \AttackOne{}) and its explanations stay close to the
+non-private model's.  The privacy cost is governed by the number of perturbed
+parameters.  The code, folds and aggregate results are publicly available, and
+a public demonstration serves only the $\varepsilon = 1$ private model.
 
-% ============================================================
 \section*{Acknowledgment}
 
 Data collection and sharing for this project was funded by the Alzheimer's
@@ -641,7 +625,6 @@ not participate in the analysis or writing of this report.
 
 % ============================================================
 \begin{thebibliography}{99}
-
 \bibitem{jack2010}
 C.~R. Jack~Jr. \emph{et al.}, ``Hypothetical model of dynamic biomarkers of
 the Alzheimer's pathological cascade,'' \emph{Lancet Neurol.}, vol.~9, no.~1,
@@ -657,27 +640,21 @@ J.~Wen \emph{et al.}, ``Convolutional neural networks for classification of
 Alzheimer's disease: Overview and reproducible evaluation,'' \emph{Med.\
 Image Anal.}, vol.~63, Art.~no.~101694, 2020.
 
-\bibitem{bron2021}
-E.~E. Bron \emph{et al.}, ``Cross-cohort generalizability of deep and
-conventional machine learning for MRI-based diagnosis and prediction of
-Alzheimer's disease,'' \emph{NeuroImage: Clin.}, vol.~31, Art.~no.~102712,
-2021.
+\bibitem{jack2018}
+C.~R. Jack~Jr. \emph{et al.}, ``NIA-AA research framework: Toward a
+biological definition of Alzheimer's disease,'' \emph{Alzheimer's Dement.},
+vol.~14, no.~4, pp.~535--562, 2018.
 
-\bibitem{bron2015}
-E.~E. Bron \emph{et al.}, ``Standardized evaluation of algorithms for
-computer-aided diagnosis of dementia based on structural MRI: The CADDementia
-challenge,'' \emph{NeuroImage}, vol.~111, pp.~562--579, 2015.
+\bibitem{palmqvist2020}
+S.~Palmqvist \emph{et al.}, ``Discriminative accuracy of plasma
+phospho-tau217 for Alzheimer disease vs other neurodegenerative disorders,''
+\emph{JAMA}, vol.~324, no.~8, pp.~772--781, 2020.
 
 \bibitem{mcmahan2017}
 B.~McMahan, E.~Moore, D.~Ramage, S.~Hampson, and B.~A.~y Arcas,
 ``Communication-efficient learning of deep networks from decentralized
 data,'' in \emph{Proc.\ Int.\ Conf.\ Artif.\ Intell.\ Statist.\ (AISTATS)},
 2017, pp.~1273--1282.
-
-\bibitem{mcmahan2018}
-H.~B. McMahan, D.~Ramage, K.~Talwar, and L.~Zhang, ``Learning differentially
-private recurrent language models,'' in \emph{Proc.\ Int.\ Conf.\ Learn.\
-Represent.\ (ICLR)}, 2018.
 
 \bibitem{kaissis2020}
 G.~A. Kaissis, M.~R. Makowski, D.~R\"uckert, and R.~F. Braren, ``Secure,
@@ -687,34 +664,6 @@ privacy-preserving and federated machine learning in medical imaging,''
 \bibitem{rieke2020}
 N.~Rieke \emph{et al.}, ``The future of digital health with federated
 learning,'' \emph{npj Digit.\ Med.}, vol.~3, Art.~no.~119, 2020.
-
-\bibitem{dwork2014}
-C.~Dwork and A.~Roth, ``The algorithmic foundations of differential
-privacy,'' \emph{Found.\ Trends Theor.\ Comput.\ Sci.}, vol.~9, no.~3--4,
-pp.~211--407, 2014.
-
-\bibitem{abadi2016}
-M.~Abadi \emph{et al.}, ``Deep learning with differential privacy,'' in
-\emph{Proc.\ ACM SIGSAC Conf.\ Comput.\ Commun.\ Secur.\ (CCS)}, 2016,
-pp.~308--318.
-
-\bibitem{mironov2017}
-I.~Mironov, ``R\'enyi differential privacy,'' in \emph{Proc.\ IEEE Comput.\
-Secur.\ Found.\ Symp.\ (CSF)}, 2017, pp.~263--275.
-
-\bibitem{opacus}
-A.~Yousefpour \emph{et al.}, ``Opacus: User-friendly differential privacy
-library in PyTorch,'' 2021, \emph{arXiv:2109.12298}.
-
-\bibitem{gopi2021}
-S.~Gopi, Y.~T. Lee, and L.~Wutschitz, ``Numerical composition of
-differential privacy,'' in \emph{Proc.\ Adv.\ Neural Inf.\ Process.\ Syst.\
-(NeurIPS)}, vol.~34, 2021, pp.~11631--11642.
-
-\bibitem{ziller2021}
-A.~Ziller, D.~Usynin, R.~Braren, M.~Makowski, D.~Rueckert, and G.~Kaissis,
-``Medical imaging deep learning with differential privacy,'' \emph{Sci.\
-Rep.}, vol.~11, Art.~no.~13524, 2021.
 
 \bibitem{shokri2017}
 R.~Shokri, M.~Stronati, C.~Song, and V.~Shmatikov, ``Membership inference
@@ -726,10 +675,31 @@ S.~Yeom, I.~Giacomelli, M.~Fredrikson, and S.~Jha, ``Privacy risk in machine
 learning: Analyzing the connection to overfitting,'' in \emph{Proc.\ IEEE
 Comput.\ Secur.\ Found.\ Symp.\ (CSF)}, 2018, pp.~268--282.
 
-\bibitem{carlini2022}
-N.~Carlini, S.~Chien, M.~Nasr, S.~Song, A.~Terzis, and F.~Tram\`er,
-``Membership inference attacks from first principles,'' in \emph{Proc.\ IEEE
-Symp.\ Secur.\ Privacy (SP)}, 2022, pp.~1897--1914.
+\bibitem{dwork2014}
+C.~Dwork and A.~Roth, ``The algorithmic foundations of differential
+privacy,'' \emph{Found.\ Trends Theor.\ Comput.\ Sci.}, vol.~9, no.~3--4,
+pp.~211--407, 2014.
+
+\bibitem{ziller2021}
+A.~Ziller, D.~Usynin, R.~Braren, M.~Makowski, D.~Rueckert, and G.~Kaissis,
+``Medical imaging deep learning with differential privacy,'' \emph{Sci.\
+Rep.}, vol.~11, Art.~no.~13524, 2021.
+
+\bibitem{bron2021}
+E.~E. Bron \emph{et al.}, ``Cross-cohort generalizability of deep and
+conventional machine learning for MRI-based diagnosis and prediction of
+Alzheimer's disease,'' \emph{NeuroImage: Clin.}, vol.~31, Art.~no.~102712,
+2021.
+
+\bibitem{bron2015}
+E.~E. Bron \emph{et al.}, ``Standardized evaluation of algorithms for
+computer-aided diagnosis of dementia based on structural MRI: The CADDementia
+challenge,'' \emph{NeuroImage}, vol.~111, pp.~562--579, 2015.
+
+\bibitem{klunk2015}
+W.~E. Klunk \emph{et al.}, ``The Centiloid project: Standardizing
+quantitative amyloid plaque estimation by PET,'' \emph{Alzheimer's Dement.},
+vol.~11, no.~1, pp.~1--15, 2015.
 
 \bibitem{mitrovska2024}
 A.~Mitrovska, P.~Safari, K.~Ritter, B.~Shariati, and J.~K. Fischer, ``Secure
@@ -747,15 +717,47 @@ N.~Basnin, T.~Mahmud, R.~U. Islam, and K.~Andersson, ``An evolutionary
 federated learning approach to diagnose Alzheimer's disease under
 uncertainty,'' \emph{Diagnostics}, vol.~15, no.~1, Art.~no.~80, 2025.
 
-\bibitem{mastoi2025}
-Q.~Mastoi \emph{et al.}, ``Explainable AI in medical imaging: An
-interpretable and collaborative federated learning model for brain tumor
-classification,'' \emph{Front.\ Oncol.}, vol.~15, Art.~no.~1535478, 2025.
-
 \bibitem{li2020fedprox}
 T.~Li, A.~K. Sahu, M.~Zaheer, M.~Sanjabi, A.~Talwalkar, and V.~Smith,
 ``Federated optimization in heterogeneous networks,'' in \emph{Proc.\ Mach.\
 Learn.\ Syst.\ (MLSys)}, vol.~2, 2020, pp.~429--450.
+
+\bibitem{chen2016xgboost}
+T.~Chen and C.~Guestrin, ``XGBoost: A scalable tree boosting system,'' in
+\emph{Proc.\ ACM SIGKDD Int.\ Conf.\ Knowl.\ Discov.\ Data Min.}, 2016,
+pp.~785--794.
+
+\bibitem{li2023fedtree}
+Q.~Li \emph{et al.}, ``FedTree: A federated learning system for trees,'' in
+\emph{Proc.\ Mach.\ Learn.\ Syst.\ (MLSys)}, 2023.
+
+\bibitem{abadi2016}
+M.~Abadi \emph{et al.}, ``Deep learning with differential privacy,'' in
+\emph{Proc.\ ACM SIGSAC Conf.\ Comput.\ Commun.\ Secur.\ (CCS)}, 2016,
+pp.~308--318.
+
+\bibitem{mcmahan2018}
+H.~B. McMahan, D.~Ramage, K.~Talwar, and L.~Zhang, ``Learning differentially
+private recurrent language models,'' in \emph{Proc.\ Int.\ Conf.\ Learn.\
+Represent.\ (ICLR)}, 2018.
+
+\bibitem{gopi2021}
+S.~Gopi, Y.~T. Lee, and L.~Wutschitz, ``Numerical composition of
+differential privacy,'' in \emph{Proc.\ Adv.\ Neural Inf.\ Process.\ Syst.\
+(NeurIPS)}, vol.~34, 2021, pp.~11631--11642.
+
+\bibitem{mironov2017}
+I.~Mironov, ``R\'enyi differential privacy,'' in \emph{Proc.\ IEEE Comput.\
+Secur.\ Found.\ Symp.\ (CSF)}, 2017, pp.~263--275.
+
+\bibitem{opacus}
+A.~Yousefpour \emph{et al.}, ``Opacus: User-friendly differential privacy
+library in PyTorch,'' 2021, \emph{arXiv:2109.12298}.
+
+\bibitem{carlini2022}
+N.~Carlini, S.~Chien, M.~Nasr, S.~Song, A.~Terzis, and F.~Tram\`er,
+``Membership inference attacks from first principles,'' in \emph{Proc.\ IEEE
+Symp.\ Secur.\ Privacy (SP)}, 2022, pp.~1897--1914.
 
 \bibitem{petersen2010}
 R.~C. Petersen \emph{et al.}, ``Alzheimer's Disease Neuroimaging Initiative

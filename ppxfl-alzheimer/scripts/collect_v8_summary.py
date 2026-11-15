@@ -63,6 +63,17 @@ def main() -> int:
             raise SystemExit(f"{src} contains a subject identifier; not copied")
         shutil.copyfile(os.path.join(SRC, src), os.path.join(OUT, dst))
 
+    # Cohort counts, biomarker coverage and one fold's client sizes (no site codes).
+    cohort = _load(os.path.join("data", "v8", "build_v8_summary.json"))
+    partition = _load(os.path.join(SRC, "metrics_dp27", "dp_cn-mci-ad_eps1.0_s42.json"))["partition"]
+    sizes = sorted(c["n_subjects"] for c in partition["clients"])
+    cohort["fold_partition"] = {
+        "n_clients": partition["n_clients"], "client_size_min": sizes[0],
+        "client_size_median": sizes[len(sizes) // 2], "client_size_max": sizes[-1],
+        "clients_missing_a_class": sum(1 for c in partition["clients"] if c["missing_classes"])}
+    with open(os.path.join(OUT, "cohort_v8.json"), "w", encoding="utf-8") as handle:
+        json.dump(cohort, handle, indent=2)
+
     v7 = _load(os.path.join("results_v7", "results_summary_v7.json"))
     dp27 = _load(os.path.join(SRC, "summary_metrics_dp27.json"))
     mri = _load(os.path.join(SRC, "summary_metrics_mri.json"))
@@ -99,7 +110,7 @@ def main() -> int:
             }
     with open(os.path.join(OUT, "results_summary_v8.json"), "w", encoding="utf-8") as handle:
         json.dump(headline, handle, indent=2)
-    print(f"wrote {OUT}/ ({len(COPY) + 1} files)")
+    print(f"wrote {OUT}/ ({len(COPY) + 2} files)")
     return 0
 
 
