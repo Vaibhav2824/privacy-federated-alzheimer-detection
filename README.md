@@ -83,7 +83,7 @@ on the three-class model scores AUROC **0.507** at ε = 1 (0.517 without DP), wh
 
 | Model (subject-disjoint) | CN / MCI / AD | CN vs AD |
 | --- | --- | --- |
-| v7 FedProx (paper) | 55.1% | 84.3% |
+| v7 FedProx | 55.1% | 84.3% |
 | v8 FedAvg, 27 features | 61.9% | 88.5% |
 | v8 FedProx, 27 features | 61.0% | 88.9% |
 | v8 federated gradient boosting (403 features) | **62.9%** | **89.9%** |
