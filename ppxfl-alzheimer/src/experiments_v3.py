@@ -141,8 +141,14 @@ def _standardise(train_X, test_X):
 
 def run_federated_configuration(X, y, sites, label_set: str, split_scheme: str,
                                 client_scheme: str, config: FedConfig,
-                                n_splits: int, feature_names) -> dict:
-    """Cross-validated federated training for one configuration."""
+                                n_splits: int, feature_names, subjects=None,
+                                oof_path: str | None = None) -> dict:
+    """Cross-validated federated training for one configuration.
+
+    With ``oof_path`` the out-of-fold predictions are also written there as an
+    .npz (subject IDs included, so the file must stay local: ADNI data use
+    agreement).  Training and metrics are unchanged.
+    """
     classes = LABEL_SETS[label_set]["classes"]
     keep = np.isin(y, classes)
     X_sub, y_sub = X[keep], y[keep]
@@ -178,6 +184,13 @@ def run_federated_configuration(X, y, sites, label_set: str, split_scheme: str,
         predictions[fold.test] = np.argmax(probability, axis=1)
 
     overall = _metrics(y_sub, predictions, scores, n_classes)
+    if oof_path:
+        subjects_sub = ([str(s) for s, k in zip(subjects, keep) if k]
+                        if subjects is not None else [])
+        os.makedirs(os.path.dirname(oof_path) or ".", exist_ok=True)
+        np.savez(oof_path, subjects=np.asarray(subjects_sub), y_true=y_sub,
+                 scores=scores, predictions=predictions, label_set=label_set,
+                 seed=config.seed, noise_multiplier=config.noise_multiplier)
     counts = np.bincount(y_sub, minlength=n_classes)
     dimension = train_X.shape[1] * n_classes + n_classes   # after composites
 
@@ -227,11 +240,13 @@ def command_federated(args) -> None:
                         learning_rate=args.learning_rate,
                         clip_norm=args.clip_norm, seed=seed, prox_mu=args.prox_mu
                     )
+                    tag = f"fed_{client_scheme}_{label_set}_{split_scheme}_s{seed}"
                     payload = run_federated_configuration(
                         X, y, sites, label_set, split_scheme, client_scheme,
-                        config, args.n_splits, feature_names
+                        config, args.n_splits, feature_names, subjects=subjects,
+                        oof_path=(os.path.join(args.save_oof, f"{tag}.npz")
+                                  if args.save_oof else None)
                     )
-                    tag = f"fed_{client_scheme}_{label_set}_{split_scheme}_s{seed}"
                     dump_result(os.path.join(args.out_dir, f"{tag}.json"), payload)
                     summary.append({"tag": tag, **payload["overall"]})
                     print(f"  {tag}: acc={payload['overall']['accuracy']:.3f} "
@@ -270,9 +285,13 @@ def command_privacy(args) -> None:
                     prox_mu=args.prox_mu, class_weight=args.class_weight,
                     avg_last=args.avg_last, model=args.model
                 )
+                label = "nonprivate" if epsilon_target is None else f"eps{epsilon_target}"
+                tag = f"dp_{label_set}_{label}_s{seed}"
                 payload = run_federated_configuration(
                     X, y, sites, label_set, args.scheme, args.client_scheme,
-                    config, args.n_splits, feature_names
+                    config, args.n_splits, feature_names, subjects=subjects,
+                    oof_path=(os.path.join(args.save_oof, f"{tag}.npz")
+                              if args.save_oof else None)
                 )
                 payload["target_epsilon"] = epsilon_target
 
@@ -297,8 +316,6 @@ def command_privacy(args) -> None:
                     )
                 ] if noise > 0 else []
 
-                label = "nonprivate" if epsilon_target is None else f"eps{epsilon_target}"
-                tag = f"dp_{label_set}_{label}_s{seed}"
                 dump_result(os.path.join(args.out_dir, f"{tag}.json"), payload)
                 summary.append({
                     "tag": tag,
@@ -360,6 +377,9 @@ def main(argv=None) -> int:
     parser.add_argument("--avg-last", type=int, default=0,
                         help="average the global model over the last N rounds")
     parser.add_argument("--model", choices=["softmax", "ordinal"], default="softmax")
+    parser.add_argument("--save-oof", default=None, metavar="DIR",
+                        help="also save per-run out-of-fold predictions (.npz, subject "
+                             "IDs included: keep local, never commit)")
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
