@@ -87,3 +87,6 @@ ppxfl-alzheimer/data/v8/
 ppxfl-alzheimer/data/mni2mm_v8*/
 ppxfl-alzheimer/data/ida_search_v8.csv
 ppxfl-alzheimer/data/v8_*/
+
+# Fix 1 out-of-fold predictions carry ADNI subject IDs: local only
+ppxfl-alzheimer/results_v8/paper_fixes/oof_LOCAL_ONLY/
