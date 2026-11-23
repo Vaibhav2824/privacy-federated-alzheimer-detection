@@ -13,8 +13,10 @@
     "lint": "eslint src tests --max-warnings 0"
   },
   "dependencies": {
+    "@types/qrcode": "^1.5.5",
     "gsap": "^3.15.0",
-    "onnxruntime-web": "^1.19.2"
+    "onnxruntime-web": "^1.19.2",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.12.0",

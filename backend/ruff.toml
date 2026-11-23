@@ -1,4 +1,4 @@
 extend = "../ppxfl-alzheimer/pyproject.toml"
 
 [lint.isort]
-known-first-party = ["app"]
+known-first-party = ["app", "live"]
