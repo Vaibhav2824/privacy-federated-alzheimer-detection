@@ -35,7 +35,7 @@ function hero(data: SiteData): string {
         <p class="mt-6 font-display text-[88px] font-extrabold leading-none tracking-tighter sm:text-[128px] lg:text-[148px]">
           <span class="text-gradient" data-count>${pct(acc)}</span></p>
         <h1 class="mt-4 max-w-xl text-2xl leading-snug md:text-3xl">accuracy telling Alzheimer's disease from healthy ageing, on brains the model never saw.</h1>
-        <p class="mt-4 max-w-xl text-slate">${c.n_subjects} ADNI subjects, imaging features only, mean of three seeds of five-fold
+        <p class="mt-4 max-w-xl text-slate">${c.n_subjects} ADNI subjects, MRI region volumes only, mean of three seeds of five-fold
           subject-disjoint cross-validation (± ${pct(c.accuracy_std)}).</p>
         <div class="mt-6 flex flex-wrap gap-2">
           ${chip('trending_up', `<b class="num">${points(acc, c.chance_accuracy)}</b>&nbsp;over chance`)}
@@ -64,7 +64,7 @@ function proofs(data: SiteData): string {
   const p1 = privacyAt(data, 'cn-ad', 1);
   const a0 = attackAt(data, 'cn-mci-ad', null);
   const a1 = attackAt(data, 'cn-mci-ad', 1);
-  const demo = data.confounds.results['cn-ad'];
+  const shift = data.shift['cn-mci-ad'];
   const card = (n: string, i: string, q: string, big: string, caption: string, body: string, extra = ''): string => `
     <article class="card spotlight ${extra} flex flex-col !p-7">
       <div class="flex items-center justify-between">
@@ -86,10 +86,11 @@ function proofs(data: SiteData): string {
       + bar('Federated, ε = 1', p1?.accuracy, pct(p1?.accuracy), GRADIENT, 0.5)
       + `<p class="rounded-xl bg-muted px-3 py-2 text-xs text-slate">Membership-inference attack AUROC (3-class)
           <b class="num text-ink">${fixed(a0)} → ${fixed(a1)}</b>, toward the 0.500 of a coin flip.</p>`)}
-    ${card('03', 'diversity_3', 'Is it just reading age and sex?', points(demo.imaging.accuracy.mean, demo['sex+age'].accuracy.mean),
-      'imaging over a demographics-only model',
-      bar('Sex + age only', demo['sex+age'].accuracy.mean, pct(demo['sex+age'].accuracy.mean), 'bg-slate/40', subj.chance_accuracy)
-      + bar('Brain imaging', demo.imaging.accuracy.mean, pct(demo.imaging.accuracy.mean), GRADIENT, subj.chance_accuracy))}
+    ${card('03', 'devices', 'Does it hold on newer scanners?', points(shift.shift, shift.mixed),
+      `trained on ADNI-1 to ADNI-3, tested on ${shift.n_adni4} ADNI-4 subjects`,
+      bar('Mixed folds (ADNI-4 seen in training)', shift.mixed, pct(shift.mixed), 'bg-slate/40')
+      + bar('ADNI-4 held out entirely', shift.shift, pct(shift.shift), GRADIENT)
+      + `<p class="rounded-xl bg-muted px-3 py-2 text-xs text-slate">Three classes, MRI and biomarkers. The newer scanners and protocols cost nothing.</p>`)}
   </div>`;
 }
 
@@ -113,7 +114,7 @@ function lift(data: SiteData): string {
     </div>`;
   }).join('');
   return `<div class="card !p-6 md:!p-8"><div class="flex flex-col gap-6">${rows}</div>
-    <p class="mt-6 border-t border-hairline pt-4 text-xs text-slate">Hatched: the majority-class rate. Bar: best imaging-only model, subject-disjoint.
+    <p class="mt-6 border-t border-hairline pt-4 text-xs text-slate">Hatched: the majority-class rate. Bar: best MRI-only model, subject-disjoint.
       Right: lift in percentage points, and the same task when whole acquisition sites are held out.</p></div>`;
 }
 
@@ -144,43 +145,34 @@ function table(data: SiteData): string {
       <thead class="bg-muted/70 text-left font-mono text-xs uppercase tracking-wider text-slate"><tr>
         <th class="p-3">Task</th><th class="p-3">Evaluation</th><th class="p-3">Accuracy (± sd, dashed = chance)</th>
         <th class="p-3 text-right">Macro F1</th><th class="p-3 text-right">Macro AUROC</th><th class="p-3 text-right">Chance</th>
-        <th class="p-3 text-right">+ age &amp; sex</th><th class="p-3">Best model</th><th class="p-3 text-right">Site − subject</th></tr></thead>
+        <th class="p-3 text-right">+ biomarkers</th><th class="p-3">Best model</th><th class="p-3 text-right">Site − subject</th></tr></thead>
       <tbody>${rows}</tbody>
     </table></div>
     <p class="mt-3 text-xs text-slate">Mean ± standard deviation over three seeds of five-fold out-of-fold evaluation. Chance is the majority-class rate.
-      Imaging features only; each row shows the best of an ensemble, a tuned ensemble and a tuned logistic regression, with hyperparameters
-      chosen by nested cross-validation. The age-and-sex column appends both to the same features.</p>`;
+      134 MRI region volumes over intracranial volume; each row shows the better of an ensemble and a tuned logistic regression, with hyperparameters
+      chosen by nested cross-validation. The biomarkers column appends APOE4, amyloid PET, CSF and plasma markers, education, age and sex.</p>`;
 }
 
-function demographics(data: SiteData): string {
-  const c = data.confounds;
-  const NAMES: [string, string][] = [
-    ['sex', 'Sex only'], ['age', 'Age only'], ['sex+age', 'Sex + age'],
-    ['imaging', 'Imaging (region model)'], ['imaging+demographics', 'Imaging + demographics'],
-  ];
+function subgroups(data: SiteData): string {
   const panel = (ls: string, title: string): string => {
-    const r = c.results[ls];
-    const s = c.stratified[ls];
+    const r = data.by_sex[ls];
+    const row = (k: 'female' | 'male', name: string): string => `<div class="flex flex-col gap-1">
+      ${bar(`${name} <span class="num text-xs text-slate">n = ${r[k].n}</span>`, r[k].accuracy, pct(r[k].accuracy), GRADIENT)}
+      <p class="num text-xs text-slate">95% interval ${pct(r[k].low)} to ${pct(r[k].high)}</p></div>`;
     return `<div class="card spotlight">
       <p class="font-mono text-xs uppercase tracking-wider">${title}</p>
-      <div class="mt-4 flex flex-col gap-3">
-        ${NAMES.map(([k, n]) => bar(n, r[k]?.accuracy.mean, pct(r[k]?.accuracy.mean), k.startsWith('imaging') ? GRADIENT : 'bg-slate/40')).join('')}
-      </div>
-      <div class="mt-4 grid grid-cols-2 gap-3 border-t border-hairline pt-4 text-sm">
-        <p>Imaging, female only <span class="num block text-lg font-semibold">${pct(s.F?.accuracy.mean)}</span><span class="num text-xs text-slate">n = ${s.F?.n}</span></p>
-        <p>Imaging, male only <span class="num block text-lg font-semibold">${pct(s.M?.accuracy.mean)}</span><span class="num text-xs text-slate">n = ${s.M?.n}</span></p>
-      </div></div>`;
+      <div class="mt-4 flex flex-col gap-4">${row('female', 'Women')}${row('male', 'Men')}</div></div>`;
   };
-  const sexAge = c.results['cn-mci-ad']['sex+age'].accuracy.mean;
-  const imaging = c.results['cn-mci-ad'].imaging.accuracy.mean;
+  const three = data.by_sex['cn-mci-ad'];
+  const cnad = data.by_sex['cn-ad'];
+  const overlap = (a: { low: number; high: number }, b: { low: number; high: number }): boolean => a.low <= b.high && b.low <= a.high;
   return `<div class="grid gap-8 lg:grid-cols-[1fr_1.2fr]">
     <div class="text-lg leading-8 text-ink/80">
-      <p>An imaging accuracy is evidence about imaging only if the cohort's demographics could not have produced it
-        unaided. On the <span class="num">${c.n_subjects}</span> subjects for whom both sex and age are known, the same
-        folds and seeds give a sex-and-age model <span class="num">${pct(sexAge)}</span> on three classes, essentially chance.</p>
-      <p class="mt-4">The region model reaches <span class="num font-semibold text-teal">${pct(imaging)}</span> on the same subjects,
-        <span class="num font-semibold text-teal">${points(imaging, sexAge)}</span> above the demographic baseline, and keeps working within each
-        sex, where sex is constant and can contribute nothing.</p>
+      <p>A model that works only on average can still fail a subgroup. These are the final private model's out-of-fold predictions
+        (ε = 1, mean of three seeds), split by sex, with Wilson 95% intervals.</p>
+      <p class="mt-4">For CN vs AD the intervals ${overlap(cnad.female, cnad.male) ? 'overlap' : 'do not overlap'}: ${pct(cnad.female.accuracy)} for women and
+        ${pct(cnad.male.accuracy)} for men. On three classes the model is <span class="num font-semibold text-teal">${points(three.female.accuracy, three.male.accuracy)}</span>
+        better for women, and the intervals ${overlap(three.female, three.male) ? 'overlap' : 'do not overlap'}: a gap we report and plan to study, not one we hide.</p>
     </div>
     <div class="grid gap-4 md:grid-cols-2">${panel('cn-mci-ad', 'CN / MCI / AD accuracy')}${panel('cn-ad', 'CN vs AD accuracy')}</div>
   </div>`;
@@ -192,9 +184,9 @@ function render(data: SiteData): string {
   ${section('Why it holds up', 'Three objections, answered with numbers', proofs(data),
     'The usual reasons a medical-imaging accuracy turns out to be hollow, each tested on the same subjects and folds.')}
   ${section('Lift over chance', 'Every task beats its own chance rate', lift(data),
-    'Binary tasks have a chance rate near 50% and the three-class task near 34%; what matters is the distance above it.')}
+    'Binary tasks have a chance rate between 53% and 61% and the three-class task 42%; what matters is the distance above it.')}
   ${section('Audited task performance', 'Performance across evaluation regimes', table(data))}
-  ${section('Ablation · confounder control', 'Could demographics explain this?', demographics(data))}
+  ${section('Subgroups', 'Does it work equally well for women and men?', subgroups(data))}
   <section class="shell mt-20" data-reveal>
     <div class="card relative flex flex-col items-start justify-between gap-4 overflow-hidden bg-linear-to-br from-mint/60 via-surface to-sky/10 !p-8 md:flex-row md:items-center">
       <div class="flex gap-4"><span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-surface text-teal shadow-sm">${icon('verified_user', '!text-[22px]')}</span>

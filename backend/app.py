@@ -30,6 +30,8 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+from live import router as live_router
+
 MODEL = json.loads((Path(__file__).parent / "model.json").read_text(encoding="utf-8"))
 CLINICAL = {c["key"]: c for c in MODEL["clinical"]}
 MAX_CSV_CHARS = 100_000
@@ -39,6 +41,7 @@ TOP_K = 8
 DISCLAIMER = "Research demonstration. Not a medical device. Nothing here is a diagnosis."
 
 app = FastAPI(title="PPXFL model API", version="2.0.0")
+app.include_router(live_router)
 app.add_middleware(
     CORSMiddleware,
     # The Vercel production and preview domains, plus local development.

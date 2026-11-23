@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vitest/config';
 
 // One HTML entry per page; the shared header, nav and footer come from src/ui/layout.ts.
-const PAGES = ['index', 'demo', 'privacy', 'federation', 'results', 'integrity', 'method'];
+const PAGES = ['index', 'demo', 'live', 'privacy', 'federation', 'results', 'integrity', 'method'];
 
 export default defineConfig({
   // Vercel serves the site from the domain root.

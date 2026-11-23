@@ -26,6 +26,7 @@ const BASE = import.meta.env.BASE_URL;
 export const PAGES = [
   { id: 'index', label: 'Overview', href: BASE },
   { id: 'demo', label: 'Demo', href: `${BASE}demo.html` },
+  { id: 'live', label: 'Live', href: `${BASE}live.html` },
   { id: 'privacy', label: 'Privacy', href: `${BASE}privacy.html` },
   { id: 'federation', label: 'Federation', href: `${BASE}federation.html` },
   { id: 'results', label: 'Results', href: `${BASE}results.html` },
