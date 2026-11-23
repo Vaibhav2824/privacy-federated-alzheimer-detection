@@ -6,7 +6,7 @@
 Adit Srivastava, Aditya Raj, Vaibhav Gupta, Hardik Gupta, Agha Alfi Mirza
 · PES University, Bangalore
 
-**[Paper (PDF)](paper.pdf)** · **[Live site and demo](https://privacy-federated-alzheimer-detecti.vercel.app)** · **[Region-model API](https://ppxfl-api.onrender.com/model)**
+**[Paper (PDF)](paper.pdf)** · **[Website](https://ppxfl-alzheimer.pages.dev)** · **[Live federation](https://ppxfl-alzheimer.pages.dev/live)** · **[Mirror on Vercel](https://privacy-federated-alzheimer-detecti.vercel.app)** · **[Model API](https://ppxfl-api.onrender.com/model)**
 
 CN / MCI / AD classification from ADNI structural MRI, trained without pooling
 scans across sites and evaluated so that no subject — and, under the stricter
@@ -424,8 +424,25 @@ plasma_nfl, plasma_gfap) is optional; one left out is set to the cohort median,
 as in the evaluation, and listed in the response as not given;
 `GET /model` returns the model card. Inputs are validated, requests are rate
 limited per client, and only the Vercel site and localhost may call it from a
-browser. The example on the Demo page is deepmriprep's output for the public
+browser, so use the Vercel mirror for the Demo page's prediction. The example on the Demo page is deepmriprep's output for the public
 MNI152 template, so no ADNI-derived subject data is published.
+
+## Live federation
+
+The site's **[Live](https://ppxfl-alzheimer.pages.dev/live)** page runs the
+paper's subject-level DP-FedAvg in front of an audience. The presenter opens a
+room and shows a QR code; every phone that joins becomes a hospital holding its
+own synthetic patients (no ADNI data reaches the page) and trains the
+84-parameter model for 60 rounds at q = 0.5, C = 1. Each pair of hospitals
+agrees a mask seed with ECDH in the browser, so an upload on its own is noise
+and the server only learns the sum; it adds Gaussian noise once and the page
+shows the ε spent per round from the PRV accountant (δ = 0.001). A hospital
+that drops out mid-round is removed and the round is rerun without it, and a
+"simulate in this browser" mode needs no other devices.
+
+The rooms run on a Cloudflare Worker with one Durable Object per room
+(`cloudflare/live/`); `backend/live.py` serves the same protocol from the
+Render API.
 
 ## Repository layout
 
@@ -435,7 +452,8 @@ figures/v8/              the paper's figures
 figures/v7/              figures for the v7 paper
 figures/v4/              figures for the 760-subject cohort
 figures/v3/              figures for the first, 297-subject cohort
-ui/                      seven-page site (Vercel, vercel.json); reads ui/public/data/site.json
+ui/                      eight-page site (Cloudflare Pages and Vercel); reads ui/public/data/site.json
+cloudflare/live/         live-federation room server (Cloudflare Worker + Durable Objects)
 backend/                 model API (FastAPI on Render, render.yaml); model.json is the v8 ε = 1 DP model
 ppxfl-alzheimer/
   src/preprocess_v3.py     scan selection, orientation, stripping, registration
