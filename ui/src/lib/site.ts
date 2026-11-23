@@ -7,7 +7,7 @@
  */
 
 export interface Condition {
-  /** `centralised+cov` is the centralised model with age and sex appended. */
+  /** `centralised+cov` is the centralised model with the biomarkers appended. */
   family: 'centralised' | 'centralised+cov' | 'federated' | 'privacy';
   model: string;
   label_set: string;
@@ -28,10 +28,6 @@ export interface Condition {
   medial_temporal_share?: number;
 }
 
-interface MetricMean {
-  accuracy: { mean: number; std: number };
-}
-
 export interface DimensionRow {
   model: string;
   target_epsilon: number;
@@ -50,11 +46,10 @@ export interface Client {
 export interface SiteData {
   conditions: Condition[];
   attack_auroc: Record<string, number>;
-  confounds: {
-    n_subjects: number;
-    results: Record<string, Record<string, MetricMean>>;
-    stratified: Record<string, Record<string, MetricMean & { n: number }>>;
-  };
+  /** Final private model's accuracy by sex, with Wilson 95% intervals. */
+  by_sex: Record<string, Record<'female' | 'male', { accuracy: number; low: number; high: number; n: number }>>;
+  /** Trained on ADNI-1 to ADNI-3, tested on ADNI-4 ("shift") vs mixed folds. */
+  shift: Record<string, { n_adni4: number; n_older: number; shift: number; mixed: number }>;
   dimension_law: DimensionRow[];
   dp_config: {
     clip_norm: number;
@@ -74,6 +69,7 @@ export interface SiteData {
     v5: { accuracy: number; n_subjects: number; agreement_eps10: number };
     v6: { accuracy: number; n_subjects: number };
     v7: { accuracy: number; n_subjects: number };
+    v8: { accuracy: number; n_subjects: number };
   };
 }
 
@@ -84,7 +80,7 @@ export const TASKS = [
   { key: 'cn-mci-ad', name: 'CN / MCI / AD', classes: ['CN', 'MCI', 'AD'] },
 ] as const;
 
-/** The centralised family with age and sex appended to the imaging features. */
+/** The centralised family with the fluid and PET biomarkers appended to the MRI regions. */
 export const COV: Condition['family'] = 'centralised+cov';
 
 /** Privacy budgets in the order the explorer walks them: none, then tightening. */
@@ -98,7 +94,10 @@ export const MODEL_NAMES: Record<string, string> = {
   lda: 'Shrinkage LDA',
   rf: 'Random forest',
   svm: 'RBF SVM',
-  roi_logreg: 'Region logistic regression',
+  roi_logreg: '27-feature logistic regression',
+  fedavg: 'FedAvg',
+  fedprox: 'FedProx',
+  fedboost: 'Federated boosting',
 };
 
 /** The one condition matching every given field, if any. */

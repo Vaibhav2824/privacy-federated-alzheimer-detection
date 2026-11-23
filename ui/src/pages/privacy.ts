@@ -77,7 +77,7 @@ function matrix(data: SiteData): string {
       <th class="p-3 text-right">Attribution ρ</th><th class="p-3 text-right">Medial-temporal share</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
     <p class="mt-2 text-xs text-slate">Means over three seeds, subject-disjoint folds, federated over real sites. Attack: subject-level loss-based
-      membership inference on the three-class model. Attribution ρ: Spearman agreement of CN vs AD region attributions with the non-private reference fit.</p>`;
+      membership inference on the three-class model. Attribution ρ: Spearman agreement of CN vs AD feature attributions with the non-private reference fit.</p>`;
 }
 
 function render(data: SiteData): string {
@@ -99,11 +99,11 @@ function render(data: SiteData): string {
   </section>
   ${section('Accuracy vs explanation', 'More accurate, less explicable', `<div class="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
     <div class="card">${chart(data)}
-      <p class="mt-2 text-xs text-slate">Solid: CN vs AD accuracy (left axis). Dashed: attribution agreement ρ (0 to 1). Orange dashed line: 50% chance.</p></div>
+      <p class="mt-2 text-xs text-slate">Solid: CN vs AD accuracy (left axis). Dashed: attribution agreement ρ (0 to 1). Orange dashed line: 50%; the majority-class rate for CN vs AD is higher, 60.9%.</p></div>
     <div class="card flex flex-col gap-4">
       <span class="badge badge-amber w-fit">${icon('lightbulb', '!text-sm')} Key finding</span>
       <p class="font-display text-xl leading-8">At ε = 10 the private model scores ${pct(p10?.accuracy)} against
-        ${pct(p0?.accuracy)} for its non-private twin, while the agreement of its region attributions falls from
+        ${pct(p0?.accuracy)} for its non-private twin, while the agreement of its feature attributions falls from
         ${fixed(p0?.explanation_agreement)} to ${fixed(p10?.explanation_agreement)}.</p>
       <p class="text-sm text-slate">At this cohort size the noise acts partly as regularisation, which is why accuracy can rise.
         An accuracy-only privacy-utility curve cannot show that the explanation moved.</p>

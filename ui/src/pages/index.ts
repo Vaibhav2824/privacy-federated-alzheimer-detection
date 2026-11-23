@@ -3,7 +3,7 @@ import { BIBTEX, href, icon, kpi, mountPage, PAPER, section } from '../ui/layout
 
 
 const DIM_NAMES: Record<string, string> = {
-  roi_logreg: 'Region model',
+  roi_logreg: '27-feature model',
   resnet50_head: 'ResNet50 head only',
   resnet50_full: 'ResNet50, full network',
 };
@@ -33,7 +33,7 @@ function dimensionLaw(data: SiteData): string {
         norm grows as <span class="num">σC√d</span>, while the update itself is bounded by <span class="num">NC</span>
         whatever the dimension. Whether a private model is usable is therefore set by the number of
         parameters it perturbs, not by the cohort or the mechanism.</p>
-      <p class="mt-4 text-slate">At ε = 1 the region model stays at
+      <p class="mt-4 text-slate">At ε = 1 the 27-feature model (84 parameters) stays at
         <span class="num text-ink">${pct(privacyAt(data, 'cn-ad', 1)?.accuracy)}</span> CN vs AD accuracy.</p>
     </div>
     <div class="card">
@@ -45,8 +45,8 @@ function dimensionLaw(data: SiteData): string {
 }
 
 function costs(data: SiteData): string {
-  const central = (ls: string): Condition | undefined => pick(data, { family: 'centralised', model: 'logreg_cv', label_set: ls, split_scheme: 'subject' });
-  const fed = (ls: string): Condition | undefined => pick(data, { family: 'federated', label_set: ls, split_scheme: 'subject', client_scheme: 'natural' });
+  const central = (ls: string): Condition | undefined => pick(data, { family: COV, model: 'logreg_cv', label_set: ls, split_scheme: 'subject' });
+  const fed = (ls: string): Condition | undefined => pick(data, { family: 'federated', model: 'fedavg', label_set: ls, split_scheme: 'subject', client_scheme: 'natural' });
   const p1 = privacyAt(data, 'cn-ad', 1);
   const p0 = privacyAt(data, 'cn-ad', null);
   const p10 = privacyAt(data, 'cn-ad', 10);
@@ -57,11 +57,11 @@ function costs(data: SiteData): string {
     <p class="mt-3 text-sm text-slate">${body}</p></div>`;
   return `<div class="grid gap-6 md:grid-cols-3">
     ${card('01', 'hub', 'Federating over real sites', `${points(fed('cn-mci-ad')?.accuracy, central('cn-mci-ad')?.accuracy)} / ${points(fed('cn-ad')?.accuracy, central('cn-ad')?.accuracy)}`,
-      `Three-class / CN vs AD accuracy of federated training over ${data.partition.n_clients} real-site clients, against a tuned logistic regression trained centrally on the same subjects.`)}
+      `Three-class / CN vs AD accuracy of the 27-feature model federated over ${data.partition.n_clients} real-site clients, against a tuned logistic regression trained centrally on MRI and biomarkers for the same subjects.`)}
     ${card('02', 'lock', 'Subject-level privacy at ε = 1', points(p1?.accuracy, p0?.accuracy),
       `CN vs AD accuracy of the private model against its non-private twin (${pct(p1?.accuracy)} vs ${pct(p0?.accuracy)}).`)}
     ${card('03', 'psychology', 'Explanations under privacy', `${fixed(p0?.explanation_agreement)} → ${fixed(p10?.explanation_agreement)}`,
-      'Spearman agreement of region attributions with the reference model, non-private versus ε = 10, while accuracy holds.')}
+      'Spearman agreement of feature attributions with the reference model, non-private versus ε = 10, while accuracy holds.')}
   </div>`;
 }
 
@@ -83,9 +83,9 @@ function render(data: SiteData): string {
       </div>
       <div class="max-w-4xl">
         <h1 class="text-5xl leading-[1.05] tracking-tighter md:text-[72px]">Federated brain MRI, <span class="text-gradient">measured honestly.</span></h1>
-        <p class="mt-6 max-w-3xl text-xl leading-8 text-slate">CN / MCI / AD classification from ADNI structural MRI,
-          trained without pooling scans across sites, evaluated so that no subject, and under the stricter protocol no
-          site, appears in more than one split.</p>
+        <p class="mt-6 max-w-3xl text-xl leading-8 text-slate">CN / MCI / AD classification from ADNI structural MRI and
+          fluid biomarkers on ${three.n_subjects.toLocaleString('en')} subjects, trained across real hospital sites without pooling data,
+          evaluated so that no subject, and under the stricter protocol no site, appears in more than one split.</p>
       </div>
       <div class="flex flex-col justify-between gap-6 border-t border-hairline pt-6 md:flex-row md:items-center">
         <div><p class="font-medium">Adit Srivastava, Aditya Raj, Vaibhav Gupta, Hardik Gupta, Agha Alfi Mirza</p>
@@ -106,7 +106,7 @@ function render(data: SiteData): string {
   <section class="shell -mt-8 relative grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-stagger>
     ${kpi('Cohort', String(three.n_subjects), 'ADNI subjects with T1 MRI, one scan each')}
     ${kpi('Sites → clients', `${data.partition.n_sites} → ${data.partition.n_clients}`, 'Real acquisition sites, small ones pooled into federated clients')}
-    ${kpi('CN vs AD', pct(cnad.accuracy), `Imaging only, subject-disjoint (AUROC ${fixed(cnad.macro_auroc)}); ${pct(bestCentralised(data, 'cn-ad', 'subject', COV).accuracy)} with age and sex`, 'text-teal')}
+    ${kpi('CN vs AD', pct(cnad.accuracy), `MRI only, subject-disjoint (AUROC ${fixed(cnad.macro_auroc)}); ${pct(bestCentralised(data, 'cn-ad', 'subject', COV).accuracy)} with biomarkers`, 'text-teal')}
     ${kpi('Private CN vs AD', pct(privacyAt(data, 'cn-ad', 1)?.accuracy), `Subject-level DP at ε = 1, δ = ${data.dp_config.delta}`)}
   </section>
 
@@ -140,8 +140,8 @@ function render(data: SiteData): string {
     <div class="card spotlight flex flex-col items-start justify-between gap-4 !p-8 md:flex-row md:items-center">
       <div><p class="eyebrow">Live demo</p>
         <h2 class="mt-1 text-2xl">Run the paper's private model</h2>
-        <p class="mt-1 text-slate">The ε = 10 region model answers from a small API on region volumes, so no scan is uploaded;
-          the earlier slice model also runs entirely in your browser, labelled as such.</p></div>
+        <p class="mt-1 text-slate">The ε = 1, 84-parameter model answers from a small API on region volumes and clinical values,
+          so no scan is uploaded; the earlier slice model also runs entirely in your browser, labelled as such.</p></div>
       <div class="flex gap-2"><a class="btn btn-primary" href="${href('demo')}">${icon('play_arrow')} Open the demo</a>
         <a class="btn" href="${href('results')}">Results tables</a></div>
     </div>

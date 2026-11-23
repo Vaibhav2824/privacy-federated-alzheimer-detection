@@ -1,10 +1,10 @@
-import { bestCentralised, pct, pick, points, type Condition, type SiteData } from '../lib/site';
+import { bestCentralised, COV, pct, pick, points, type Condition, type SiteData } from '../lib/site';
 import { bar, icon, mountPage, pageHead, section } from '../ui/layout';
 
-const SCHEMES = [
-  { key: 'iid', name: 'IID simulation', note: 'subjects shuffled evenly across clients' },
-  { key: 'dirichlet', name: 'Dirichlet non-IID (α = 0.5)', note: 'label skew drawn at random' },
-  { key: 'natural', name: 'Real ADNI sites', note: 'one client per acquisition site' },
+const ALGORITHMS = [
+  { key: 'fedavg', name: 'FedAvg', note: 'plain averaging, the algorithm the private model uses' },
+  { key: 'fedprox', name: 'FedProx (μ = 1)', note: 'a proximal term against client drift' },
+  { key: 'fedboost', name: 'Federated boosting', note: 'histogram gradient-boosted trees' },
 ];
 
 /** Star topology: one node per real client, radius by subject count. */
@@ -32,11 +32,11 @@ function topology(data: SiteData): string {
 }
 
 function realism(data: SiteData): string {
-  const fed = (scheme: string, ls: string): Condition | undefined => pick(data, { family: 'federated', label_set: ls, split_scheme: 'subject', client_scheme: scheme });
-  return SCHEMES.map((s) => {
+  const fed = (model: string, ls: string): Condition | undefined => pick(data, { family: 'federated', model, label_set: ls, split_scheme: 'subject', client_scheme: 'natural' });
+  return ALGORITHMS.map((s) => {
     const three = fed(s.key, 'cn-mci-ad');
     const cnad = fed(s.key, 'cn-ad');
-    return `<div class="rounded-lg p-3 ${s.key === 'natural' ? 'border border-teal/30 bg-teal/[0.04]' : ''}">
+    return `<div class="rounded-lg p-3 ${s.key === 'fedavg' ? 'border border-teal/30 bg-teal/[0.04]' : ''}">
       <p class="text-sm font-medium">${s.name} <span class="font-normal text-slate">· ${s.note}</span></p>
       <div class="mt-2 flex flex-col gap-2">
         ${bar('3-class', three?.accuracy, pct(three?.accuracy), 'bg-teal', three?.chance_accuracy)}
@@ -79,16 +79,15 @@ function algorithm(data: SiteData): string {
 w_t+1 ← w_t + Δ / participants</pre>
     <p class="mt-3 rounded-xl bg-muted p-3 text-xs text-slate">${icon('info', '!text-sm')} Federation is simulated in one process: clients
       exchange only clipped, noised updates, and a PRV accountant tracks (ε, δ = ${d.delta}) across all ${d.rounds} rounds.
-      The private arm keeps plain averaging; the non-private arm adds the FedProx term (μ = ${d.prox_mu}).</p>`;
+      Both the private model and its non-private reference use plain averaging (μ = ${d.prox_mu}).</p>`;
 }
 
 function render(data: SiteData): string {
-  const fed = (s: string): Condition | undefined => pick(data, { family: 'federated', label_set: 'cn-mci-ad', split_scheme: 'subject', client_scheme: s });
-  const central = pick(data, { family: 'centralised', model: 'logreg_cv', label_set: 'cn-mci-ad', split_scheme: 'subject' });
-  const best = bestCentralised(data, 'cn-mci-ad', 'subject');
+  const fed = (m: string): Condition | undefined => pick(data, { family: 'federated', model: m, label_set: 'cn-mci-ad', split_scheme: 'subject', client_scheme: 'natural' });
+  const best = bestCentralised(data, 'cn-mci-ad', 'subject', COV);
   return `
-  ${pageHead('Federated topology · real sites vs simulated partitions', 'Hospital topology vs simulated benchmarks',
-    'Federated training over the cohort\'s real ADNI acquisition sites, compared with the IID and Dirichlet partitions the literature usually simulates.',
+  ${pageHead('Federated topology · real ADNI sites', 'One client per real hospital site',
+    'Federated training over the cohort\'s real ADNI acquisition sites, which differ in scanner, size and class mix, rather than the even partitions the literature usually simulates.',
     `<div class="flex flex-wrap gap-2 md:max-w-xs md:justify-end"><span class="badge">${data.partition.n_clients} federated clients</span>
       <span class="badge">${data.partition.n_sites} acquisition sites</span><span class="badge">Subject-level DP-FedAvg</span></div>`)}
   <section class="shell mt-10 grid gap-6 lg:grid-cols-2">
@@ -101,17 +100,16 @@ function render(data: SiteData): string {
     <div class="flex flex-col gap-6">
       <div class="card">
         <p class="font-mono text-xs uppercase tracking-wider text-slate">Empirical evaluation</p>
-        <h2 class="mt-1 font-display text-xl">Accuracy across partition realism</h2>
-        <p class="mt-1 text-sm text-slate">Subject-disjoint folds, three seeds. Dashed ticks: chance.</p>
+        <h2 class="mt-1 font-display text-xl">Federated algorithms over the real sites</h2>
+        <p class="mt-1 text-sm text-slate">The 27-feature model without privacy; subject-disjoint folds, three seeds. Dashed ticks: chance.</p>
         <div class="mt-4 flex flex-col gap-3">${realism(data)}</div>
       </div>
       <blockquote class="card font-display text-lg leading-8">
-        <p class="italic">Real hospital partitions call for a different optimiser than the simulated benchmark suggests.</p>
-        <p class="mt-3 font-sans text-sm text-slate">With FedProx (μ = ${data.dp_config.prox_mu}), three-class accuracy on real sites is ${pct(fed('natural')?.accuracy)}, against
-          ${pct(fed('dirichlet')?.accuracy)} for the Dirichlet draw and ${pct(fed('iid')?.accuracy)} for IID: federating over real sites costs
-          ${points(fed('natural')?.accuracy, central?.accuracy)} against the same model trained centrally
-          (${pct(best.accuracy)} for the best centralised model). Client-size imbalance and scanner variation add a client drift the
-          proximal term corrects; on IID clients, where there is no drift, the same term lowers accuracy.</p>
+        <p class="italic">With a small model, federating over real hospitals costs about one point.</p>
+        <p class="mt-3 font-sans text-sm text-slate">On three classes FedAvg reaches ${pct(fed('fedavg')?.accuracy)}, FedProx ${pct(fed('fedprox')?.accuracy)}
+          and federated boosting ${pct(fed('fedboost')?.accuracy)}, against ${pct(best.accuracy)} for the best model trained centrally on pooled
+          MRI and biomarkers (${points(fed('fedavg')?.accuracy, best.accuracy)} for FedAvg). With 84 parameters the proximal term no longer helps, so the
+          private model keeps plain averaging; boosting is slightly better but has no formal privacy guarantee here.</p>
       </blockquote>
     </div>
   </section>

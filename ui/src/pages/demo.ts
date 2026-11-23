@@ -239,7 +239,7 @@ function legacySection(data: SiteData): string {
 
 function render(data: SiteData): string {
   return `
-  ${pageHead('Live demo · region model on Render, slice model in your browser', 'Try the model, live',
+  ${pageHead('Live demo · private model on Render, slice model in your browser', 'Try the model, live',
     'Run the v8 privacy-preserving model on deepmriprep region volumes and optional clinical values, or the legacy slice model entirely inside this tab.',
     `<span class="badge shrink-0 !px-3 !py-1">${icon('shield', '!text-sm')} No scan is ever uploaded</span>`)}
   ${steps()}

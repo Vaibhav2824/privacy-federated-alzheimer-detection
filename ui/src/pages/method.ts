@@ -7,8 +7,8 @@ function stages(features: number): string {
     ['Orientation search', '48 candidates', 'Every axis permutation and reflection registered to a whole-head ICBM152 target, fitted per series and array shape.', 'Measured, not read from headers'],
     ['Skull stripping', 'deepbet', 'Run after orientation, because the stripper leaves face and neck behind when a scan lies on its side.', 'Brain mask'],
     ['MNI152 registration and QC', 'Affine', 'Mutual-information affine registration to MNI152; a per-subject correlation score excludes failures by a stated rule.', 'QC-gated cohort'],
-    ['Region volumes (deepmriprep)', `${features} regions`, 'Network tissue segmentation and nonlinear warping; the Neuromorphometrics atlas is warped back and each region’s grey-matter (or ventricular CSF) volume is divided by intracranial volume.', 'Named anatomy'],
-    ['DP-FedAvg and audit', 'Subject-level', 'Federated over real sites with per-subject clipping and Gaussian noise, PRV privacy accounting, membership inference and region attribution.', 'ε, δ certified'],
+    ['Features (deepmriprep + biomarkers)', `${features} features`, 'Network tissue segmentation and nonlinear warping give Neuromorphometrics region volumes over intracranial volume; 20 Alzheimer-signature regions are joined with APOE4, amyloid PET, tau and neurodegeneration composites, education, age and sex.', 'Named anatomy and biomarkers'],
+    ['DP-FedAvg and audit', 'Subject-level', 'Federated over real sites with per-subject clipping and Gaussian noise, PRV privacy accounting, membership inference and feature attribution.', 'ε, δ certified'],
   ];
   return `<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">${STAGES.map(([title, tag, body, out], i) => `
     <div class="card flex flex-col !p-4 ${i === STAGES.length - 1 ? 'border-teal bg-teal/[0.04]' : ''}">
@@ -64,15 +64,16 @@ function render(data: SiteData): string {
   const features = dimension === undefined ? 0 : dimension / 3 - 1;
   return `
   ${pageHead('Experimental specification · pipeline architecture', 'End-to-end methodology and reproduction',
-    'From raw ADNI scans to a federated, privacy-preserving region model: every stage, the guarantees each one enforces, and the commands that rerun it.',
+    'From raw ADNI scans and biomarkers to a federated, privacy-preserving 84-parameter model: every stage, the guarantees each one enforces, and the commands that rerun it.',
     `<div class="flex flex-wrap gap-2 md:max-w-xs md:justify-end"><span class="badge">${icon('code', '!text-sm')} Open source</span>
       <span class="badge">${icon('verified_user', '!text-sm')} Subject-level DP</span></div>`)}
   ${section('Stages 01 → 06', 'From scanner volume to private federated model', stages(features))}
   <section class="shell mt-14 grid gap-6 lg:grid-cols-[1.5fr_1fr]">
     <div class="card"><h2 class="font-sans text-lg font-semibold">${icon('lock', 'text-teal')} Guarantees enforced</h2>
       <div class="mt-5 flex flex-col gap-5">${guarantees(data)}</div>
-      <p class="mt-5 rounded bg-amber-tint p-3 text-xs text-amber">Federation is simulated in one process. Clients exchange only
-        clipped, noised updates, but they are not yet separate machines; that is planned work.</p></div>
+      <p class="mt-5 rounded bg-amber-tint p-3 text-xs text-amber">The study's federation is simulated in one process: clients exchange
+        only clipped, noised updates. The <a class="underline" href="live.html">Live</a> page runs the same protocol across real devices,
+        with secure aggregation, on synthetic patients.</p></div>
     <div class="card"><h2 class="font-sans text-lg font-semibold">Hyperparameters</h2>
       <div class="mt-3">${hyperparameters(data, dimension)}</div></div>
   </section>
