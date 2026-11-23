@@ -39,7 +39,7 @@ ROUND_TIMEOUT = float(os.environ.get("LIVE_ROUND_TIMEOUT", "12"))
 MIN_ROUND_SECONDS = float(os.environ.get("LIVE_MIN_ROUND_SECONDS", "0.6"))
 ROOM_TTL = 3600
 BUDGETS = json.loads((Path(__file__).parent / "live_budgets.json").read_text(encoding="utf-8"))
-ORIGIN = re.compile(os.environ.get("ALLOWED_ORIGIN_REGEX", r"https://[\w-]+\.vercel\.app|http://localhost:\d+"))
+ORIGIN = re.compile(os.environ.get("ALLOWED_ORIGIN_REGEX", r"https://[\w-]+\.vercel\.app|https://([\w-]+\.)*ppxfl-alzheimer\.pages\.dev|http://localhost:\d+"))
 CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"
 
 router = APIRouter()

@@ -158,3 +158,13 @@ def test_cors_allows_vercel_and_blocks_others(client):
     bad = client.options("/predict", headers={"Origin": "https://evil.example",
                                                "Access-Control-Request-Method": "POST"})
     assert "access-control-allow-origin" not in bad.headers
+
+
+def test_cors_allows_the_project_sites(client):
+    for origin in ("https://ppxfl-alzheimer.pages.dev", "https://abc123.ppxfl-alzheimer.pages.dev",
+                   "https://privacy-federated-alzheimer-detecti.vercel.app"):
+        r = client.options("/predict", headers={"Origin": origin, "Access-Control-Request-Method": "POST",
+                                                "Access-Control-Request-Headers": "content-type"})
+        assert r.headers.get("access-control-allow-origin") == origin
+    r = client.options("/predict", headers={"Origin": "https://evil.pages.dev", "Access-Control-Request-Method": "POST"})
+    assert "access-control-allow-origin" not in r.headers

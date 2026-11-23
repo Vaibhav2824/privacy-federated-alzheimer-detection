@@ -46,7 +46,7 @@ app.add_middleware(
     CORSMiddleware,
     # The Vercel production and preview domains, plus local development.
     allow_origin_regex=os.environ.get(
-        "ALLOWED_ORIGIN_REGEX", r"https://[\w-]+\.vercel\.app|http://localhost:\d+"),
+        "ALLOWED_ORIGIN_REGEX", r"https://[\w-]+\.vercel\.app|https://([\w-]+\.)*ppxfl-alzheimer\.pages\.dev|http://localhost:\d+"),
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 )

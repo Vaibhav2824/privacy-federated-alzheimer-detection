@@ -423,8 +423,8 @@ probabilities and the features that drove the prediction. Every clinical field
 plasma_nfl, plasma_gfap) is optional; one left out is set to the cohort median,
 as in the evaluation, and listed in the response as not given;
 `GET /model` returns the model card. Inputs are validated, requests are rate
-limited per client, and only the Vercel site and localhost may call it from a
-browser, so use the Vercel mirror for the Demo page's prediction. The example on the Demo page is deepmriprep's output for the public
+limited per client, and only the project's Cloudflare and Vercel sites and
+localhost may call it from a browser. The example on the Demo page is deepmriprep's output for the public
 MNI152 template, so no ADNI-derived subject data is published.
 
 ## Live federation
